@@ -1,2 +1,12 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<script>
+	import EventCard from '$lib/Components/EventCard.svelte';
+</script>
+
+<EventCard
+	img="https://assets.simpleviewinc.com/simpleview/image/upload/crm/vancouverbc/Science-World-03-large_7A18828C-0A13-47CD-92DB4404AE5A222C_fb32edf9-a996-4f5f-a2aaa1980fe8d6b7.jpg"
+	title="Science World Children's Day"
+	date={new Date()}
+	organization="The City of Vancouver"
+	location="Vancouver, BC 1455 Quebec St"
+	organizationLogo="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT46Pp3V6MJmwjab7ghq7TSOu5COQongTQ83Q&s"
+/>
