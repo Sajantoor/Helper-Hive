@@ -64,6 +64,7 @@
 	}
 
 	.eventScroller {
+		margin: 0 20px;
 		display: flex;
 		scroll-behavior: smooth;
 		width: 100%;
