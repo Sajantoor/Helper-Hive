@@ -12,7 +12,9 @@
 	const iconSize = 25;
 </script>
 
-<div class="eventCard max-w-80 w-full h-1/4 m-5 rounded-xl overflow-hidden border-white border-2">
+<div
+	class="eventCard max-w-80 w-full h-1/4 m-5 rounded-xl overflow-hidden border-white border-2 inline-block"
+>
 	<img src={img} alt={title} class="h-36 w-full object-cover" />
 	<div class="p-2">
 		<h1 class="text-xl font-semibold mb-2 mt-1">{title}</h1>
@@ -40,5 +42,7 @@
 
 	.eventCard {
 		border-color: #f4f4f4;
+		flex: 0 0 calc(25% - 2.5rem); /** 4 cards per view, adjust percentage for more/less cards */
+		max-width: calc(25% - 2.5rem);
 	}
 </style>
