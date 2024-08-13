@@ -1,6 +1,8 @@
 <script lang="ts">
 	import MapMarkerOutline from 'svelte-material-icons/MapMarkerOutline.svelte';
 	import CalendarMonth from 'svelte-material-icons/CalendarMonth.svelte';
+	import SmallText from './Text/SmallText.svelte';
+	import Text from './Text/Text.svelte';
 
 	export let img: string = '';
 	export let title: string = '';
@@ -9,24 +11,26 @@
 	export let organization: string = '';
 	export let organizationLogo: string = '';
 
-	const iconSize = 25;
+	const iconSize = 22;
 </script>
 
-<div class="eventCard max-w-80 w-full h-1/4 m-5 rounded-xl overflow-hidden border-white border-2">
+<div
+	class="eventCard max-w-80 w-full h-1/4 m-5 rounded-xl overflow-hidden border-white border-2 inline-block"
+>
 	<img src={img} alt={title} class="h-36 w-full object-cover" />
 	<div class="p-2">
-		<h1 class="text-xl font-semibold mb-2 mt-1">{title}</h1>
+		<Text class="font-semibold mb-2 mt-1">{title}</Text>
 		<div class="items">
 			<MapMarkerOutline size={iconSize} />
-			<p>{location}</p>
+			<SmallText>{location}</SmallText>
 		</div>
 		<div class="items">
 			<CalendarMonth size={iconSize} />
-			<p>{date.toDateString()}</p>
+			<SmallText>{date.toDateString()}</SmallText>
 		</div>
 		<div class="items">
 			<img src={organizationLogo} alt={organization} class="rounded-full h-6" />
-			<p>{organization}</p>
+			<SmallText>{organization}</SmallText>
 		</div>
 	</div>
 </div>
@@ -40,5 +44,7 @@
 
 	.eventCard {
 		border-color: #f4f4f4;
+		flex: 0 0 calc(25% - 2.5rem); /** 4 cards per view, adjust percentage for more/less cards */
+		max-width: calc(25% - 2.5rem);
 	}
 </style>
