@@ -2,6 +2,7 @@
 	import EventCard from '$lib/Components/EventCard.svelte';
 	import EventScroller from '$lib/Components/EventScroller.svelte';
 	import CalendarEvent from '$lib/Components/CalendarEvent.svelte';
+	import NavBar from '$lib/Components/NavBar.svelte';
 
 	import type { Event } from '$lib/Types/Events';
 
@@ -68,6 +69,8 @@
 		}
 	];
 </script>
+
+<NavBar />
 
 <EventScroller {events} />
 
