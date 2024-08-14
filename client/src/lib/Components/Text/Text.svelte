@@ -18,4 +18,14 @@
 	.smallText {
 		font-size: 0.9rem;
 	}
+
+	.heading {
+		font-size: 1.25rem;
+		font-weight: bold;
+	}
+
+	.section {
+		font-size: 2rem;
+		font-weight: bold;
+	}
 </style>
