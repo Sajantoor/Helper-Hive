@@ -6,7 +6,12 @@ export interface Event {
     organization: Organization;
     img: string;
 }
-
+export interface CalendarElementData {
+    img: string;
+    title: string;
+    location: string;
+    date: Date;
+}
 export interface Organization {
     id: number;
     name: string;
