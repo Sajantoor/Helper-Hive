@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 
 var Schema = mongoose.Schema;
 var eventSchema = new Schema({
+    id: {type: String, required: true},
     organizationId: {type: mongoose.Schema.Types.ObjectId, ref: 'organization', required: true},
     startdate: {type: Date, required: true},
     endDate: {type: Date, required: true},

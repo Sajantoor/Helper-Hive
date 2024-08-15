@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
 import "./secrets";
 
-const databaseConfig = secrets.databaseConfig;
-mongoose.connect(databaseConfig, {});
+const uri = secrets.databaseConfig;
+mongoose.connect(uri);
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', () => {
