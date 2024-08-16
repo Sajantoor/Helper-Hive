@@ -4,6 +4,7 @@
 	import CalendarEvent from '$lib/Components/CalendarEvent.svelte';
 	import NavBar from '$lib/Components/NavBar.svelte';
 	import CalendarView from '$lib/Components/CalendarView.svelte';
+	import CalendarView from '$lib/Components/CalendarView.svelte';
 
 	import type { Event } from '$lib/Types/Events';
 
