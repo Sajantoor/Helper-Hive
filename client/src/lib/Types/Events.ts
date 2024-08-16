@@ -1,10 +1,13 @@
-export interface Event {
+export interface Event extends CalendarElementData {
     id: number;
+    organization: Organization;
+}
+
+export interface CalendarElementData {
+    img: string;
     title: string;
     location: string;
     date: Date;
-    organization: Organization;
-    img: string;
 }
 
 export interface Organization {
