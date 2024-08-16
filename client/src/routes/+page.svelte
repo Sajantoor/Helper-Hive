@@ -2,6 +2,8 @@
 	import EventCard from '$lib/Components/EventCard.svelte';
 	import EventScroller from '$lib/Components/EventScroller.svelte';
 	import CalendarEvent from '$lib/Components/CalendarEvent.svelte';
+	import CalendarView from  '$lib/Components/CalendarView.svelte';
+
 
 	import type { Event } from '$lib/Types/Events';
 
@@ -67,21 +69,9 @@
 			location: 'Vancouver, BC 1455 Quebec St'
 		}
 	];
+	
 </script>
 
 <EventScroller {events} />
+<CalendarView/>
 
-<CalendarEvent
-	img="https://assets.simpleviewinc.com/simpleview/image/upload/crm/vancouverbc/Science-World-03-large_7A18828C-0A13-47CD-92DB4404AE5A222C_fb32edf9-a996-4f5f-a2aaa1980fe8d6b7.jpg"
-	title="Science World Children's Day"
-	date={new Date()}
-	location="Vancouver, BC 1455 Quebec St"
-/>
-
-<!-- make the date today + a day -->
-<CalendarEvent
-	img="https://assets.simpleviewinc.com/simpleview/image/upload/crm/vancouverbc/Science-World-03-large_7A18828C-0A13-47CD-92DB4404AE5A222C_fb32edf9-a996-4f5f-a2aaa1980fe8d6b7.jpg"
-	title="Science World Children's Day way longer"
-	date={new Date(new Date().getTime() + 26 * 24 * 60 * 60 * 1000)}
-	location="Vancouver, BC 1455 Quebec Stdfadsfl;kjadskf jkda;fjds"
-/>
