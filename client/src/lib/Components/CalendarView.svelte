@@ -32,7 +32,8 @@
 		const uniqueMonths = new Set(
 			elements.map((e) => {
 				const month = e.date.toLocaleString('default', { month: 'short' });
-				const year = e.date.getFullYear() !== currentDate.getFullYear() ? ` ${e.date.getFullYear()}` : '';
+				const year =
+					e.date.getFullYear() !== currentDate.getFullYear() ? ` ${e.date.getFullYear()}` : '';
 				return `${month}${year}`;
 			})
 		);
@@ -85,8 +86,6 @@
 	</div>
 	<div class="calendar-grid grid grid-cols-4 gap-4 mt-4">
 		{#each calendarElements as element (element.date)}
-			<!-- svelte-ignore a11y-click-events-have-key-events -->
-			<!-- svelte-ignore a11y-no-static-element-interactions -->
 			<div class="grid-element">
 				<CalendarElement
 					img={element.img}
@@ -134,8 +133,9 @@
 
 	.today_button {
 		border: 1px solid #ccc;
-		padding: 0.5rem 1rem;
+		padding: 0 0.5rem;
 		border-radius: 4px;
+		margin-right: 1rem;
 	}
 
 	button {
