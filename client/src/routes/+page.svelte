@@ -2,8 +2,9 @@
 	import EventCard from '$lib/Components/EventCard.svelte';
 	import EventScroller from '$lib/Components/EventScroller.svelte';
 	import CalendarEvent from '$lib/Components/CalendarEvent.svelte';
-	import CalendarView from  '$lib/Components/CalendarView.svelte';
-
+	import NavBar from '$lib/Components/NavBar.svelte';
+	import CalendarView from '$lib/Components/CalendarView.svelte';
+	import CalendarView from '$lib/Components/CalendarView.svelte';
 
 	import type { Event } from '$lib/Types/Events';
 
@@ -69,9 +70,9 @@
 			location: 'Vancouver, BC 1455 Quebec St'
 		}
 	];
-	
 </script>
 
-<EventScroller {events} />
-<CalendarView/>
+<NavBar />
 
+<EventScroller {events} />
+<CalendarView />
