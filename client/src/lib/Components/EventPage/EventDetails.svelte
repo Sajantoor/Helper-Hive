@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { S } from 'vitest/dist/reporters-B7ebVMkT.js';
 	import Section from '../Text/Section.svelte';
 	import Text from '../Text/Text.svelte';
 
@@ -12,6 +11,7 @@
 	export let endDate: Date = new Date();
 	export let hours: string = '';
 	export let location = '';
+	export let spotsAvailable: number = 0;
 
 	const regex = /^(.*?),\s*(\w+)\s*(.*)$/;
 	const match = location.match(regex);
@@ -38,36 +38,39 @@
 	<Section>{eventTitle}</Section>
 
 	<div class="item">
-		<CalendarMonth class="text-iconYellow" size={40} />
-		<div class=" ml-2">
+		<CalendarMonth class="text-primaryYellow" size={40} />
+		<div class="ml-5">
 			<Text class="font-semibold">{displayDate}</Text>
 			<Text>{hours}</Text>
 		</div>
 	</div>
 
 	<div class="item">
-		<MapMarkerOutline class="text-iconYellow" size={40} />
-		<div class="ml-2">
+		<MapMarkerOutline class="text-primaryYellow" size={40} />
+		<div class="ml-5">
 			<Text class="font-semibold">{city}, {province}</Text>
-
 			<Text>{address}</Text>
 		</div>
 	</div>
 
 	<div>
-		<Text class="font-semibold">Tags</Text>
-		<div class="tag-list mt-2">
-			{#each tags as tag}
-				<div class="tag bg-tagYellow">
-					<Text>{tag}</Text>
-				</div>
-			{/each}
-		</div>
+		{#if tags.length > 0}
+			<Text class="font-semibold">Tags</Text>
+			<div class="tag-list mt-2">
+				{#each tags as tag}
+					<div class="tag bg-tagYellow">
+						<Text>{tag}</Text>
+					</div>
+				{/each}
+			</div>
+		{/if}
 	</div>
 
 	<div class="mt-4">
-		<Text class="text-altTextGray">Test text</Text>
-		<button><Text class="font-semibold">Register</Text></button>
+		<Text class="text-altTextGray">{spotsAvailable} Spots Avaliable</Text>
+		<button class={spotsAvailable > 0 ? 'bg-primaryYellow' : 'bg-placeholderGray'}>
+			<Text class="font-semibold">Register</Text>
+		</button>
 	</div>
 </div>
 
@@ -99,7 +102,6 @@
 	}
 
 	button {
-		background-color: #fabd22;
 		width: 90%;
 		border-radius: 1rem;
 		padding: 0.6rem;

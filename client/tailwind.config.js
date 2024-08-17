@@ -4,9 +4,10 @@ export default {
 	theme: {
 		extend: {},
 		colors: {
-			iconYellow: '#FABD22',
+			primaryYellow: '#FABD22',
 			altTextGray: '#999999',
-			tagYellow: '#FFE6A6'
+			tagYellow: '#FFE6A6',
+			placeholderGray: "#F5F5F5"
 		}
 	},
 	plugins: []

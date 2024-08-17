@@ -9,6 +9,7 @@
 
 	export let hostImage: string = '';
 	export let hostName: string = '';
+	export let files: string[] = [];
 </script>
 
 <div class="hosted-by-container">
@@ -19,18 +20,24 @@
 
 			<Text class="ml-8">{hostName}</Text>
 		</div>
-		<Instagram class="text-iconYellow" size={iconSize} />
+		<Instagram class="text-primaryYellow" size={iconSize} />
 	</div>
 	<div class="mb-8 mt-8">
-		<FileDocumentOutline class="text-iconYellow" size={50} />
-		<SmallText class="text-gray-400 ml-1 mt-1">File.txt</SmallText>
+		{#each files as file}
+			<div class="inline-block mr-5">
+				<div>
+					<FileDocumentOutline class="file text-primaryYellow" size={iconSize} />
+					<SmallText class="text-gray-400 ml-1 mt-1">{file}</SmallText>
+				</div>
+			</div>
+		{/each}
 	</div>
 
 	<Text class="text-altTextGray mb-4">Contact the host</Text>
 	<Text class="text-altTextGray">Report this event</Text>
 </div>
 
-<style>
+<style lang="postcss">
 	.host-info {
 		display: flex;
 		justify-content: space-between;
@@ -40,5 +47,11 @@
 	.host-logo {
 		width: 3.5rem;
 		height: 3.5rem;
+	}
+
+	/* TODO: For some reason this isn't working */
+	.file {
+		margin: auto;
+		display: block;
 	}
 </style>
