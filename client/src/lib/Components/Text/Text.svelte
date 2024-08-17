@@ -18,4 +18,10 @@
 	.smallText {
 		font-size: 0.9rem;
 	}
+
+	.bioText {
+		width: 70%;
+		word-break: break-all;
+		word-wrap: break-word;
+	}
 </style>
