@@ -4,7 +4,7 @@
 	export let profilePicSrc = 'https://cdn-icons-png.freepik.com/512/4032/4032866.png'; // www.freepik.com
 </script>
 
-<nav class="flex items-center justify-between p-4 bg-white text-black border-b-2 shadow-sm">
+<nav class="flex items-center justify-between p-1 bg-white text-black border-b-2 shadow-sm">
 	<div class="flex items-center gap-10">
 		<div class="logo mr-4">
 			<img src={logoSrc} alt="Logo" class="h-10 ml-5" />
@@ -15,6 +15,6 @@
 		</div>
 	</div>
 	<div class="profile-pic">
-		<img src={profilePicSrc} alt="Profile" class="h-10 w-10 mr-10 rounded-full object-cover" />
+		<img src={profilePicSrc} alt="Profile" class="h-8 w-8 mr-8 rounded-full object-cover" />
 	</div>
 </nav>
