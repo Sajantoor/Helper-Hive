@@ -1,10 +1,17 @@
+import 'dotenv/config';
 import mongoose from 'mongoose';
-import "./secrets";
 
-const uri = secrets.uri;
+const uri = process.env.MONGO_DB_URI || '';
 mongoose.connect(uri);
+
 const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', () => {
-    console.log('Connected to database');
+
+db.on("error", (error) => {
+    console.error("Failed to connect to MongoDB" + error);
 });
+
+db.on("connected", () => {
+    console.log("Connected to database");
+});
+
+export default db;
