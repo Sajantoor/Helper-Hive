@@ -14,4 +14,5 @@ const userSchema = new Schema({
     registeredEvents: [{ type: Schema.Types.ObjectId, ref: 'event' }]
 });
 
-export default model("user", userSchema);
+const User = model("user", userSchema);
+export default User;
