@@ -2,7 +2,7 @@
     "compilerOptions": {
         "types": ["qs"],
         "target": "ESNext",
-        "module": "commonjs",
+        "module": "nodenext",
         "sourceMap": true,
         "outDir": "dist",
         "esModuleInterop": true,
