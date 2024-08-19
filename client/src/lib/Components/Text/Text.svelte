@@ -24,4 +24,14 @@
 		word-break: break-all;
 		word-wrap: break-word;
 	}
+
+	.heading {
+		font-size: 1.25rem;
+		font-weight: bold;
+	}
+
+	.section {
+		font-size: 2rem;
+		font-weight: bold;
+	}
 </style>
