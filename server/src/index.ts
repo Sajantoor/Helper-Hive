@@ -1,6 +1,6 @@
 import express from "express";
 import db, { connectDB } from "./database/db";
-import { createEvent, getEvent, getEvents } from "./routes/events";
+import { createEvent, getEvent, getEvents, updateEvent } from "./routes/events";
 
 const app = express();
 const port = 4000;
@@ -21,4 +21,4 @@ const EVENTS_API = `${API_PREFIX}/events`;
 app.get(`${EVENTS_API}`, (req, res) => getEvents(req, res));
 app.get(`${EVENTS_API}/:id`, (req, res) => getEvent(req, res));
 app.post(`${EVENTS_API}`, (req, res) => createEvent(req, res));
-
+app.patch(`${EVENTS_API}/:id`, (req, res) => updateEvent(req, res));
