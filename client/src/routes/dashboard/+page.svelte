@@ -1,11 +1,13 @@
 <script lang="ts">
-	import EventScroller from '$lib/Components/EventScroller.svelte';
-	import NavBar from '$lib/Components/NavBar.svelte';
-	import CalendarView from '$lib/Components/CalendarView.svelte';
-	
-	import type { Event } from '$lib/Types/Events';
+    import NavBar from '$lib/Components/NavBar.svelte';
+    import EventScroller from '$lib/Components/EventScroller.svelte';
+    import CalendarView from '$lib/Components/CalendarView.svelte';
+    import Searchbar from '$lib/Components/Searchbar.svelte';
+	import Text from '$lib/Components/Text/Text.svelte';
 
-	let events: Event[] = [
+    import type { Event } from '$lib/Types/Events';
+
+    let events: Event[] = [
 		{
 			id: 1,
 			img: 'https://assets.simpleviewinc.com/simpleview/image/upload/crm/vancouverbc/Science-World-03-large_7A18828C-0A13-47CD-92DB4404AE5A222C_fb32edf9-a996-4f5f-a2aaa1980fe8d6b7.jpg',
@@ -67,9 +69,57 @@
 			location: 'Vancouver, BC 1455 Quebec St'
 		}
 	];
+
+    let tags: string[] = ['Childcare', 'Education', 'Event Planning'];  // Separate tags array
 </script>
 
-<NavBar />
+<div class="dashboard">
+    <NavBar/>
+    <Text class="text-2xl font-bold ml-[5%] mt-[1%] mb-[1%]">Events</Text>
+    <Searchbar/>
+    <div class="tags-section w-full mt-[2%]">
+        <div class="tag-list mt-2">
+            {#each tags as tag}
+                <div class="tag bg-tagYellow">
+                    <Text>{tag}</Text>
+                </div>
+            {/each}
+        </div>
+    </div>
+    <Text class="text-2xl font-bold ml-[5%] mt-[1%] mb-[1%]">Featured Events</Text>
 
-<EventScroller {events} />
-<CalendarView />
+   
+    <EventScroller {events} />
+    <CalendarView/>
+</div>
+<style lang="postcss">
+    .dashboard {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    
+
+    .tags-section {
+        margin-bottom: 1rem;
+        width: 100%;
+        margin-left: 5%;
+    }
+
+   
+	.tag-list {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1.5rem;
+	}
+
+	.tag {
+		padding: 0.5rem 1rem;
+		min-width: 6rem;
+		border-radius: 4rem;
+		display: inline-block;
+		white-space: nowrap;
+		text-align: center;
+	}
+</style>
