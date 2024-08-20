@@ -1,7 +1,6 @@
 import { Schema, model } from 'mongoose';
 
 const organizationSchema = new Schema({
-    id: { type: String, required: true, unique: true },
     name: { type: String, required: true },
     profilePicture: { type: String },
     email: { type: String, required: true, unique: true, match: /.+\@.+\..+/ },
@@ -13,4 +12,5 @@ const organizationSchema = new Schema({
     password: { type: String, required: true }
 });
 
-export default model("organization", organizationSchema);
+const Organization = model("organization", organizationSchema);
+export default Organization;
