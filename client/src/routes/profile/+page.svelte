@@ -1,6 +1,8 @@
 <script lang="ts">
 	import NavBar from '$lib/Components/NavBar.svelte';
 	import Section from '$lib/Components/Text/Section.svelte';
+	import Heading from '$lib/Components/Text/Heading.svelte';
+
 	import Text from '$lib/Components/Text/Text.svelte';
 	import Pencil from 'svelte-material-icons/Pencil.svelte';
 
@@ -9,6 +11,7 @@
 	let isCurrentUser = true;
 	let bio =
 		'Adventurous soul, avid learner, and always up for a good laugh. Living life one moment at a time 100.';
+	let completedHours = 100;
 </script>
 
 <NavBar />
@@ -32,6 +35,13 @@
 
 	{#if bio}
 		<Text class="bioText">{bio}</Text>
+	{/if}
+
+	{#if completedHours}
+		<div class="float-right">
+			<Heading>Completed Hours:</Heading>
+			<Heading class="float-right text-primaryYellow">{completedHours}</Heading>
+		</div>
 	{/if}
 </div>
 
