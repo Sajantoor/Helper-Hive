@@ -61,6 +61,8 @@
 		display: flex;
 		align-items: center;
 		position: relative;
+		margin: auto;
+		overflow: hidden;
 	}
 
 	.eventScroller {
