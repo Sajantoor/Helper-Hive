@@ -5,6 +5,7 @@
 
 	import Text from '$lib/Components/Text/Text.svelte';
 	import Pencil from 'svelte-material-icons/Pencil.svelte';
+	import EventsContainer from '$lib/Components/EventsContainer.svelte';
 
 	let profilePicSrc = 'https://cdn-icons-png.freepik.com/512/4032/4032866.png'; // www.freepik.com
 	let name = 'Jane Doe';
@@ -16,7 +17,7 @@
 
 <NavBar />
 
-<div class="ml-8 mt-2 p-8 pb-28">
+<div class="ml-10 mt-2 p-8 mr-10 pb-28">
 	{#if isCurrentUser}
 		<div class="editProfile float-right">
 			<button class="editProfile flex border rounded-full p-2 pl-4 pr-4">
@@ -46,6 +47,7 @@
 </div>
 
 <div class="sectionMarker"></div>
+
 
 <style lang="postcss">
 	.sectionMarker {
