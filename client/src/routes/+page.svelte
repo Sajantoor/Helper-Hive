@@ -2,8 +2,6 @@
 	import EventScroller from '$lib/Components/EventScroller.svelte';
 	import NavBar from '$lib/Components/NavBar.svelte';
 	import CalendarView from '$lib/Components/CalendarView.svelte';
-	import OrganizationRegistration from '$lib/Components/OrganizationRegistration.svelte';
-	import VolunteerRegistration from '$lib/Components/VolunteerRegistration.svelte';
 	
 	import type { Event } from '$lib/Types/Events';
 
@@ -76,5 +74,10 @@
 <EventScroller {events} />
 <CalendarView />
 
-<OrganizationRegistration />
-<VolunteerRegistration />
+<a href="/OrganizationRegistration">
+  <button>Go to Organization Registration</button>
+</a>
+<p></p>
+<a href="/VolunteerRegistration">
+  <button>Go to Volunteer Registration</button>
+</a>
