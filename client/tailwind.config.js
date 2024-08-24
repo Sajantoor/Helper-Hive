@@ -14,10 +14,15 @@ export default {
 		colors: {
 			primaryYellow: '#FABD22',
 			altTextGray: '#999999',
+			altTextBrown: '#A98D36',
 			tagYellow: '#FFE6A6',
 			placeholderGray: "#F5F5F5",
+			darkGray: '#373737',
 			blue: {
 			  500: '#3B82F6'
+			},
+			red: {
+			  500: '#CC3333'
 			}
 		}
 	},
