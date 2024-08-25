@@ -5,6 +5,7 @@ Usage:
   label="Text"
   placeholder="Text"
   bind:value={value}
+  bind:valid={phoneValid} // boolean variable needed for phone
   type="phone, date, or password" // optional, default is text 
   invalid={ boolean check for invalid input } // highlights the field when true
   onInput={ event for on:input, on:change, onChange }
@@ -17,6 +18,7 @@ Usage:
   import EyeOffOutline from 'svelte-material-icons/EyeOffOutline.svelte';
   import Flatpickr from 'svelte-flatpickr';
   import 'flatpickr/dist/flatpickr.css';
+  import { TelInput, normalizedCountries } from 'svelte-tel-input';
 
   export let label = '';
   export let placeholder = '';
@@ -27,12 +29,15 @@ Usage:
   export let type = 'text';
   export let id = '';
   export let eyePosY = -40; // Pwd eye position, default -40%
-
+  
+  export let valid = false;
+  let selectedCountry = 'CA';
+  
   const handleInput = (event) => {
     if (type === 'phone') {
-      const input = event.target.value;
-      const formattedInput = input.replace(/[^0-9\s\+\(\)\-]/g, '');
-      value = formattedInput;
+      value = event.target.value;
+      const countryCode = normalizedCountries.find(country => country.iso2 === selectedCountry).dialCode;
+      value = `+${countryCode}${value}`;
     } else {
       value = event.target.value;
     }
@@ -49,33 +54,11 @@ Usage:
   };
 </script>
 
-<style>
-  .input-wrapper {
-    position: relative;
-    display: inline-block;
-    width: 100%;
-  }
-
-  .input-wrapper input {
-    padding-right: 30px;
-  }
-
-  .toggle-password {
-    position: absolute;
-    top: 50%;
-    right: 15px;
-    transform: translateY(var(--eye-pos-y, 0%));
-    border: none;
-    background: none;
-    cursor: pointer;
-  }
-</style>
-
 <div class="mb-4">
   <label for={id}>
     <Text class="smallText">{label}</Text>
   </label>
-  <div class="input-wrapper">
+  <div class="relative inline-block w-full">
     {#if type === 'password'}
       {#if showPassword}
         <input
@@ -83,7 +66,7 @@ Usage:
           type="text"
           bind:value={value}
           placeholder={placeholder}
-          class="mt-1 p-2 w-full bg-placeholderGray border-none rounded text {invalid ? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown' : ''}"
+          class="mt-1 p-2 w-full bg-placeholderGray border-none rounded {invalid ? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown' : ''}"
           on:input={handleInput}
           on:change={handleInput}
         />
@@ -93,14 +76,14 @@ Usage:
           type="password"
           bind:value={value}
           placeholder={placeholder}
-          class="mt-1 p-2 w-full bg-placeholderGray border-none rounded text {invalid ? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown' : ''}"
+          class="mt-1 p-2 w-full bg-placeholderGray border-none rounded {invalid ? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown' : ''}"
           on:input={handleInput}
           on:change={handleInput}
         />
       {/if}
       <button
         type="button"
-        class="toggle-password"
+        class="absolute top-1/2 right-4 transform -translate-y-1/2 border-none bg-none cursor-pointer"
         tabindex="-1"
         on:mousedown={() => showPassword = true}
         on:mouseup={() => showPassword = false}
@@ -114,22 +97,43 @@ Usage:
         {/if}
       </button>
     {:else if type === 'phone'}
-      <input
-        id={id}
-        type="text"
-        bind:value={value}
-        placeholder={placeholder}
-        class="mt-1 p-2 w-full bg-placeholderGray border-none rounded text {invalid ? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown' : ''}"
-        on:input={handleInput}
-        on:change={handleInput}
-      />
+      <div class="flex">
+        <select
+          id={id}
+          class="h-9 pl-3 rounded-l bg-placeholderGray text-placeholderGrayText {invalid ? 'bg-tagYellow text-altTextBrown' : ''}"
+          aria-label="Default select example"
+          name="Country"
+          bind:value={selectedCountry}
+          tabindex="-1"
+        >
+          <option value={null} hidden={selectedCountry !== null}>--</option>
+          {#each normalizedCountries as currentCountry (currentCountry.id)}
+            <option
+              value={currentCountry.iso2}
+              selected={currentCountry.iso2 === selectedCountry}
+              aria-selected={currentCountry.iso2 === selectedCountry}
+            >
+              {currentCountry.iso2} (+{currentCountry.dialCode})
+            </option>
+          {/each}
+        </select>
+        <TelInput
+          bind:country={selectedCountry}
+          bind:value={value}
+          bind:valid={valid}
+          class="h-9 pl-3 pr-3 rounded-r grow bg-placeholderGray {invalid ? 'bg-tagYellow placeholder-altTextBrown text-altTextBrown' : ''}"
+          on:input={handleInput}
+		  options={{ autoPlaceholder: false }}
+          placeholder={placeholder}
+        />
+      </div>
     {:else if type === 'date'}
       <Flatpickr
         id={id}
         bind:value={value}
         placeholder={placeholder}
         options={flatpickrOptions}
-        class="mt-1 p-2 w-full bg-placeholderGray border-none rounded text {invalid ? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown' : ''}"
+        class="mt-1 p-2 w-full bg-placeholderGray border-none rounded {invalid ? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown' : ''}"
       />
     {:else}
       <input
@@ -137,7 +141,7 @@ Usage:
         type="text"
         bind:value={value}
         placeholder={placeholder}
-        class="mt-1 p-2 w-full bg-placeholderGray border-none rounded text {invalid ? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown' : ''}"
+        class="mt-1 p-2 w-full bg-placeholderGray border-none rounded {invalid ? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown' : ''}"
         on:input={handleInput}
         on:change={handleInput}
       />

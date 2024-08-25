@@ -14,20 +14,16 @@
   let liabilityAgreed = false;
   let passwordsMatch = true;
   let formValid = false;
+  let phoneValid = false;
   let invalidFields = [];
 
   const validateForm = () => {
-    formValid = Boolean(organizationName) && Boolean(email) && Boolean(phoneNumber) && Boolean(firstName) && Boolean(lastName) && Boolean(password) && Boolean(reenterPassword) && termsAgreed && liabilityAgreed && passwordsMatch && validateEmail(email) && validatePhoneNumber(phoneNumber);
+    formValid = Boolean(organizationName) && Boolean(email) && phoneValid && Boolean(firstName) && Boolean(lastName) && Boolean(password) && Boolean(reenterPassword) && termsAgreed && liabilityAgreed && passwordsMatch && validateEmail(email);
   };
 
   const validateEmail = (email) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);
-  };
-
-  const validatePhoneNumber = (phoneNumber) => {
-    const re = /^[0-9\s\+\(\)\-]+$/;
-    return re.test(phoneNumber);
   };
 
   const handleSubmit = () => {
@@ -67,7 +63,7 @@
     invalidFields = [];
     if (!organizationName) invalidFields.push('organizationName');
     if (!validateEmail(email)) invalidFields.push('email');
-    if (!validatePhoneNumber(phoneNumber)) invalidFields.push('phoneNumber');
+    if (!phoneValid) invalidFields.push('phoneNumber');
     if (!firstName) invalidFields.push('firstName');
     if (!lastName) invalidFields.push('lastName');
     if (!password) invalidFields.push('password');
@@ -82,18 +78,12 @@
     }
   };
 
-  const handlePhoneNumberInput = (event) => {
-    const input = event.target.value;
-    const formattedInput = input.replace(/[^0-9\s\+\(\)\-]/g, '');
-    phoneNumber = formattedInput;
-  };
-
   onMount(() => {
     validateForm();
   });
 </script>
 
-<div class="flex flex-col lg:flex-row justify-center items-center min-h-screen bg-gray-100">
+<div class="flex flex-col lg:flex-row justify-center items-center min-h-screen">
   <div class="container mx-auto px-4 flex flex-col lg:flex-row lg:ml-2">
     <!-- Left section -->
     <div class="flex flex-col justify-start lg:items-start items-center w-full lg:w-3/10 lg:max-w-[30%] lg:text-left text-center">
@@ -136,8 +126,9 @@
           placeholder="Phone Number"
           type="phone"
           bind:value={phoneNumber}
+		  bind:valid={phoneValid}
           invalid={invalidFields.includes('phoneNumber')}
-          onInput={handlePhoneNumberInput}
+          onInput={handleInputChange}
         />
 
         <div style="margin-top: 2.5rem;">
@@ -197,13 +188,13 @@
         <div class="flex items-center mb-4 lg:justify-center">
           <input type="checkbox" id="termsAgreed" bind:checked={termsAgreed} class="lg:ml-0 ml-2 mr-5 transform scale-[2.0] accent-primaryYellow {invalidFields.includes('termsAgreed') ? 'accent-primaryYellow' : ''}" on:change={handleInputChange} />
           <label for="termsAgreed" class="lg:w-3/4 {invalidFields.includes('termsAgreed') ? 'text-altTextBrown font-bold' : ''}">
-            <Text>Click here to indicate that you have read and agree to Helper Hive's <a href="#" class="text-blue-500 underline">Terms & Conditions</a></Text>
+            <Text>Click here to indicate that you have read and agree to Helper Hive's <a href="#" tabindex="-1" class="text-blue-500 underline">Terms & Conditions</a></Text>
           </label>
         </div>
         <div class="flex items-center mb-4 lg:justify-center">
           <input type="checkbox" id="liabilityAgreed" bind:checked={liabilityAgreed} class="lg:ml-0 ml-2 mr-5 transform scale-[2.0] accent-primaryYellow {invalidFields.includes('liabilityAgreed') ? 'accent-primaryYellow' : ''}" on:change={handleInputChange} />
           <label for="liabilityAgreed" class="lg:w-3/4 {invalidFields.includes('liabilityAgreed') ? 'text-altTextBrown font-bold' : ''}">
-            <Text>Click here to indicate that you have read and agree to Helper Hive's <a href="#" class="text-blue-500 underline">Liability Agreement</a></Text>
+            <Text>Click here to indicate that you have read and agree to Helper Hive's <a href="#" tabindex="-1" class="text-blue-500 underline">Liability Agreement</a></Text>
           </label>
         </div>
 

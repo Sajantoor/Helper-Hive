@@ -32,7 +32,7 @@
   };
 </script>
 
-<div class="flex flex-col mdlg:flex-row justify-center items-center min-h-screen bg-gray-100">
+<div class="flex flex-col mdlg:flex-row justify-center items-center min-h-screen">
   <div class="container mx-auto px-4 flex flex-col mdlg:flex-row justify-center max-w-screen-lg space-y-6">
     <!-- Middle section -->
     <div class="w-full mdlg:w-3/5 mdlg:max-w-[60%] bg-white p-8 rounded-lg space-y-6 relative">
