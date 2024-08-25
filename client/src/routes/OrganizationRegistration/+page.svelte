@@ -1,5 +1,6 @@
 <script>
   import Text from '$lib/Components/Text/Text.svelte';
+  import InputField from '$lib/Components/InputField.svelte';
   import { onMount } from 'svelte';
   import MdVisibilityOff from 'svelte-material-icons/EyeOutline.svelte';
   import MdVisibility from 'svelte-material-icons/EyeOffOutline.svelte';
@@ -20,7 +21,7 @@
   let invalidFields = [];
 
   const validateForm = () => {
-    formValid = organizationName && email && phoneNumber && firstName && lastName && password && reenterPassword && termsAgreed && liabilityAgreed && passwordsMatch && validateEmail(email) && validatePhoneNumber(phoneNumber);
+    formValid = Boolean(organizationName) && Boolean(email) && Boolean(phoneNumber) && Boolean(firstName) && Boolean(lastName) && Boolean(password) && Boolean(reenterPassword) && termsAgreed && liabilityAgreed && passwordsMatch && validateEmail(email) && validatePhoneNumber(phoneNumber);
   };
 
   const validateEmail = (email) => {
@@ -34,7 +35,9 @@
   };
 
   const handleSubmit = () => {
-    if (formValid) {
+    highlightInvalidFields();
+	
+	if (formValid) {
       console.log({
         organizationName,
         email,
@@ -46,8 +49,6 @@
         termsAgreed,
         liabilityAgreed
       });
-    } else {
-      highlightInvalidFields();
     }
   };
 
@@ -128,89 +129,91 @@
       <Text class="heading mb-6 text-center">Sign Up Now to Become a Member</Text>
 
       <form on:submit|preventDefault={handleSubmit} class="space-y-4" novalidate>
-        <Text class="heading mb-2">Organization Information</Text>
-        <div>
-          <label for="organizationName">
-            <Text class="smallText">Name of Organization</Text>
-          </label>
-          <input type="text" id="organizationName" bind:value={organizationName} placeholder="Name of Organization" class="mt-1 p-2 w-full bg-placeholderGray border-none rounded text {invalidFields.includes('organizationName') ? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown' : ''}" on:input={handleInputChange} />
-        </div>
+        <!-- Org and Personnel Section -->
+		<Text class="heading mb-2">Organization Information</Text>
+        
+        <InputField
+          id="organizationName"
+          label="Name of Organization"
+          placeholder="Name of Organization"
+          bind:value={organizationName}
+          invalid={invalidFields.includes('organizationName')}
+          on:input={handleInputChange}
+        />
 
-        <div>
-          <label for="email">
-            <Text class="smallText">Email Address</Text>
-          </label>
-          <input type="email" id="email" bind:value={email} placeholder="Email Address" class="mt-1 p-2 w-full bg-placeholderGray border-none rounded text {invalidFields.includes('email') ? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown' : ''}" on:input={handleInputChange} />
-        </div>
+        <InputField
+          id="email"
+          label="Email Address"
+          placeholder="Email Address"
+          bind:value={email}
+          invalid={invalidFields.includes('email')}
+          on:input={handleInputChange}
+        />
 
-        <div>
-          <label for="phoneNumber">
-            <Text class="smallText">Phone Number</Text>
-          </label>
-          <input type="text" id="phoneNumber" bind:value={phoneNumber} placeholder="Phone Number" class="mt-1 p-2 w-full bg-placeholderGray border-none rounded text {invalidFields.includes('phoneNumber') ? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown' : ''}" on:input={handlePhoneNumberInput} />
-        </div>
+        <InputField
+          id="phoneNumber"
+          label="Phone Number"
+          placeholder="Phone Number"
+          type="phone"
+          bind:value={phoneNumber}
+          invalid={invalidFields.includes('phoneNumber')}
+          on:input={handlePhoneNumberInput}
+        />
 
         <div style="margin-top: 2.5rem;">
-          <Text class="heading mb-2">Contact Personnel</Text>
-        </div>
+		  <Text class="heading mb-2">Contact Personnel</Text>
+		</div>
         <div class="grid grid-cols-2 gap-4">
-          <div>
-            <label for="firstName">
-              <Text class="smallText">First Name</Text>
-            </label>
-            <input type="text" id="firstName" bind:value={firstName} placeholder="First Name" class="mt-1 p-2 w-full bg-placeholderGray border-none rounded text {invalidFields.includes('firstName') ? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown' : ''}" on:input={handleInputChange} />
-          </div>
-          <div>
-            <label for="lastName">
-              <Text class="smallText">Last Name</Text>
-            </label>
-            <input type="text" id="lastName" bind:value={lastName} placeholder="Last Name" class="mt-1 p-2 w-full bg-placeholderGray border-none rounded text {invalidFields.includes('lastName') ? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown' : ''}" on:input={handleInputChange} />
-          </div>
+          <InputField
+            id="firstName"
+            label="First Name"
+            placeholder="First Name"
+            bind:value={firstName}
+            invalid={invalidFields.includes('firstName')}
+            on:input={handleInputChange}
+          />
+          <InputField
+            id="lastName"
+            label="Last Name"
+            placeholder="Last Name"
+            bind:value={lastName}
+            invalid={invalidFields.includes('lastName')}
+            on:input={handleInputChange}
+          />
         </div>
 
-        <div style="margin-top: 2.5rem;">
-          <Text class="heading mb-2">Create Password</Text>
-        </div>
-        <div class="input-wrapper">
-          <label for="password">
-            <Text class="smallText">Password</Text>
-          </label>
-          {#if showPassword}
-            <input type="text" id="password" bind:value={password} placeholder="Password" class="mt-1 p-2 w-full bg-placeholderGray border-none rounded text {invalidFields.includes('password') ? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown' : ''}" on:input={handlePasswordChange} />
-          {:else}
-            <input type="password" id="password" bind:value={password} placeholder="Password" class="mt-1 p-2 w-full bg-placeholderGray border-none rounded text {invalidFields.includes('password') ? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown' : ''}" on:input={handlePasswordChange} />
-          {/if}
-          <button type="button" class="toggle-password" tabindex="-1" on:mousedown={() => showPassword = true} on:mouseup={() => showPassword = false} on:mouseleave={() => showPassword = false}>
-            {#if showPassword}
-              <MdVisibilityOff class="text-altTextGray" />
-            {:else}
-              <MdVisibility class="text-altTextGray" />
-            {/if}
-          </button>
-        </div>
+        <!-- Create Password Section -->
+		<div style="margin-top: 2rem;">
+		  <Text class="heading mb-2">Create Password</Text>
+		</div>
+		<div class="relative">
+		  <InputField
+			id="password"
+			label="Password"
+			placeholder="Password"
+			type="password"
+			bind:value={password}
+			invalid={invalidFields.includes('password')}
+			onPasswordChange={handlePasswordChange}
+			showPassword={showPassword}
+		  />
+		  <InputField
+			id="reenterPassword"
+			label="Re-enter Password"
+			placeholder="Re-enter Password"
+			type="password"
+			bind:value={reenterPassword}
+			invalid={invalidFields.includes('reenterPassword')}
+			onPasswordChange={handlePasswordChange}
+			showPassword={showReenterPassword}
+		  />
+		  {#if !passwordsMatch}
+			<Text class="smallText text-red-500 absolute -bottom-8">Passwords do not match</Text>
+		  {/if}
+		</div>
 
-        <div class="input-wrapper">
-          <label for="reenterPassword">
-            <Text class="smallText">Re-Enter Password</Text>
-          </label>
-          {#if showReenterPassword}
-            <input type="text" id="reenterPassword" bind:value={reenterPassword} placeholder="Re-enter Password" class="mt-1 p-2 w-full bg-placeholderGray border-none rounded text {invalidFields.includes('reenterPassword') ? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown' : ''}" on:input={handlePasswordChange} />
-          {:else}
-            <input type="password" id="reenterPassword" bind:value={reenterPassword} placeholder="Re-enter Password" class="mt-1 p-2 w-full bg-placeholderGray border-none rounded text {invalidFields.includes('reenterPassword') ? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown' : ''}" on:input={handlePasswordChange} />
-          {/if}
-          <button type="button" class="toggle-password" tabindex="-1" on:mousedown={() => showReenterPassword = true} on:mouseup={() => showReenterPassword = false} on:mouseleave={() => showReenterPassword = false}>
-            {#if showReenterPassword}
-              <MdVisibilityOff class="text-altTextGray" />
-            {:else}
-              <MdVisibility class="text-altTextGray" />
-            {/if}
-          </button>
-          {#if !passwordsMatch}
-            <Text class="smallText text-red-500 absolute -bottom-6">Passwords do not match</Text>
-          {/if}
-        </div>
-
-        <div style="margin-top: 2.5rem;">
+        <!-- Terms and Conditions Section -->
+        <div style="margin-top: 3rem;">
           <Text class="heading mb-2">Agree to Terms and Conditions</Text>
         </div>
         <div class="flex items-center mb-4 justify-center">

@@ -1,15 +1,21 @@
 <script>
   import Text from '$lib/Components/Text/Text.svelte';
-  import MdVisibilityOff from 'svelte-material-icons/EyeOutline.svelte';
-  import MdVisibility from 'svelte-material-icons/EyeOffOutline.svelte';
+  import InputField from '$lib/Components/InputField.svelte';
 
   let email = '';
   let password = '';
-  let showPassword = false;
   let passwordError = false;
+  let invalidFields = [];
 
   const handleSubmit = () => {
-    if (password === 'incorrect') {
+    invalidFields = [];
+    if (!email) invalidFields.push('email');
+    if (!password) invalidFields.push('password');
+
+    if (invalidFields.length > 0) {
+      const firstInvalidField = document.getElementById(invalidFields[0]);
+      firstInvalidField.scrollIntoView({ behavior: 'smooth' });
+    } else if (password === 'incorrect') {
       passwordError = true;
     } else {
       passwordError = false;
@@ -31,55 +37,37 @@
   .input-wrapper input {
     padding-right: 30px;
   }
-
-  .toggle-password {
-    position: absolute;
-    top: 50%;
-    right: 10px;
-    transform: translateY(-70%);
-    border: none;
-    background: none;
-    cursor: pointer;
-  }
 </style>
 
 <div class="flex flex-col mdlg:flex-row justify-center items-center min-h-screen bg-gray-100">
   <div class="container mx-auto px-4 flex flex-col mdlg:flex-row justify-center max-w-screen-lg space-y-6">
     <!-- Middle section -->
-    <div class="w-full mdlg:w-3/5 mdlg:max-w-[60%] bg-white p-8 rounded-lg space-y-6">
-      <Text class="section mb-2 text-center" style="padding-bottom: 5%;">Welcome back!</Text>
-      {#if passwordError}
-        <Text class="smallText text-red-500 text-center">Password does not match</Text>
-      {/if}
+    <div class="w-full mdlg:w-3/5 mdlg:max-w-[60%] bg-white p-8 rounded-lg space-y-6 relative">
+	  <Text class="section text-center">Welcome back!</Text>
+	  {#if passwordError}
+		<Text class="smallText text-red-500 text-center absolute top-[4rem] left-1/2 transform -translate-x-1/2">Password does not match</Text>
+	  {/if}
 
       <form on:submit|preventDefault={handleSubmit} class="space-y-6">
-        <div>
-          <label for="email">
-            <Text class="smallText">Email Address</Text>
-          </label>
-          <input type="text" id="email" bind:value={email} placeholder="Email Address" class="mt-1 p-2 w-full bg-placeholderGray border-none rounded text" />
-        </div>
+        <InputField
+          id="email"
+          label="Email Address"
+          placeholder="Email Address"
+          bind:value={email}
+          invalid={invalidFields.includes('email')}
+        />
 
-        <div class="input-wrapper">
-          <label for="password">
-            <Text class="smallText">Password</Text>
-          </label>
-          {#if showPassword}
-            <input type="text" id="password" bind:value={password} placeholder="Password" class="mt-1 p-2 w-full bg-placeholderGray border-none rounded text" />
-          {:else}
-            <input type="password" id="password" bind:value={password} placeholder="Password" class="mt-1 p-2 w-full bg-placeholderGray border-none rounded text" />
-          {/if}
-          <button type="button" class="toggle-password" tabindex="-1" on:mousedown={() => showPassword = true} on:mouseup={() => showPassword = false} on:mouseleave={() => showPassword = false}>
-            {#if showPassword}
-              <MdVisibilityOff class="text-altTextGray" />
-            {:else}
-              <MdVisibility class="text-altTextGray" />
-            {/if}
-          </button>
-          <Text class="smallText text-left mt-3">
-            <a href="/login#" class="text-blue-500 underline">Forgot password?</a>
-          </Text>
-        </div>
+        <InputField
+          id="password"
+          label="Password"
+          placeholder="Password"
+          type="password"
+          bind:value={password}
+          invalid={invalidFields.includes('password')}
+        />
+        <Text class="smallText text-left mt-3">
+          <a href="/login#" class="text-blue-500 underline">Forgot password?</a>
+        </Text>
 
         <button type="submit" class="w-full bg-primaryYellow text-white font-bold py-2 px-4 rounded-lg mx-auto text">
           <Text>Login</Text>
