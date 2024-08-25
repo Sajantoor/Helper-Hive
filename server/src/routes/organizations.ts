@@ -1,17 +1,21 @@
-import {Request, Response } from "express";
+import { Request, Response } from "express";
 import Organization from "../database/models/organization";
+import { hashPassword } from "../middlewares/authentication";
+
+interface ContactPerson {
+    firstName: string;
+    lastName: string;
+}
 
 interface OrganizationBody {
     name: string;
     profilePicture?: string;
     email: string;
     phoneNumber: string;
-    contactPerson: {
-        firstName: string;
-        lastName: string;
-    };
+    contactPerson: ContactPerson;
     password: string;
 }
+
 // Get all organizations
 export async function getOrganizations(req: Request, res: Response) {
     try {
@@ -42,7 +46,7 @@ export async function getOrganization(req: Request, res: Response) {
 }
 
 // Create a new organization
-export async function createOrganization(req: Request, res: Response) {
+export async function registerOrganization(req: Request, res: Response) {
     const organizationBody = req.body as OrganizationBody;
 
     if (!organizationBody) {
@@ -52,6 +56,8 @@ export async function createOrganization(req: Request, res: Response) {
     if (!organizationBody.name || !organizationBody.email || !organizationBody.phoneNumber || !organizationBody.contactPerson || !organizationBody.password) {
         return res.status(400).json({ message: 'Missing required fields' });
     }
+
+    organizationBody.password = await hashPassword(organizationBody.password);
 
     try {
         const newOrganization = new Organization(organizationBody);
@@ -80,7 +86,7 @@ export async function updateOrganization(req: Request, res: Response) {
         const updatedOrganization = await Organization.findByIdAndUpdate(organizationId, organizationBody, { new: true });
         return res.status(200).json(updatedOrganization);
     } catch (error) {
-        return res.status(400).json({ message: "Error updating organization", error });
+        return res.status(500).json({ message: "Failed to update organization", error });
     }
 }
 
@@ -99,6 +105,6 @@ export async function deleteOrganization(req: Request, res: Response) {
         }
         return res.status(200).json({ message: "Organization deleted successfully" });
     } catch (error) {
-        return res.status(400).json({ message: "Error deleting organization", error });
+        return res.status(500).json({ message: "Failed deleting organization", error });
     }
 }

@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import User from "../database/models/user";
+import { hashPassword } from "../middlewares/authentication";
 
 interface UserBody {
     name: string;
@@ -31,7 +32,7 @@ export async function getUser(req: Request, res: Response) {
     }
 }
 
-export async function createUser(req: Request, res: Response) {
+export async function registerUser(req: Request, res: Response) {
     const userBody = req.body as UserBody;
     if (!userBody) {
         return res.status(400).json({ message: "Invalid user body" });
@@ -40,6 +41,8 @@ export async function createUser(req: Request, res: Response) {
     if (!userBody.name || !userBody.email || !userBody.phoneNumber || !userBody.password || !userBody.dateOfBirth || !userBody.emergencyContact) {
         return res.status(400).json({ message: 'Missing required fields' });
     }
+
+    userBody.password = await hashPassword(userBody.password);
 
     try {
         const newUser = new User(userBody);
