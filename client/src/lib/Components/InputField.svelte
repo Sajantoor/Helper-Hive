@@ -1,7 +1,20 @@
+<!--
+Usage:
+<InputField
+  id="id"
+  label="Text"
+  placeholder="Text"
+  bind:value={value}
+  type="phone, date, or password" // optional, default is text 
+  invalid={ boolean check for invalid input } // highlights the field when true
+  onInput={ event for on:input, on:change, onChange }
+/>
+-->
+
 <script>
   import Text from '$lib/Components/Text/Text.svelte';
-  import MdVisibilityOff from 'svelte-material-icons/EyeOutline.svelte';
-  import MdVisibility from 'svelte-material-icons/EyeOffOutline.svelte';
+  import EyeOutline from 'svelte-material-icons/EyeOutline.svelte';
+  import EyeOffOutline from 'svelte-material-icons/EyeOffOutline.svelte';
   import Flatpickr from 'svelte-flatpickr';
   import 'flatpickr/dist/flatpickr.css';
 
@@ -10,8 +23,6 @@
   export let value = '';
   export let invalid = false;
   export let onInput = () => {};
-  export let onChange = () => {};
-  export let onPasswordChange = () => {};
   export let showPassword = false;
   export let type = 'text';
   export let id = '';
@@ -26,13 +37,6 @@
       value = event.target.value;
     }
     onInput(event);
-    if (type === 'password') {
-      onPasswordChange(event);
-    }
-  };
-
-  const handleChange = (event) => {
-    onChange(event);
   };
 
   const flatpickrOptions = {
@@ -40,7 +44,7 @@
     minDate: "01/01/1900",
     onChange: (selectedDates, dateStr, instance) => {
       value = dateStr;
-      handleChange({ target: { value: dateStr } });
+      handleInput({ target: { value: dateStr } });
     }
   };
 </script>
@@ -59,14 +63,13 @@
   .toggle-password {
     position: absolute;
     top: 50%;
-    right: 10px;
+    right: 15px;
     transform: translateY(var(--eye-pos-y, 0%));
     border: none;
     background: none;
     cursor: pointer;
   }
 </style>
-
 
 <div class="mb-4">
   <label for={id}>
@@ -82,7 +85,7 @@
           placeholder={placeholder}
           class="mt-1 p-2 w-full bg-placeholderGray border-none rounded text {invalid ? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown' : ''}"
           on:input={handleInput}
-          on:change={handleChange}
+          on:change={handleInput}
         />
       {:else}
         <input
@@ -92,7 +95,7 @@
           placeholder={placeholder}
           class="mt-1 p-2 w-full bg-placeholderGray border-none rounded text {invalid ? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown' : ''}"
           on:input={handleInput}
-          on:change={handleChange}
+          on:change={handleInput}
         />
       {/if}
       <button
@@ -105,9 +108,9 @@
         style="--eye-pos-y: {eyePosY}%"
       >
         {#if showPassword}
-          <MdVisibilityOff class="text-altTextGray" />
+          <EyeOutline class="text-altTextGray" />
         {:else}
-          <MdVisibility class="text-altTextGray" />
+          <EyeOffOutline class="text-altTextGray" />
         {/if}
       </button>
     {:else if type === 'phone'}
@@ -118,7 +121,7 @@
         placeholder={placeholder}
         class="mt-1 p-2 w-full bg-placeholderGray border-none rounded text {invalid ? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown' : ''}"
         on:input={handleInput}
-        on:change={handleChange}
+        on:change={handleInput}
       />
     {:else if type === 'date'}
       <Flatpickr
@@ -136,7 +139,7 @@
         placeholder={placeholder}
         class="mt-1 p-2 w-full bg-placeholderGray border-none rounded text {invalid ? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown' : ''}"
         on:input={handleInput}
-        on:change={handleChange}
+        on:change={handleInput}
       />
     {/if}
   </div>

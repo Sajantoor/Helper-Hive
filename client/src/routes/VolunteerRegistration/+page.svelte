@@ -2,8 +2,6 @@
   import Text from '$lib/Components/Text/Text.svelte';
   import InputField from '$lib/Components/InputField.svelte';
   import { onMount } from 'svelte';
-  import MdVisibilityOff from 'svelte-material-icons/EyeOutline.svelte';
-  import MdVisibility from 'svelte-material-icons/EyeOffOutline.svelte';
   import CalendarIcon from 'svelte-material-icons/CalendarMonthOutline.svelte';
 
   let firstName = '';
@@ -17,8 +15,6 @@
   let liabilityAgreed = false;
   let passwordsMatch = true;
   let formValid = false;
-  let showPassword = false;
-  let showReenterPassword = false;
   let invalidFields = [];
 
   const validateForm = () => {
@@ -39,18 +35,24 @@
     highlightInvalidFields();
 	
 	if (formValid) {
-      console.log({
-        phoneNumber,
-        firstName,
-        lastName,
-		email,
-		phoneNumber,
-		dob,
-        password,
-        reenterPassword,
-        termsAgreed,
-        liabilityAgreed
-      });
+	  // Submission logic goes here
+	  if (email === 'already@exists.com'){
+	    console.log("Email already exists")
+	  } else{
+        console.log({
+          phoneNumber,
+          firstName,
+          lastName,
+		  email,
+		  phoneNumber,
+		  dob,
+          password,
+          reenterPassword,
+          termsAgreed,
+          liabilityAgreed
+        });
+		alert("Form successfully submitted");
+	  }
     }
   };
 
@@ -102,28 +104,6 @@
     validateForm();
   });
 </script>
-
-<style>
-  .input-wrapper {
-    position: relative;
-    display: inline-block;
-    width: 100%;
-  }
-
-  .input-wrapper input {
-    padding-right: 30px;
-  }
-
-  .toggle-password {
-    position: absolute;
-    top: 50%;
-    right: 10px;
-    transform: translateY(20%);
-    border: none;
-    background: none;
-    cursor: pointer;
-  }
-</style>
 
 <div class="flex flex-col lg:flex-row justify-center items-center min-h-screen bg-gray-100">
   <div class="container mx-auto px-4 flex flex-col lg:flex-row lg:ml-2">
@@ -189,7 +169,7 @@
           type="date"
           bind:value={dob}
           invalid={invalidFields.includes('dob')}
-          onChange={handleInputChange}
+          onInput={handleInputChange}
         />
 
         <!-- Create Password Section -->
@@ -204,8 +184,7 @@
 			type="password"
 			bind:value={password}
 			invalid={invalidFields.includes('password')}
-			onPasswordChange={handlePasswordChange}
-			showPassword={showPassword}
+			onInput={handlePasswordChange}
 		  />
 		  <InputField
 			id="reenterPassword"
@@ -214,8 +193,7 @@
 			type="password"
 			bind:value={reenterPassword}
 			invalid={invalidFields.includes('reenterPassword')}
-			onPasswordChange={handlePasswordChange}
-			showPassword={showReenterPassword}
+			onInput={handlePasswordChange}
 		  />
 		  {#if !passwordsMatch}
 			<Text class="smallText text-red-500 absolute -bottom-8">Passwords do not match</Text>
@@ -226,20 +204,20 @@
         <div style="margin-top: 3rem;">
           <Text class="heading mb-2">Agree to Terms and Conditions</Text>
         </div>
-        <div class="flex items-center mb-4 justify-center">
-          <input type="checkbox" id="termsAgreed" bind:checked={termsAgreed} class="mr-5 transform scale-[2.0] accent-primaryYellow {invalidFields.includes('termsAgreed') ? 'accent-primaryYellow' : ''}" on:change={handleInputChange} />
+        <div class="flex items-center mb-4 lg:justify-center">
+          <input type="checkbox" id="termsAgreed" bind:checked={termsAgreed} class="lg:ml-0 ml-2 mr-5 transform scale-[2.0] accent-primaryYellow {invalidFields.includes('termsAgreed') ? 'accent-primaryYellow' : ''}" on:change={handleInputChange} />
           <label for="termsAgreed" class="lg:w-3/4 {invalidFields.includes('termsAgreed') ? 'text-altTextBrown font-bold' : ''}">
             <Text>Click here to indicate that you have read and agree to Helper Hive's <a href="#" class="text-blue-500 underline">Terms & Conditions</a></Text>
           </label>
         </div>
-        <div class="flex items-center mb-4 justify-center">
-          <input type="checkbox" id="liabilityAgreed" bind:checked={liabilityAgreed} class="mr-5 transform scale-[2.0] accent-primaryYellow {invalidFields.includes('liabilityAgreed') ? 'accent-primaryYellow' : ''}" on:change={handleInputChange} />
+        <div class="flex items-center mb-4 lg:justify-center">
+          <input type="checkbox" id="liabilityAgreed" bind:checked={liabilityAgreed} class="lg:ml-0 ml-2 mr-5 transform scale-[2.0] accent-primaryYellow {invalidFields.includes('liabilityAgreed') ? 'accent-primaryYellow' : ''}" on:change={handleInputChange} />
           <label for="liabilityAgreed" class="lg:w-3/4 {invalidFields.includes('liabilityAgreed') ? 'text-altTextBrown font-bold' : ''}">
             <Text>Click here to indicate that you have read and agree to Helper Hive's <a href="#" class="text-blue-500 underline">Liability Agreement</a></Text>
           </label>
         </div>
 
-        <button type="submit" class={`w-full ${formValid ? 'bg-primaryYellow' : 'bg-tagYellow'} text-white font-bold py-2 px-4 rounded-lg mx-auto text`} style="margin-top: 2.5rem;" on:click={handleSubmit}>
+        <button type="submit" class={`w-full ${formValid ? 'bg-primaryYellow' : 'bg-tagYellow'} text-white font-bold py-2 px-4 rounded-lg mx-auto text`} style="margin-top: 2.5rem;">
           <Text>Sign Up</Text>
         </button>
       </form>

@@ -10,7 +10,6 @@
 
   const validateForm = () => {
     formValid = Boolean(name) && validatePhoneNumber(phoneNumber) && Boolean(dob);
-	console.log(formValid);
   };
 
   const validatePhoneNumber = (phoneNumber) => {
@@ -46,18 +45,6 @@
   };
 </script>
 
-<style>
-  .input-wrapper {
-    position: relative;
-    display: inline-block;
-    width: 100%;
-  }
-
-  .input-wrapper input {
-    padding-right: 30px;
-  }
-</style>
-
 <div class="flex flex-col justify-center items-center min-h-screen bg-gray-100">
   <div class="container mx-auto px-4 flex flex-col justify-center max-w-screen-lg space-y-6">
     <div class="w-full bg-white p-8 rounded-lg space-y-6">
@@ -71,7 +58,6 @@
           bind:value={name}
           invalid={invalidFields.includes('name')}
           onInput={handleInputChange}
-          onChange={handleInputChange}
         />
 
         <InputField
@@ -82,7 +68,6 @@
           bind:value={phoneNumber}
           invalid={invalidFields.includes('phoneNumber')}
           onInput={handleInputChange}
-          onChange={handleInputChange}
         />
 
         <InputField
@@ -93,10 +78,9 @@
           bind:value={dob}
           invalid={invalidFields.includes('dob')}
           onInput={handleInputChange}
-          onChange={handleInputChange}
         />
 
-        <button type="submit" class={`w-full ${formValid ? 'bg-primaryYellow' : 'bg-tagYellow'} text-white font-bold py-2 px-4 rounded-lg mx-auto text`} on:click={handleSubmit}>
+        <button type="submit" class={`w-full ${formValid ? 'bg-primaryYellow' : 'bg-tagYellow'} text-white font-bold py-2 px-4 rounded-lg mx-auto text`}>
           <Text>Submit</Text>
         </button>
       </form>

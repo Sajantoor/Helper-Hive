@@ -15,29 +15,22 @@
     if (invalidFields.length > 0) {
       const firstInvalidField = document.getElementById(invalidFields[0]);
       firstInvalidField.scrollIntoView({ behavior: 'smooth' });
-    } else if (password === 'incorrect') {
-      passwordError = true;
-    } else {
-      passwordError = false;
-      console.log({
-        email,
-        password
-      });
     }
+	else{
+	  // Submission logic goes here
+	  if (password === 'incorrect') {
+        passwordError = true;
+      } else {
+        passwordError = false;
+        console.log({
+          email,
+          password
+        });
+		alert("Login successfully submitted");
+      }
+	}
   };
 </script>
-
-<style>
-  .input-wrapper {
-    position: relative;
-    display: inline-block;
-    width: 100%;
-  }
-
-  .input-wrapper input {
-    padding-right: 30px;
-  }
-</style>
 
 <div class="flex flex-col mdlg:flex-row justify-center items-center min-h-screen bg-gray-100">
   <div class="container mx-auto px-4 flex flex-col mdlg:flex-row justify-center max-w-screen-lg space-y-6">
