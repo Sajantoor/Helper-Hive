@@ -24,6 +24,7 @@ interface OrganizationResponse {
     contactPerson: ContactPerson;
 }
 
+// TODO: Fix any type later
 function filterOrganizationResponse(organization: any): OrganizationResponse {
     const organizationResponse = organization.toObject();
     delete organizationResponse.password;

@@ -39,7 +39,7 @@ export async function login(req: Request, res: Response) {
         userRole,
     }
 
-    setAuthCookies(res, tokenData);
+    await setAuthCookies(res, tokenData);
     res.status(200).json({ message: "Login successful" });
 }
 

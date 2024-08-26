@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { UserRole } from "../utils/types";
 import { __prod__ } from "../utils/constants";
+import RefreshToken from "../database/models/refreshToken";
 
 const access_code_secret = process.env.ACCESS_CODE_SECRET!;
 const refresh_code_secret = process.env.REFRESH_CODE_SECRET!;
@@ -18,20 +19,31 @@ const cookieOptions = {
     sameSite: "lax",
     path: "/",
     domain: __prod__ ? `.${process.env.DOMAIN}` : "",
-    maxAge: 1000 * 60 * 60 * 24 * 14, // 14 days
+    maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
 } as const;
 
-function generateAuthTokens(data: TokenData): { refreshToken: string, accessToken: string } {
+async function generateAuthTokens(data: TokenData): Promise<{ refreshToken: string; accessToken: string; } | null> {
     const refreshToken = jwt.sign(data, refresh_code_secret, { expiresIn: "7d" });
     const accessToken = jwt.sign(data, access_code_secret, { expiresIn: "15m" });
+
+    const refreshTokenEntry = new RefreshToken({ token: refreshToken });
+    try {
+        await refreshTokenEntry.save();
+    } catch (err) {
+        return null;
+    }
+
     return { refreshToken, accessToken };
 }
 
-export function setAuthCookies(res: Response, data: TokenData) {
-    const { accessToken, refreshToken } = generateAuthTokens(data);
-    // TODO: Save refresh token in database
-    res.cookie("id", accessToken, cookieOptions);
-    res.cookie("rid", refreshToken, cookieOptions);
+export async function setAuthCookies(res: Response, data: TokenData) {
+    const tokens = await generateAuthTokens(data);
+    if (!tokens) {
+        return res.status(500).json({ error: "Internal server error" });
+    }
+
+    res.cookie("id", tokens.accessToken, cookieOptions);
+    res.cookie("rid", tokens.refreshToken, cookieOptions);
 }
 
 export function clearCookies(res: Response) {
@@ -79,7 +91,7 @@ export async function authorizeUser(req: Request, res: Response, next: NextFunct
     next();
 }
 
-export function renewToken(req: Request, res: Response, next: NextFunction) {
+export async function renewToken(req: Request, res: Response, next: NextFunction) {
     const refreshToken = req.cookies.rid;
     if (!refreshToken) {
         return unauthorizedError(res);
@@ -89,8 +101,13 @@ export function renewToken(req: Request, res: Response, next: NextFunction) {
 
     try {
         data = jwt.verify(refreshToken, refresh_code_secret) as TokenData;
-        // TODO: Make database call to check if refresh token is valid;
     } catch (err) {
+        return unauthorizedError(res);
+    }
+
+
+    const refreshTokenEntry = await RefreshToken.findOne({ token: refreshToken });
+    if (!refreshTokenEntry) {
         return unauthorizedError(res);
     }
 
@@ -98,9 +115,13 @@ export function renewToken(req: Request, res: Response, next: NextFunction) {
         return unauthorizedError(res);
     }
 
-    const { accessToken } = generateAuthTokens(data);
-    res.cookie("id", accessToken, cookieOptions);
-    res.json({ accessToken });
+    const tokens = await generateAuthTokens(data);
+    if (!tokens) {
+        return res.status(500).json({ error: "Internal server error" });
+    }
+
+    res.cookie("id", tokens.accessToken, cookieOptions);
+    res.json({ accessToken: tokens.accessToken });
 }
 
 function unauthorizedError(res: Response): void {
