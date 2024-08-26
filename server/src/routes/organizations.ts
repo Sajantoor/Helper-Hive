@@ -16,11 +16,27 @@ interface OrganizationBody {
     password: string;
 }
 
+interface OrganizationResponse {
+    name: string;
+    profilePicture?: string;
+    email: string;
+    phoneNumber: string;
+    contactPerson: ContactPerson;
+}
+
+function filterOrganizationResponse(organization: any): OrganizationResponse {
+    const organizationResponse = organization.toObject();
+    delete organizationResponse.password;
+    delete organizationResponse.__v;
+    return organizationResponse;
+}
+
 // Get all organizations
 export async function getOrganizations(req: Request, res: Response) {
     try {
         const organizations = await Organization.find();
-        return res.status(200).json(organizations);
+        const filteredOrganizations = organizations.map((organization) => filterOrganizationResponse(organization));
+        return res.status(200).json(filteredOrganizations);
     } catch (error) {
         return res.status(500).json({ message: "Error fetching organizations" });
     }
@@ -39,7 +55,9 @@ export async function getOrganization(req: Request, res: Response) {
         if (!organization) {
             return res.status(404).json({ message: "Organization not found" });
         }
-        return res.status(200).json(organization);
+
+        const organizationResponse = filterOrganizationResponse(organization);
+        return res.status(200).json(organizationResponse);
     } catch (error) {
         return res.status(400).json({ message: "Invalid organization id" });
     }
@@ -62,7 +80,8 @@ export async function registerOrganization(req: Request, res: Response) {
     try {
         const newOrganization = new Organization(organizationBody);
         const savedOrganization = await newOrganization.save();
-        return res.status(201).json(savedOrganization);
+        const organizationResponse = filterOrganizationResponse(savedOrganization);
+        return res.status(201).json(organizationResponse);
     } catch (error) {
         return res.status(500).json({ message: "Error creating organization", error });
     }
@@ -77,6 +96,10 @@ export async function updateOrganization(req: Request, res: Response) {
         return res.status(400).json({ message: "Invalid organization id or body" });
     }
 
+    if (organizationBody.password) {
+        organizationBody.password = await hashPassword(organizationBody.password);
+    }
+
     try {
         const organization = await Organization.findById(organizationId);
         if (!organization) {
@@ -84,7 +107,8 @@ export async function updateOrganization(req: Request, res: Response) {
         }
 
         const updatedOrganization = await Organization.findByIdAndUpdate(organizationId, organizationBody, { new: true });
-        return res.status(200).json(updatedOrganization);
+        const organizationResponse = filterOrganizationResponse(updatedOrganization);
+        return res.status(200).json(organizationResponse);
     } catch (error) {
         return res.status(500).json({ message: "Failed to update organization", error });
     }

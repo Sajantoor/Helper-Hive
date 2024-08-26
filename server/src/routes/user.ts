@@ -2,18 +2,37 @@ import { Request, Response } from "express";
 import User from "../database/models/user";
 import { hashPassword } from "../middlewares/authentication";
 
+interface EmergencyContact {
+    name: string;
+    phoneNumber: string;
+    relationship: string;
+}
+
 interface UserBody {
     name: string;
     email: string;
     phoneNumber: string;
     password: string;
     dateOfBirth: Date;
-    emergencyContact: {
-        name: string;
-        phoneNumber: string;
-        relationship: string;
-    };
+    emergencyContact: EmergencyContact
     registeredEvents?: string[];
+}
+
+interface UserResponse {
+    name: string;
+    email: string;
+    phoneNumber: string;
+    dateOfBirth: Date;
+    emergencyContact: EmergencyContact;
+    registeredEvents?: string[];
+}
+
+// TODO: Fix any type later
+function filterUserResponse(user: any): UserResponse {
+    const userResponse = user.toObject();
+    delete userResponse.password;
+    delete userResponse.__v;
+    return userResponse;
 }
 
 export async function getUser(req: Request, res: Response) {
@@ -26,7 +45,9 @@ export async function getUser(req: Request, res: Response) {
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
-        return res.status(200).json(user);
+
+        const userResponse = filterUserResponse(user);
+        return res.status(200).json(userResponse);
     } catch (error) {
         return res.status(400).json({ message: "Invalid user id" });
     }
@@ -47,7 +68,9 @@ export async function registerUser(req: Request, res: Response) {
     try {
         const newUser = new User(userBody);
         const savedUser = await newUser.save();
-        return res.status(201).json(savedUser);
+
+        const userResponse = filterUserResponse(savedUser);
+        return res.status(201).json(userResponse);
     } catch (error) {
         return res.status(500).json({ message: "Error creating user", error });
     }
@@ -56,15 +79,23 @@ export async function registerUser(req: Request, res: Response) {
 export async function updateUser(req: Request, res: Response) {
     const userId = req.params.id;
     const userBody = req.body as UserBody;
+
     if (!userId || !userBody) {
         return res.status(400).json({ message: "Invalid user id or body" });
     }
+
+    if (userBody.password) {
+        userBody.password = await hashPassword(userBody.password);
+    }
+
     try {
         const user = await User.findByIdAndUpdate(userId, userBody, { new: true });
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
-        return res.status(200).json(user);
+
+        const userResponse = filterUserResponse(user);
+        return res.status(200).json(userResponse);
     } catch (error) {
         return res.status(400).json({ message: "Invalid user id" });
     }
