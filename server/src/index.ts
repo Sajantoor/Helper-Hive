@@ -4,7 +4,7 @@ import db, { connectDB } from "./database/db";
 import { createEvent, getEvent, getEvents, updateEvent } from "./routes/events";
 import { getOrganizations, getOrganization, registerOrganization, updateOrganization, deleteOrganization } from "./routes/organizations";
 import { getUser, registerUser, updateUser, deleteUser } from "./routes/user";
-import { authorize } from "./middlewares/authentication";
+import { authorize, authorizeOrganization, authorizeUser, renewToken } from "./middlewares/authentication";
 import { login, logout } from "./routes/login";
 
 const app = express();
@@ -28,25 +28,29 @@ const ORGANIZATIONS_API = `${API_PREFIX}/organizations`;
 const USERS_API = `${API_PREFIX}/users`;
 
 // Unauthenticated routes
-app.post(`${API_PREFIX}/login`, (req, res) => login(req, res));
+app.post(`${API_PREFIX}/login`, login);
 app.post(`${ORGANIZATIONS_API}/register`, registerOrganization);
 app.post(`${USERS_API}/register`, registerUser);
 
-app.use(authorize);
-app.post(`${API_PREFIX}/logout`, (_req, res) => logout(res));
+// Authenticated Routes
+app.post(`${API_PREFIX}/logout`, authorize, logout);
+app.post(`${API_PREFIX}/token`, authorize, renewToken);
 
-app.get(`${EVENTS_API}`, (req, res) => getEvents(req, res));
-app.get(`${EVENTS_API}/:id`, (req, res) => getEvent(req, res));
-app.post(`${EVENTS_API}`, (req, res) => createEvent(req, res));
-app.patch(`${EVENTS_API}/:id`, (req, res) => updateEvent(req, res));
+app.get(`${EVENTS_API}`, authorize, getEvents);
+app.get(`${EVENTS_API}/:id`, authorize, getEvent);
+app.post(`${EVENTS_API}`, authorize, authorizeOrganization, createEvent);
+app.patch(`${EVENTS_API}/:id`, authorize, authorizeOrganization, updateEvent);
 
-app.get(`${ORGANIZATIONS_API}`, getOrganizations);
-app.get(`${ORGANIZATIONS_API}/:id`, getOrganization);
-app.patch(`${ORGANIZATIONS_API}/:id`, updateOrganization);
-app.delete(`${ORGANIZATIONS_API}/:id`, deleteOrganization);
+app.get(`${ORGANIZATIONS_API}`, authorize, getOrganizations);
+app.get(`${ORGANIZATIONS_API}`, authorize, getOrganization);
+app.patch(`${ORGANIZATIONS_API}`, authorize, authorizeOrganization, updateOrganization);
+app.delete(`${ORGANIZATIONS_API}`, authorize, authorizeOrganization, deleteOrganization);
 
-app.get(`${USERS_API}/:id`, getUser);
-app.patch(`${USERS_API}/:id`, updateUser);
-app.delete(`${USERS_API}/:id`, deleteUser);
+app.get(`${USERS_API}/:id`, authorize, getUser);
+app.patch(`${USERS_API}`, authorize, authorizeUser, updateUser);
+app.delete(`${USERS_API}`, authorize, authorizeUser, deleteUser);
 
-// TOOD: Handle 404 
+// Fallback route
+app.use((_req, res) => {
+    res.status(404).send('Not Found');
+});

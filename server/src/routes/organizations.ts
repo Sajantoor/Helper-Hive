@@ -89,7 +89,7 @@ export async function registerOrganization(req: Request, res: Response) {
 
 // Update an existing organization
 export async function updateOrganization(req: Request, res: Response) {
-    const organizationId = req.params.id;
+    const organizationId = res.locals.user.userId;
     const organizationBody = req.body as OrganizationBody;
 
     if (!organizationId || !organizationBody) {
@@ -115,8 +115,8 @@ export async function updateOrganization(req: Request, res: Response) {
 }
 
 // Delete an organization
-export async function deleteOrganization(req: Request, res: Response) {
-    const organizationId = req.params.id;
+export async function deleteOrganization(res: Response) {
+    const organizationId = res.locals.user.userId;
 
     if (!organizationId) {
         return res.status(400).json({ message: "Invalid organization id" });

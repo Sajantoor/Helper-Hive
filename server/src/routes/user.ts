@@ -77,7 +77,7 @@ export async function registerUser(req: Request, res: Response) {
 }
 
 export async function updateUser(req: Request, res: Response) {
-    const userId = req.params.id;
+    const userId = res.locals.user.userId;
     const userBody = req.body as UserBody;
 
     if (!userId || !userBody) {
@@ -101,8 +101,8 @@ export async function updateUser(req: Request, res: Response) {
     }
 }
 
-export async function deleteUser(req: Request, res: Response) {
-    const userId = req.params.id;
+export async function deleteUser(res: Response) {
+    const userId = res.locals.user.userId;
     if (!userId) {
         return res.status(400).json({ message: "Invalid user id" });
     }

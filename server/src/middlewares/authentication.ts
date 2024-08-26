@@ -71,7 +71,7 @@ export async function authorizeOrganization(req: Request, res: Response, next: N
     next();
 }
 
-export async function authorizeVolunteer(req: Request, res: Response, next: NextFunction) {
+export async function authorizeUser(req: Request, res: Response, next: NextFunction) {
     if (res.locals.user.userRole !== "volunteer") {
         return forbiddenError(res);
     }
