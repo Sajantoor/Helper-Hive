@@ -1,3 +1,29 @@
+<!--
+Usage in page:
+
+let myValue = '';
+let phoneValid = false; // optional, needed for phone
+
+const myFunc = () => {
+	//optional function for on:input
+};
+
+...
+
+<InputField
+	id="id"
+	label="Text"
+	placeholder="Text"
+	bind:value={myValue}
+	invalid={ boolean check for invalid input } // highlights the field when true
+  
+	// Optional:
+	onInput={myFunc} // event for on:input, on:change, onChange
+	type="phone, date, or password" // default is text 
+	bind:valid={phoneValid} // boolean variable needed for phone
+/>
+-->
+
 <script lang="ts">
 	import Text from '$lib/Components/Text/Text.svelte';
 	import EyeOutline from 'svelte-material-icons/EyeOutline.svelte';
