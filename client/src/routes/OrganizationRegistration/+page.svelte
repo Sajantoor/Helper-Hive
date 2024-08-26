@@ -1,6 +1,7 @@
 <script>
   import Text from '$lib/Components/Text/Text.svelte';
   import InputField from '$lib/Components/InputField.svelte';
+  import Popup from '$lib/Components/TCPopup.svelte';
   import { onMount } from 'svelte';
 
   let organizationName = '';
@@ -76,6 +77,16 @@
       const firstInvalidField = document.getElementById(invalidFields[0]);
       firstInvalidField.scrollIntoView({ behavior: 'smooth' });
     }
+  };
+  
+  const openPopup = (popupId) => {
+    const popup = document.getElementById(popupId);
+    popup.classList.remove('hidden');
+  };
+
+  const closePopup = (popupId) => {
+    const popup = document.getElementById(popupId);
+    popup.classList.add('hidden');
   };
 
   onMount(() => {
@@ -188,13 +199,13 @@
         <div class="flex items-center mb-4 lg:justify-center">
           <input type="checkbox" id="termsAgreed" bind:checked={termsAgreed} class="lg:ml-0 ml-2 mr-5 transform scale-[2.0] accent-primaryYellow {invalidFields.includes('termsAgreed') ? 'accent-primaryYellow' : ''}" on:change={handleInputChange} />
           <label for="termsAgreed" class="lg:w-3/4 {invalidFields.includes('termsAgreed') ? 'text-altTextBrown font-bold' : ''}">
-            <Text>Click here to indicate that you have read and agree to Helper Hive's <a href="#" tabindex="-1" class="text-blue-500 underline">Terms & Conditions</a></Text>
+            <Text>Click here to indicate that you have read and agree to Helper Hive's <a href="#" tabindex="-1" class="text-blue-500 underline" on:click|preventDefault={() => openPopup('termsPopup')}>Terms & Conditions</a></Text>
           </label>
         </div>
         <div class="flex items-center mb-4 lg:justify-center">
           <input type="checkbox" id="liabilityAgreed" bind:checked={liabilityAgreed} class="lg:ml-0 ml-2 mr-5 transform scale-[2.0] accent-primaryYellow {invalidFields.includes('liabilityAgreed') ? 'accent-primaryYellow' : ''}" on:change={handleInputChange} />
           <label for="liabilityAgreed" class="lg:w-3/4 {invalidFields.includes('liabilityAgreed') ? 'text-altTextBrown font-bold' : ''}">
-            <Text>Click here to indicate that you have read and agree to Helper Hive's <a href="#" tabindex="-1" class="text-blue-500 underline">Liability Agreement</a></Text>
+            <Text>Click here to indicate that you have read and agree to Helper Hive's <a href="#" tabindex="-1" class="text-blue-500 underline" on:click|preventDefault={() => openPopup('liabilityPopup')}>Liability Agreement</a></Text>
           </label>
         </div>
 
@@ -210,3 +221,6 @@
     <div class="w-full lg:w-3/10 lg:max-w-[30%]"></div>
   </div>
 </div>
+
+<Popup id="termsPopup" title="Terms & Conditions" type="terms" />
+<Popup id="liabilityPopup" title="Organization Liability Information" type="liabilityOrg" />

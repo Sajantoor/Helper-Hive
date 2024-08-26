@@ -59,7 +59,7 @@
           invalid={invalidFields.includes('password')}
         />
         <Text class="smallText text-left mt-3">
-          <a href="/login#" class="text-blue-500 underline">Forgot password?</a>
+          <a href="/forgot" class="text-blue-500 underline">Forgot password?</a>
         </Text>
 
         <button type="submit" class="w-full bg-primaryYellow text-white font-bold py-2 px-4 rounded-lg mx-auto text">

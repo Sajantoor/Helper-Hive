@@ -14,6 +14,7 @@ export default {
 				placeholderGray: "#F5F5F5",
 				placeholderGrayText: "#7A7A7A",
 				darkGray: '#373737',
+				dimBlack: '#646464'
 			}
 		},
 	},

@@ -5,10 +5,12 @@ Usage:
   label="Text"
   placeholder="Text"
   bind:value={value}
-  bind:valid={phoneValid} // boolean variable needed for phone
-  type="phone, date, or password" // optional, default is text 
   invalid={ boolean check for invalid input } // highlights the field when true
   onInput={ event for on:input, on:change, onChange }
+  
+  // Optional: 
+  type="phone, date, or password" // optional, default is text 
+  bind:valid={phoneValid} // boolean variable needed for phone
 />
 -->
 
@@ -39,6 +41,9 @@ Usage:
       const countryCode = normalizedCountries.find(country => country.iso2 === selectedCountry).dialCode;
       value = `+${countryCode}${value}`;
     } else {
+	  if (id.toLowerCase().includes('email')){
+	    event.target.value = value.replace(/\s/g,'');
+	  }
       value = event.target.value;
     }
     onInput(event);
@@ -100,7 +105,7 @@ Usage:
       <div class="flex">
         <select
           id={id}
-          class="h-9 pl-3 rounded-l bg-placeholderGray text-placeholderGrayText {invalid ? 'bg-tagYellow text-altTextBrown' : ''}"
+          class="h-9 pl-3 rounded-l bg-placeholderGray text-placeholderGrayText cursor-pointer {invalid ? 'bg-tagYellow text-altTextBrown' : ''}"
           aria-label="Default select example"
           name="Country"
           bind:value={selectedCountry}
