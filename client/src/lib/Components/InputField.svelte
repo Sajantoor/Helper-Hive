@@ -69,6 +69,7 @@ const myFunc = () => {
 	const flatpickrOptions = {
 		dateFormat: 'd/m/Y',
 		minDate: '01/01/1900',
+		allowInput: true,
 		onChange: (selectedDates: any, dateStr: string, instance: any) => {
 			value = dateStr;
 			handleInput({ target: { value: dateStr } });
