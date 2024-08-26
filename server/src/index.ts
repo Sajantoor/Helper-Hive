@@ -3,7 +3,7 @@ import db, { connectDB } from "./database/db";
 import { createEvent, getEvent, getEvents, updateEvent } from "./routes/events";
 import { getOrganizations, getOrganization, createOrganization, updateOrganization, deleteOrganization } from "./routes/organizations";
 import { getUser, createUser, updateUser, deleteUser } from "./routes/user";
-import { getUserFutureEvents, getUserAllEvents, getOrganizationEvents, registerForEvent } from "./routes/registration";
+import { getUserFutureEvents, getUserAllEvents, getOrganizationEvents, registerForEvent, deregisterForEvent } from "./routes/registration";
 const app = express();
 const port = 4000;
 connectDB();
@@ -43,3 +43,4 @@ app.get(`${REGISTRATION_API}/user/:id/future-events`, getUserFutureEvents);
 app.get(`${REGISTRATION_API}/user/:id/all-events`, getUserAllEvents); // we can rename this to getPresentAndPastEvents
 app.get(`${REGISTRATION_API}/organization/:id/events`, getOrganizationEvents);
 app.post(`${REGISTRATION_API}/register`, registerForEvent);
+app.post(`${REGISTRATION_API}/deregister`, deregisterForEvent);
