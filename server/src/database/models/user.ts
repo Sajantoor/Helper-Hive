@@ -11,7 +11,8 @@ const userSchema = new Schema({
         phoneNumber: { type: String, required: true, match: /^\+?[1-9]\d{1,14}$/ },
         relationship: { type: String, required: true }
     },
-    registeredEvents: [{ type: Schema.Types.ObjectId, ref: 'event' }]
+    registeredEvents: [{ type: Schema.Types.ObjectId, ref: 'event' }],
+    emailConfirmed: { type: Boolean, default: false }
 });
 
 const User = model("user", userSchema);

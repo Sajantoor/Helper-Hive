@@ -9,6 +9,9 @@ const organizationSchema = new Schema({
         firstName: { type: String, required: true },
         lastName: { type: String, required: true }
     },
+    emailConfirmed: { type: Boolean, default: false },
+    // Verified to post events on the platform
+    verified: { type: Boolean, default: false },
     password: { type: String, required: true }
 });
 

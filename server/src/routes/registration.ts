@@ -77,7 +77,8 @@ export async function getOrganizationEvents(req: Request, res: Response) {
 
 // POST API to register for an event
 export async function registerForEvent(req: Request, res: Response) {
-    const { userId, eventId } = req.body as { userId: string, eventId: string };
+    const userId = res.locals.user.userId;
+    const eventId = req.params.id;
 
     if (!userId || !eventId) {
         return res.status(400).json({ message: "User ID and Event ID are required" });
@@ -119,7 +120,8 @@ export async function registerForEvent(req: Request, res: Response) {
 }
 // deregister for an event
 export async function deregisterForEvent(req: Request, res: Response) {
-    const { userId, eventId } = req.body as { userId: string, eventId: string };
+    const userId = res.locals.user.userId;
+    const eventId = req.params.id;
 
     if (!userId || !eventId) {
         return res.status(400).json({ message: "User ID and Event ID are required" });
