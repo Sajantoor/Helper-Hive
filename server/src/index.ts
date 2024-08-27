@@ -6,6 +6,7 @@ import { getOrganizations, getOrganization, registerOrganization, updateOrganiza
 import { getUser, registerUser, updateUser, deleteUser } from "./routes/user";
 import { authorize, authorizeOrganization, authorizeUser, renewToken } from "./middlewares/authentication";
 import { confirmAccount, forgotPassword, login, logout, resetPassword } from "./routes/login";
+import { getUserFutureEvents, getUserAllEvents, getOrganizationEvents, registerForEvent, deregisterForEvent } from "./routes/registration";
 
 const app = express();
 app.use(express.json());
@@ -26,6 +27,7 @@ const API_PREFIX = "/api/v1";
 const EVENTS_API = `${API_PREFIX}/events`;
 const ORGANIZATIONS_API = `${API_PREFIX}/organizations`;
 const USERS_API = `${API_PREFIX}/users`;
+const REGISTRATION_API = `${API_PREFIX}/registrations`;
 
 // Unauthenticated routes
 app.post(`${API_PREFIX}/login`, login);
@@ -54,7 +56,15 @@ app.get(`${USERS_API}/:id`, authorize, getUser);
 app.patch(`${USERS_API}`, authorize, authorizeUser, updateUser);
 app.delete(`${USERS_API}`, authorize, authorizeUser, deleteUser);
 
+app.get(`${REGISTRATION_API}/user/:id/future-events`, getUserFutureEvents);
+app.get(`${REGISTRATION_API}/user/:id/all-events`, getUserAllEvents); // we can rename this to getPresentAndPastEvents
+app.get(`${REGISTRATION_API}/organization/:id/events`, getOrganizationEvents);
+app.post(`${REGISTRATION_API}/register/event/:id`, authorize, authorizeUser, registerForEvent);
+app.post(`${REGISTRATION_API}/deregister/event/:id`, authorize, authorizeUser, deregisterForEvent);
+
 // Fallback route
 app.use((_req, res) => {
     res.status(404).send('Not Found');
 });
+
+

@@ -2,6 +2,7 @@
 	import EventScroller from '$lib/Components/EventScroller.svelte';
 	import NavBar from '$lib/Components/NavBar.svelte';
 	import CalendarView from '$lib/Components/CalendarView.svelte';
+	import Text from '$lib/Components/Text/Text.svelte';
 	
 	import type { Event } from '$lib/Types/Events';
 
@@ -70,6 +71,8 @@
 </script>
 
 <NavBar />
+
+<Text class="smallText text-right mr-2 mt-1"><a href="/login" class="text-blue-500">Login here</a></Text>
 
 <EventScroller {events} />
 <CalendarView />
