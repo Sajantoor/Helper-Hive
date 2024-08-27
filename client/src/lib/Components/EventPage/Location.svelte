@@ -12,7 +12,7 @@
 	<Heading class="mb-4">Location</Heading>
 	<iframe src={mapUrl} title="" allowfullscreen></iframe>
 	<a href={mapsLink} target="_blank">
-		<button><Text class="font-semibold">Open in Google Maps</Text></button>
+		<button class="bg-primaryYellow text-black py-2 px-4 mt-4 w-full rounded-lg"><Text>Open in Google Maps</Text></button>
 	</a>
 </div>
 
@@ -21,13 +21,5 @@
 		width: 100%;
 		aspect-ratio: 1 / 0.75;
 		border-radius: 2rem;
-	}
-
-	button {
-		background-color: #fabd22;
-		width: 100%;
-		border-radius: 1rem;
-		padding: 0.6rem;
-		margin: 2rem auto;
 	}
 </style>

@@ -1,5 +1,5 @@
-<!--
-Usage in page:
+<!-- 
+Usage in page:UPDATE COMMENTS!!
 
 let myValue = '';
 let phoneValid = false; // optional, needed for phone
@@ -42,15 +42,19 @@ const myFunc = () => {
 	export let type = 'text';
 	export let id = '';
 	export let eyePosY = -40; // Pwd eye position, default -40%
-
 	export let valid = false;
+	export let classLabel = '';
+	export let classPlaceholder = '';
+	export let rows: number | undefined;
+	export let minDate = '01/01/1900';
+	export let maxDate = '31/12/2100';
+	export let minTime = '00:00';
+	export let maxTime = '23:59';
 	let selectedCountry: CountryCode | null | undefined = 'CA';
 
 	const handleInput = (event: any) => {
 		if (type === 'phone') {
-			// TODO: We should improve the typing here
 			value = event.target.value;
-			// @ts-ignore
 			const countryCode = normalizedCountries.find(
 				(country) => country.iso2 === selectedCountry
 			).dialCode;
@@ -61,14 +65,41 @@ const myFunc = () => {
 			}
 			value = event.target.value;
 		}
-
-		// @ts-ignore
 		onInput(event);
 	};
 
 	const flatpickrOptions = {
 		dateFormat: 'd/m/Y',
-		minDate: '01/01/1900',
+		minDate,
+		maxDate,
+		allowInput: true,
+		onChange: (selectedDates: any, dateStr: string, instance: any) => {
+			value = dateStr;
+			handleInput({ target: { value: dateStr } });
+		}
+	};
+
+	const flatpickrTimeOptions = {
+		enableTime: true,
+		noCalendar: true,
+		dateFormat: 'h:i K',
+		minTime,
+		maxTime,
+		allowInput: true,
+		onChange: (selectedDates: any, dateStr: string, instance: any) => {
+			value = dateStr;
+			handleInput({ target: { value: dateStr } });
+		}
+	};
+
+	const flatpickrDateRangeOptions = {
+		mode: 'range',
+		enableTime: true,
+		dateFormat: 'd/m/Y h:i K',
+		minDate,
+		maxDate,
+		minTime,
+		maxTime,
 		allowInput: true,
 		onChange: (selectedDates: any, dateStr: string, instance: any) => {
 			value = dateStr;
@@ -78,7 +109,7 @@ const myFunc = () => {
 </script>
 
 <div class="mb-4">
-	<label for={id}>
+	<label for={id} class={classLabel}>
 		<Text class="smallText">{label}</Text>
 	</label>
 	<div class="relative inline-block w-full">
@@ -91,7 +122,7 @@ const myFunc = () => {
 					{placeholder}
 					class="mt-1 p-2 w-full bg-placeholderGray border-none rounded {invalid
 						? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'
-						: ''}"
+						: ''} {classPlaceholder}"
 					on:input={handleInput}
 					on:change={handleInput}
 				/>
@@ -103,7 +134,7 @@ const myFunc = () => {
 					{placeholder}
 					class="mt-1 p-2 w-full bg-placeholderGray border-none rounded {invalid
 						? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'
-						: ''}"
+						: ''} {classPlaceholder}"
 					on:input={handleInput}
 					on:change={handleInput}
 				/>
@@ -166,8 +197,53 @@ const myFunc = () => {
 				options={flatpickrOptions}
 				class="mt-1 p-2 w-full bg-placeholderGray border-none rounded {invalid
 					? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'
-					: ''}"
+					: ''} {classPlaceholder}"
 			/>
+		{:else if type === 'number'}
+			<input
+				{id}
+				type="number"
+				bind:value
+				{placeholder}
+				class="mt-1 p-2 w-full bg-placeholderGray border-none rounded {invalid
+					? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'
+					: ''} {classPlaceholder}"
+				on:input={handleInput}
+				on:change={handleInput}
+				style="appearance: textfield; -webkit-appearance: none; -moz-appearance: textfield;"
+			/>
+		{:else if type === 'time'}
+			<Flatpickr
+				{id}
+				bind:value
+				{placeholder}
+				options={flatpickrTimeOptions}
+				class="mt-1 p-2 w-full bg-placeholderGray border-none rounded {invalid
+					? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'
+					: ''} {classPlaceholder}"
+			/>
+		{:else if type === 'dateRange'}
+			<Flatpickr
+				{id}
+				bind:value
+				{placeholder}
+				options={flatpickrDateRangeOptions}
+				class="mt-1 p-2 w-full bg-placeholderGray border-none rounded {invalid
+					? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'
+					: ''} {classPlaceholder}"
+			/>
+		{:else if rows}
+			<textarea
+				{id}
+				bind:value
+				{placeholder}
+				rows={rows}
+				class="mt-1 p-2 w-full bg-placeholderGray border-none rounded {invalid
+					? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'
+					: ''} {classPlaceholder}"
+				on:input={handleInput}
+				on:change={handleInput}
+			></textarea>
 		{:else}
 			<input
 				{id}
@@ -176,7 +252,7 @@ const myFunc = () => {
 				{placeholder}
 				class="mt-1 p-2 w-full bg-placeholderGray border-none rounded {invalid
 					? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'
-					: ''}"
+					: ''} {classPlaceholder}"
 				on:input={handleInput}
 				on:change={handleInput}
 			/>

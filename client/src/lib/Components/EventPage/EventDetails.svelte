@@ -68,8 +68,8 @@
 
 	<div class="mt-4">
 		<Text class="text-altTextGray">{spotsAvailable} Spots Avaliable</Text>
-		<button class={spotsAvailable > 0 ? 'bg-primaryYellow' : 'bg-placeholderGray'}>
-			<Text class="font-semibold">Register</Text>
+		<button class={`w-full ${spotsAvailable > 0 ? 'bg-primaryYellow text-black' : 'bg-placeholderGray text-placeholderGrayText cursor-default'} py-2 px-4 mt-2 rounded-lg mx-auto text`} >
+			<Text>Register</Text>
 		</button>
 	</div>
 </div>
@@ -99,12 +99,5 @@
 		display: inline-block;
 		white-space: nowrap;
 		text-align: center;
-	}
-
-	button {
-		width: 90%;
-		border-radius: 1rem;
-		padding: 0.6rem;
-		margin-top: 0.5rem;
 	}
 </style>
