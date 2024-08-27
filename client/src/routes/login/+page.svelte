@@ -68,7 +68,7 @@
 
 				<button
 					type="submit"
-					class="w-full bg-primaryYellow text-white font-bold py-2 px-4 rounded-lg mx-auto text"
+					class="w-full bg-primaryYellow text-black py-2 px-4 rounded-lg mx-auto text"
 				>
 					<Text>Login</Text>
 				</button>
