@@ -70,7 +70,7 @@
 
 					<button
 						type="submit"
-						class={`w-full ${formValid ? 'bg-primaryYellow' : 'bg-tagYellow'} text-white font-bold py-2 px-4 rounded-lg mx-auto text`}
+						class={`w-full ${formValid ? 'bg-primaryYellow text-black' : 'bg-tagYellow text-altTextBrown'} py-2 px-4 rounded-lg mx-auto text`}
 					>
 						<Text>Submit</Text>
 					</button>
@@ -85,14 +85,14 @@
 				<div class="flex justify-center space-x-4">
 					<button
 						type="button"
-						class="bg-primaryYellow text-white font-bold py-2 px-4 rounded-lg flex items-center"
+						class="bg-primaryYellow text-black py-2 px-4 rounded-lg flex items-center"
 						on:click={resetForm}
 					>
 						<LeftArrow class="h-6 w-6 mr-2" /> Try again
 					</button>
 					<a
 						href="/login"
-						class="bg-primaryYellow text-white font-bold py-2 px-4 rounded-lg flex items-center"
+						class="bg-primaryYellow text-black py-2 px-4 rounded-lg flex items-center"
 					>
 						Back to Login
 					</a>
