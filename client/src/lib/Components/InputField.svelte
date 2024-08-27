@@ -41,15 +41,15 @@ const myFunc = () => {
 	export let showPassword = false;
 	export let type = 'text';
 	export let id = '';
-	export let eyePosY = -40; // Pwd eye position, default -40%
 	export let valid = false;
 	export let classLabel = '';
 	export let classPlaceholder = '';
-	export let rows: number | undefined;
+	export let rows = 0;
 	export let minDate = '01/01/1900';
 	export let maxDate = '31/12/2100';
 	export let minTime = '00:00';
 	export let maxTime = '23:59';
+	export let eyePosY = -40; // Pwd eye position, default -40%
 	let selectedCountry: CountryCode | null | undefined = 'CA';
 
 	const handleInput = (event: any) => {
@@ -232,7 +232,7 @@ const myFunc = () => {
 					? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'
 					: ''} {classPlaceholder}"
 			/>
-		{:else if rows}
+		{:else if rows > 0}
 			<textarea
 				{id}
 				bind:value

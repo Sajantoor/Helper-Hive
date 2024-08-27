@@ -1,7 +1,7 @@
 <script>
   import Text from '$lib/Components/Text/Text.svelte';
   import InputField from '$lib/Components/InputField.svelte';
-  import FileDropzone from '$lib/Components/Upload.svelte';
+  import FileUpload from '$lib/Components/Upload.svelte';
   import Popup from '$lib/Components/TCPopup.svelte';
 
   let name = '';
@@ -18,9 +18,12 @@
   let invalidFields = [];
   let showTermsPopup = false;
   let showLiabilityPopup = false;
+  let imageFile = null;
+  let otherFile = null;
+  let imageUrl = '';
 
   const validateForm = () => {
-    formValid = Boolean(name) && phoneValid && Boolean(dob) && Boolean(numberInput) && Boolean(textArea) && Boolean(customLabel) && Boolean(dateRange) && termsAgreed;
+    formValid = Boolean(name) && phoneValid && Boolean(dob) && Boolean(numberInput) && Boolean(textArea) && Boolean(customLabel) && Boolean(dateRange) && Boolean(imageFile) && Boolean(otherFile) && termsAgreed;
   };
 
   const handleSubmit = () => {
@@ -35,7 +38,9 @@
         textArea,
         numberInput,
         dateRange,
-        termsAgreed
+        termsAgreed,
+        imageFile,
+        otherFile
       });
       alert("submitted");
     }
@@ -55,6 +60,8 @@
     if (!customLabel) invalidFields.push('customLabel');
     if (!dateRange) invalidFields.push('dateRange');
     if (!termsAgreed) invalidFields.push('termsAgreed');
+    if (!imageFile) invalidFields.push('imageUpload');
+    if (!otherFile) invalidFields.push('fileUpload');
 
     if (invalidFields.length > 0) {
       const firstInvalidField = document.getElementById(invalidFields[0]);
@@ -62,18 +69,36 @@
     }
   };
 
-  const openPopup = (popupId) => {
-    const popup = document.getElementById(popupId);
-    popup.classList.remove('hidden');
+  const handleFileDrop = (event, type) => {
+    const files = event.detail.files.detail;
+    console.log(files);
+    if (files.acceptedFiles.length > 0) {
+      const file = files.acceptedFiles[0];
+      if (type === 'image') {
+        imageFile = file;
+        imageUrl = URL.createObjectURL(file);
+        const index = invalidFields.indexOf('imageUpload');
+        if (index > -1) {
+          invalidFields.splice(index, 1);
+        }
+      } else {
+        otherFile = file;
+        const index = invalidFields.indexOf('fileUpload');
+        if (index > -1) {
+          invalidFields.splice(index, 1);
+        }
+      }
+    } else {
+      alert('File not accepted.');
+    }
+	invalidFields = invalidFields;
+    handleInputChange();
   };
 
-  const closePopup = (popupId) => {
-    const popup = document.getElementById(popupId);
-    popup.classList.add('hidden');
-  };
-
-  const handleFileDrop = (event) => {
-    console.log(event.detail.files);
+  const removeImage = () => {
+    imageFile = null;
+    imageUrl = '';
+    handleInputChange();
   };
 </script>
 
@@ -157,20 +182,30 @@
           onInput={handleInputChange}
         />
 
-        <!-- New File Dropzones -->
-        <FileDropzone
-          id="imageDropzone"
-          type="image"
-          placeholder="Drop images here or click to upload"
-          on:drop={handleFileDrop}
-        />
+        <div class="relative h-48 w-full">
+          <FileUpload
+            id="imageUpload"
+            type="image"
+            placeholder="Upload a picture..."
+			invalid={invalidFields.includes('imageUpload')}
+            on:drop={(event) => handleFileDrop(event, 'image')}
+          />
+          {#if imageUrl}
+            <div class="absolute inset-0 bg-cover bg-center" style="background-image: url({imageUrl});">
+              <button class="absolute top-2 right-2 bg-white text-black rounded-full p-1" on:click={removeImage}>x</button>
+            </div>
+          {/if}
+        </div>
 
-        <FileDropzone
-          id="fileDropzone"
-          type="file"
-          placeholder="Drop files here or click to upload"
-          on:drop={handleFileDrop}
-        />
+        <div class="h-24 w-full">
+          <FileUpload
+            id="fileUpload"
+            type="file"
+            placeholder="Click or drag and drop to upload a file..."
+			invalid={invalidFields.includes('fileUpload')}
+            on:drop={(event) => handleFileDrop(event, 'file')}
+          />
+        </div>
 
         <div class="flex items-center mb-4 lg:justify-center">
           <input type="checkbox" id="termsAgreed" bind:checked={termsAgreed} class="lg:ml-0 ml-2 mr-5 transform scale-[2.0] accent-primaryYellow {invalidFields.includes('termsAgreed') ? 'accent-primaryYellow' : ''}" on:change={handleInputChange} />

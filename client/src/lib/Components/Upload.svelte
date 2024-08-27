@@ -1,47 +1,51 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import { createEventDispatcher } from 'svelte';
-  import FileDropzone from 'svelte-file-dropzone';
-  import UploadIcon from 'svelte-material-icons/TrayArrowUp.svelte';
+	import { onMount } from 'svelte';
+	import { createEventDispatcher } from 'svelte';
+	import FileDropzone from 'svelte-file-dropzone';
+	import UploadIcon from 'svelte-material-icons/TrayArrowUp.svelte';
+	import Text from '$lib/Components/Text/Text.svelte';
 
-  export let type: 'image' | 'file' = 'file';
-  export let placeholder = 'Drop files here or click to upload';
-  export let restrictions: string[] = [];
-  const dispatch = createEventDispatcher();
+	export let type: 'image' | 'file' = 'file';
+	export let placeholder = 'Click or drag and drop to upload a file...';
+	export let id: string = '';
+	export let accepted: string = '';
+	export let invalid: boolean = false;
 
-  let mounted = false;
+	const dispatch = createEventDispatcher();
 
-  onMount(() => {
-    mounted = true;
-  });
+	let mounted = false;
 
-  const handleDrop = (files: File[]) => {
-    dispatch('drop', { files });
-  };
+	onMount(() => {
+		mounted = true;
+	});
+
+	const handleDrop = (files: File[]) => {
+		dispatch('drop', { files });
+	};
 </script>
 
-<style>
-  .dropzone {
-    @apply rounded border-2 border-dashed border-gray-400 bg-transparent text-gray-500 flex items-center justify-center;
-  }
-  .dropzone:hover {
-    @apply border-solid;
-  }
-</style>
-
 {#if mounted}
-  <div class="dropzone p-4">
-    <FileDropzone
-      accept={type === 'image' ? 'image/*' : '*'}
-      on:drop={handleDrop}
-      {restrictions}
-    >
-      <div class="flex items-center">
-        <span>{placeholder}</span>
-        {#if type === 'file'}
-          <UploadIcon class="ml-2" />
-        {/if}
-      </div>
-    </FileDropzone>
-  </div>
+	<div class="relative h-full w-full" id={id}>
+		<div class="{invalid ? 'bg-tagYellow' : 'bg-transparent'} absolute inset-0 rounded-lg"></div>
+		{#if type === 'image'}
+			<FileDropzone
+				accept="image/*"
+				on:drop={handleDrop}
+				containerStyles="background: transparent; border-radius: 0.5rem; width: 100%; height: 100%;">
+				<div class="flex items-center justify-between relative h-full">
+					<Text class="smallText italic {invalid ? 'text-altTextBrown' : ''}">{placeholder}</Text>
+				</div>
+			</FileDropzone>
+		{:else}
+			<FileDropzone
+				accept={accepted}
+				on:drop={handleDrop}
+				containerStyles="background: transparent; border-radius: 0.5rem; width: 100%; height: 100%;">
+				<div class="flex items-center justify-between h-full">
+					<Text class="smallText italic absolute left-8 {invalid ? 'text-altTextBrown' : ''}">{placeholder}</Text>
+					<UploadIcon class="ml-2 text-primaryYellow w-8 h-8 absolute right-8" />
+				</div>
+			</FileDropzone>
+		{/if}
+	</div>
 {/if}
