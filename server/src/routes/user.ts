@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import User from "../database/models/user";
-import { hashPassword } from "../middlewares/authentication";
+import { generateAccessToken, hashPassword } from "../middlewares/authentication";
+import { sendConfirmRegistrationEmail } from "../utils/email";
 
 interface EmergencyContact {
     name: string;
@@ -65,15 +66,24 @@ export async function registerUser(req: Request, res: Response) {
 
     userBody.password = await hashPassword(userBody.password);
 
+    let savedUser, userResponse;
+
     try {
         const newUser = new User(userBody);
-        const savedUser = await newUser.save();
-
-        const userResponse = filterUserResponse(savedUser);
-        return res.status(201).json(userResponse);
+        savedUser = await newUser.save();
+        userResponse = filterUserResponse(savedUser);
     } catch (error) {
         return res.status(500).json({ message: "Error creating user", error });
     }
+
+    const token = generateAccessToken({
+        userId: savedUser.id as string,
+        userRole: "volunteer",
+        accountConfirmed: savedUser.emailConfirmed,
+    }, "24h");
+
+    sendConfirmRegistrationEmail(savedUser.email, token);
+    return res.status(201).json(userResponse);
 }
 
 export async function updateUser(req: Request, res: Response) {

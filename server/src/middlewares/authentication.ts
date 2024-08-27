@@ -11,6 +11,7 @@ const refresh_code_secret = process.env.REFRESH_CODE_SECRET!;
 export type TokenData = {
     userId: string;
     userRole: UserRole;
+    accountConfirmed: boolean,
 }
 
 const cookieOptions = {
@@ -21,6 +22,19 @@ const cookieOptions = {
     domain: __prod__ ? `.${process.env.DOMAIN}` : "",
     maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
 } as const;
+
+export function generateAccessToken(data: TokenData, validaity = "15m"): string {
+    return jwt.sign(data, access_code_secret, { expiresIn: validaity });
+}
+
+export function validateAccessToken(token: string) {
+    try {
+        const data = jwt.verify(token, access_code_secret) as TokenData;
+        return data;
+    } catch (err) {
+        return null;
+    }
+}
 
 async function generateAuthTokens(data: TokenData): Promise<{ refreshToken: string; accessToken: string; } | null> {
     const refreshToken = jwt.sign(data, refresh_code_secret, { expiresIn: "7d" });
@@ -57,18 +71,17 @@ function validateToken(req: Request, res: Response): TokenData | null {
         return null;
     }
 
-    try {
-        const data = jwt.verify(accessToken, access_code_secret) as TokenData;
-        return data;
-    } catch (err) {
-        return null;
-    }
+    return validateAccessToken(accessToken);
 }
 
 export async function authorize(req: Request, res: Response, next: NextFunction) {
     const data = validateToken(req, res);
     if (!data) {
         return unauthorizedError(res);
+    }
+
+    if (!data.accountConfirmed) {
+        return res.status(403).json({ error: "Account not confirmed" });
     }
 
     res.locals.user = data;

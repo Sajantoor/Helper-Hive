@@ -5,7 +5,7 @@ import { createEvent, getEvent, getEvents, updateEvent } from "./routes/events";
 import { getOrganizations, getOrganization, registerOrganization, updateOrganization, deleteOrganization } from "./routes/organizations";
 import { getUser, registerUser, updateUser, deleteUser } from "./routes/user";
 import { authorize, authorizeOrganization, authorizeUser, renewToken } from "./middlewares/authentication";
-import { login, logout } from "./routes/login";
+import { confirmAccount, forgotPassword, login, logout, resetPassword } from "./routes/login";
 
 const app = express();
 app.use(express.json());
@@ -29,6 +29,10 @@ const USERS_API = `${API_PREFIX}/users`;
 
 // Unauthenticated routes
 app.post(`${API_PREFIX}/login`, login);
+app.post(`${API_PREFIX}/reset-password/:id`, resetPassword);
+app.post(`${API_PREFIX}/forgot-password`, forgotPassword);
+app.get(`${API_PREFIX}/confirm-account/:id`, confirmAccount);
+
 app.post(`${ORGANIZATIONS_API}/register`, registerOrganization);
 app.post(`${USERS_API}/register`, registerUser);
 
