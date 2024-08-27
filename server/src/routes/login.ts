@@ -78,7 +78,7 @@ export async function forgotPassword(req: Request, res: Response) {
 
 export async function resetPassword(req: Request, res: Response) {
     const { password } = req.body as { password: string };
-    const { token } = req.params;
+    const token = req.params.id;
 
     if (!password || !token) {
         return res.status(400).json({ message: "Password and token are required" });
@@ -109,10 +109,12 @@ export async function resetPassword(req: Request, res: Response) {
     } catch (error) {
         return res.status(500).json({ message: "Error resetting password", error });
     }
+
+    return res.status(200).json({ message: "Password reset successful" });
 }
 
 export async function confirmAccount(req: Request, res: Response) {
-    const { token } = req.params;
+    const token = req.params.id;
 
     if (!token) {
         return res.status(400).json({ message: "Token is required required" });
@@ -152,5 +154,6 @@ export async function confirmAccount(req: Request, res: Response) {
     }
 
     await setAuthCookies(res, tokenData);
+    return res.status(200).json({ message: "Account confirmed" });
 }
 
