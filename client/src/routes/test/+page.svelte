@@ -3,6 +3,9 @@
   import InputField from '$lib/Components/InputField.svelte';
   import FileUpload from '$lib/Components/Upload.svelte';
   import Popup from '$lib/Components/TCPopup.svelte';
+  import FileDocumentOutline from 'svelte-material-icons/FileDocumentOutline.svelte';
+  import CloseCircle from 'svelte-material-icons/CloseCircle.svelte';
+  import Circle from 'svelte-material-icons/Circle.svelte';
 
   let name = '';
   let phoneNumber = '';
@@ -19,11 +22,13 @@
   let showTermsPopup = false;
   let showLiabilityPopup = false;
   let imageFile = null;
-  let otherFile = null;
+  let otherFiles = [];
   let imageUrl = '';
+  let otherFileUrls = [];
+  let fileLimit = 5;
 
   const validateForm = () => {
-    formValid = Boolean(name) && phoneValid && Boolean(dob) && Boolean(numberInput) && Boolean(textArea) && Boolean(customLabel) && Boolean(dateRange) && Boolean(imageFile) && Boolean(otherFile) && termsAgreed;
+    formValid = Boolean(name) && phoneValid && Boolean(dob) && Boolean(numberInput) && Boolean(textArea) && Boolean(customLabel) && Boolean(dateRange) && Boolean(imageFile) && otherFiles.length > 0 && termsAgreed;
   };
 
   const handleSubmit = () => {
@@ -40,7 +45,7 @@
         dateRange,
         termsAgreed,
         imageFile,
-        otherFile
+        otherFiles
       });
       alert("submitted");
     }
@@ -61,7 +66,7 @@
     if (!dateRange) invalidFields.push('dateRange');
     if (!termsAgreed) invalidFields.push('termsAgreed');
     if (!imageFile) invalidFields.push('imageUpload');
-    if (!otherFile) invalidFields.push('fileUpload');
+    if (otherFiles.length === 0) invalidFields.push('fileUpload');
 
     if (invalidFields.length > 0) {
       const firstInvalidField = document.getElementById(invalidFields[0]);
@@ -71,25 +76,30 @@
 
   const handleFileDrop = (event, type) => {
     const files = event.detail.files.detail;
-    console.log(files);
     if (files.acceptedFiles.length > 0) {
-      const file = files.acceptedFiles[0];
       if (type === 'image') {
-        imageFile = file;
-        imageUrl = URL.createObjectURL(file);
+        imageFile = files.acceptedFiles[0];
+        imageUrl = URL.createObjectURL(imageFile);
         const index = invalidFields.indexOf('imageUpload');
         if (index > -1) {
           invalidFields.splice(index, 1);
         }
       } else {
-        otherFile = file;
+	    if (otherFiles.length == fileLimit){
+			removeOtherFile(4);
+		}
+        const newFiles = files.acceptedFiles.slice(0, fileLimit - otherFiles.length);
+        otherFiles = [...otherFiles, ...newFiles];
+        otherFileUrls = otherFiles.map(file => URL.createObjectURL(file));
+        if (otherFiles.length > fileLimit) {
+          otherFiles = otherFiles.slice(0, fileLimit);
+          otherFileUrls = otherFileUrls.slice(0, fileLimit);
+        }
         const index = invalidFields.indexOf('fileUpload');
         if (index > -1) {
           invalidFields.splice(index, 1);
         }
       }
-    } else {
-      alert('File not accepted.');
     }
 	invalidFields = invalidFields;
     handleInputChange();
@@ -98,6 +108,14 @@
   const removeImage = () => {
     imageFile = null;
     imageUrl = '';
+    handleInputChange();
+  };
+
+  const removeOtherFile = (index) => {
+    otherFiles.splice(index, 1);
+    otherFileUrls.splice(index, 1);
+	otherFiles = otherFiles;
+	otherFileUrls = otherFileUrls;
     handleInputChange();
   };
 </script>
@@ -183,29 +201,49 @@
         />
 
         <div class="relative h-48 w-full">
-          <FileUpload
-            id="imageUpload"
-            type="image"
-            placeholder="Upload a picture..."
+		  <FileUpload
+			id="imageUpload"
+			type="image"
+			placeholder="Upload a picture..."
 			invalid={invalidFields.includes('imageUpload')}
-            on:drop={(event) => handleFileDrop(event, 'image')}
-          />
-          {#if imageUrl}
-            <div class="absolute inset-0 bg-cover bg-center" style="background-image: url({imageUrl});">
-              <button class="absolute top-2 right-2 bg-white text-black rounded-full p-1" on:click={removeImage}>x</button>
-            </div>
-          {/if}
-        </div>
+			on:drop={(event) => handleFileDrop(event, 'image')}
+		  />
+		  {#if imageUrl}
+			<div class="absolute inset-0 bg-cover bg-center rounded-lg" style="background-image: url({imageUrl});">
+			  <div class="absolute top-0 right-0 cursor-pointer" on:click={removeImage}>
+				<Circle class="text-white rounded-full p-1" size={30} />
+			  </div>
+			  <div class="absolute top-0 right-0 cursor-pointer" on:click={removeImage}>
+				<CloseCircle class="text-primaryYellow rounded-full p-1" size={30} />
+			  </div>
+			</div>
+		  {/if}
+		</div>
 
-        <div class="h-24 w-full">
-          <FileUpload
-            id="fileUpload"
-            type="file"
-            placeholder="Click or drag and drop to upload a file..."
+		<div class="h-24 w-full">
+		  <FileUpload
+			id="fileUpload"
+			type="file"
+			placeholder="Click or drag and drop to upload a file..."
 			invalid={invalidFields.includes('fileUpload')}
-            on:drop={(event) => handleFileDrop(event, 'file')}
-          />
-        </div>
+			on:drop={(event) => handleFileDrop(event, 'file')}
+		  />
+		</div>
+		{#each otherFiles as file, index}
+		  <div class="inline-block mr-5 relative">
+			<div class="flex flex-col items-center">
+			  <FileDocumentOutline class="file text-primaryYellow" size={30} />
+			  <Text class="smallText text-gray-400 mt-1 break-all text-center">
+				<a href={otherFileUrls[index]} target="_blank" class="text-blue-500 underline break-all block" style="max-width: 80px;">
+				  {file.name.length > 25 ? `${file.name.slice(0, 9)}...${file.name.slice(-9)}` : file.name}
+				</a>
+			  </Text>
+			</div>
+			<div class="absolute top-[-12px] right-0 cursor-pointer" on:click={() => removeOtherFile(index)}>
+			  <CloseCircle class="text-red-500" size={24} />
+			</div>
+		  </div>
+		{/each}
 
         <div class="flex items-center mb-4 lg:justify-center">
           <input type="checkbox" id="termsAgreed" bind:checked={termsAgreed} class="lg:ml-0 ml-2 mr-5 transform scale-[2.0] accent-primaryYellow {invalidFields.includes('termsAgreed') ? 'accent-primaryYellow' : ''}" on:change={handleInputChange} />
