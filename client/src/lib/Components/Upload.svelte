@@ -1,3 +1,33 @@
+<!-- 
+Usage in page:
+
+let myValue = '';
+
+const handleFileDrop = (event) => {
+	// function to handle selected file(s)
+	const files = event.detail.files.detail;
+	if (files.acceptedFiles.length > 0) {
+		...
+	}
+};
+
+...
+
+<FileUpload
+	id="id"
+	placeholder="Placeholder text"
+	type="image or file"// Undefined assumed to be file
+	
+	accepted: 'files types to accept, same as vailla HTML'
+		// Undefined is all files, or only images for image
+	
+	invalid={ boolean check for invalid input }
+		// highlights the field when true
+	
+	on:drop={(event) => handleFileDrop(event)}
+/>
+-->
+
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { createEventDispatcher } from 'svelte';
@@ -39,18 +69,18 @@
 	<div class="relative h-full w-full" id={id}>
 		{#if type === 'image'}
 			<FileDropzone
-				accept="image/*"
+				accept="image/* {accepted}"
 				on:drop={handleDrop}
 				on:dragenter = {() => hovering = true}
 				on:dragleave = {() => hovering = false}
 				containerStyles="background: transparent; border-radius: 0.5rem; width: 100%; height: 100%;">
-				<div class="{hovering ? '' : 'hidden'} content-center bg-placeholderGray absolute inset-0 rounded-lg">
-					<UploadIcon class="mb-2 text-placeholderGrayText w-full h-8" />
-					<Text class="smallText text-placeholderGrayText text-center {invalid ? 'text-altTextBrown' : ''}">Upload...</Text>
-				</div>
-				<div class="{invalid ? 'bg-tagYellow border-dashed border-2 border-altTextBrown' : 'bg-transparent'} {hovering ? 'opacity-50' : ''} absolute inset-0 rounded-lg"></div>
+				<div class="{invalid ? 'bg-tagYellow border-dashed border-2 border-altTextBrown/75' : 'bg-transparent'} absolute inset-0 rounded-lg"></div>
 				<div class="flex items-center justify-between relative h-full">
-					<Text class="smallText italic p-4 {invalid ? 'text-altTextBrown' : ''} {hovering ? 'opacity-0' : ''}">{placeholder}</Text>
+					<Text class="smallText italic p-4 {invalid ? 'text-altTextBrown' : ''}">{placeholder}</Text>
+				</div>
+				<div class="{hovering ? '' : 'hidden'} {invalid ? 'bg-[#F7DE9C] border-altTextBrown/50' : 'bg-placeholderGray'} border-2 content-center absolute inset-0 rounded-lg">
+					<UploadIcon class="mb-2 text-placeholderGrayText w-full h-8 {invalid ? 'text-altTextBrown' : ''}" />
+					<Text class="smallText text-placeholderGrayText text-center {invalid ? 'text-altTextBrown' : ''}">Upload...</Text>
 				</div>
 			</FileDropzone>
 		{:else}
@@ -60,14 +90,14 @@
 				on:dragenter = {() => hovering = true}
 				on:dragleave = {() => hovering = false}
 				containerStyles="background: transparent; border-radius: 0.5rem; width: 100%; height: 100%;">
-				<div class="{hovering ? '' : 'hidden'} content-center bg-placeholderGray absolute inset-0 rounded-lg">
-					<UploadIcon class="mb-2 text-placeholderGrayText w-full h-8" />
-					<Text class="smallText text-placeholderGrayText text-center {invalid ? 'text-altTextBrown' : ''}">Upload...</Text>
-				</div>
-				<div class="{invalid ? 'bg-tagYellow border-dashed border-2 border-altTextBrown' : 'bg-transparent'} {hovering ? 'opacity-50' : ''} absolute inset-0 rounded-lg"></div>
+				<div class="{invalid ? 'bg-tagYellow border-dashed border-2 border-altTextBrown/75' : 'bg-transparent'} absolute inset-0 rounded-lg"></div>
 				<div class="flex items-center justify-between h-full">
-					<Text class="smallText italic absolute left-4 p-4 {invalid ? 'text-altTextBrown' : ''} {hovering ? 'opacity-0' : ''}">{placeholder}</Text>
-					<UploadIcon class="ml-2 w-8 h-8 absolute right-8 {invalid ? 'text-altTextBrown' : ' text-primaryYellow'} {hovering ? 'opacity-0' : ''}"/>
+					<Text class="smallText italic absolute left-4 p-4 {invalid ? 'text-altTextBrown' : ''}">{placeholder}</Text>
+					<UploadIcon class="ml-2 w-8 h-8 absolute right-8 {invalid ? 'text-altTextBrown' : ' text-primaryYellow'}"/>
+				</div>
+				<div class="{hovering ? '' : 'hidden'} {invalid ? 'bg-[#F7DE9C] border-altTextBrown/50' : 'bg-placeholderGray'} border-2 content-center absolute inset-0 rounded-lg">
+					<UploadIcon class="mb-2 text-placeholderGrayText w-full h-8 {invalid ? 'text-altTextBrown' : ''}" />
+					<Text class="smallText text-placeholderGrayText text-center {invalid ? 'text-altTextBrown' : ''}">Upload...</Text>
 				</div>
 			</FileDropzone>
 		{/if}
