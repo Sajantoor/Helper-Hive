@@ -9,27 +9,72 @@
 
 	let name: string = '';
 	let phoneNumber: string = '';
-	let dob: string = '';
 	let customLabel: string = '';
 	let customPlaceholder: string = '';
 	let textArea: string = '';
 	let numberInput: string = '';
-	let tagValue: string = '';
-	let dateRange: string = '';
+	let tagValTemp: string = '';
+	let tagValues: string[] = [];
+	let options: string[] = ['Apple', 'Pineapple', 'Banana', 'Orange', 'Pear', 'Mango', '+'];
+	
+	let startDate: string = '';
+	let endDate: string = '';
+	let startTime: string = '';
+	let endTime: string = '';
+	
 	let termsAgreed: boolean = false;
+	
 	let formValid: boolean = false;
 	let phoneValid: boolean = false;
 	let invalidFields: string[] = [];
+	
 	let showTermsPopup: boolean = false;
 	let showLiabilityPopup: boolean = false;
+	let showInputField: boolean = false;
+
+	let fileLimit: number = 5;
+
 	let imageFile: File | null = null;
 	let otherFiles: File[] = [];
 	let imageUrl: string = '';
 	let otherFileUrls: string[] = [];
-	let fileLimit: number = 5;
 
 	const validateForm = (): void => {
-		formValid = Boolean(name) && phoneValid && Boolean(dob) && Boolean(numberInput) && Boolean(tagValue) && Boolean(textArea) && Boolean(customLabel) && Boolean(dateRange) && Boolean(imageFile) && otherFiles.length > 0 && termsAgreed;
+		formValid = Boolean(name) && phoneValid && Boolean(numberInput) && tagValues.length > 0 && Boolean(textArea) 
+		&& Boolean(customLabel) && Boolean(startDate) && Boolean(endDate) && Boolean(startTime) && Boolean(endTime)
+		&& Boolean(imageFile) && otherFiles.length > 0 && verifyDateRange(startDate, endDate, startTime, endTime) && termsAgreed;
+	};
+
+	const parseTimeToNumber = (timeString) => {
+		const [time, modifier] = timeString.split(' ');
+		let [hours, minutes] = time.split(':');
+		hours = parseInt(hours, 10);
+		minutes = parseInt(minutes, 10);
+		if (modifier === 'PM' && hours !== 12) {
+			hours += 12;
+		}
+		if (modifier === 'AM' && hours === 12) {
+			hours = 0;
+		}
+		return hours * 100 + minutes;
+	};
+
+	const verifyDateRange = (startDate, endDate, startTime, endTime) => {
+		if (Boolean(startDate) && Boolean(endDate) && Boolean(startTime) && Boolean(endTime)) {
+			const startDateObj = new Date(startDate);
+			const endDateObj = new Date(endDate);
+			const startTimeNum = parseTimeToNumber(startTime);
+			const endTimeNum = parseTimeToNumber(endTime);
+
+			if (endDateObj > startDateObj) {
+				return true;
+			} else if (endDateObj.getTime() === startDateObj.getTime()) {
+				return endTimeNum > startTimeNum;
+			} else {
+				return false;
+			}
+		}
+		return true;
 	};
 
 	const handleSubmit = (): void => {
@@ -38,18 +83,20 @@
 			console.log({
 				name,
 				phoneNumber,
-				dob,
 				customLabel,
 				customPlaceholder,
 				textArea,
 				numberInput,
-				tagValue,
-				dateRange,
+				tagValues,
+				startDate,
+				endDate,
+				startTime,
+				endTime,
 				termsAgreed,
 				imageFile,
 				otherFiles
 			});
-			alert("submitted");
+			alert("Submitted form successfully");
 		}
 	};
 
@@ -61,15 +108,22 @@
 		invalidFields = [];
 		if (!name) invalidFields.push('name');
 		if (!phoneValid) invalidFields.push('phoneNumber');
-		if (!dob) invalidFields.push('dob');
 		if (!numberInput) invalidFields.push('numberInput');
-		if (!tagValue) invalidFields.push('tagInput');
+		if (tagValues.length === 0){
+			invalidFields.push('tagInputDiv');
+			invalidFields.push('tagInput');
+			toggleInputField();
+		}
 		if (!textArea) invalidFields.push('textArea');
 		if (!customLabel) invalidFields.push('customLabel');
-		if (!dateRange) invalidFields.push('dateRange');
+		if (!startDate) invalidFields.push('startDate');
+		if (!endDate) invalidFields.push('endDate');
+		if (!startTime) invalidFields.push('startTime');
+		if (!endTime) invalidFields.push('endTime');
 		if (!termsAgreed) invalidFields.push('termsAgreed');
 		if (!imageFile) invalidFields.push('imageUpload');
 		if (otherFiles.length === 0) invalidFields.push('fileUpload');
+		if (!verifyDateRange(startDate, endDate, startTime, endTime)) invalidFields.push('endDate', 'endTime');
 
 		if (invalidFields.length > 0) {
 			const firstInvalidField = document.getElementById(invalidFields[0]);
@@ -121,6 +175,26 @@
 		otherFileUrls = otherFileUrls;
 		handleInputChange();
 	};
+
+	const handleTagSelect = (event: any): void => {
+		if (tagValTemp && !tagValues.includes(tagValTemp)) {
+			tagValues = [...tagValues, tagValTemp];
+			options = options.filter(option => option !== tagValTemp);
+			tagValTemp = '';
+			toggleInputField();
+			handleInputChange();
+		}
+	};
+
+	const toggleInputField = (): void => {
+		showInputField = !showInputField;
+	};
+
+	const removeTag = (tag: string): void => {
+		tagValues = tagValues.filter(t => t !== tag);
+		options = [...options, tag];
+		handleInputChange();
+	};
 </script>
 
 <div class="flex flex-col justify-center items-center min-h-screen">
@@ -148,18 +222,6 @@
 					bind:valid={phoneValid}
 					invalid={invalidFields.includes('phoneNumber')}
 					onInput={handleInputChange}
-				/>
-
-				<InputField
-					id="dob"
-					label="Date of Birth"
-					placeholder="DD/MM/YYYY"
-					type="date"
-					bind:value={dob}
-					invalid={invalidFields.includes('dob')}
-					onInput={handleInputChange}
-					minDate="01/01/2024"
-					maxDate="31/12/2024"
 				/>
 
 				<InputField
@@ -193,24 +255,76 @@
 					onInput={handleInputChange}
 				/>
 				
+				<div class="flex flex-wrap items-center {tagValues.length > 0 ? 'gap-6' : ''}">
+					<div id="tagInputDiv" class="tag-list flex flex-wrap gap-6">
+						{#each tagValues as tagVal}
+							<div class="tag bg-tagYellow px-4 py-2 min-w-[6rem] rounded-full inline-block whitespace-nowrap text-center relative">
+								<Text>{tagVal}</Text>
+								<div class="absolute top-[-12px] right-0 cursor-pointer" on:click|preventDefault={() => removeTag(tagVal)}>
+									<CloseCircle class="text-red-500" size={24} />
+								</div>
+							</div>
+						{/each}
+					</div>
+					{#if showInputField || invalidFields.includes('tagInput')}
+						<div class="flex items-center">
+							<div class="w-2/3">
+								<InputField
+									id="tagInput"
+									placeholder="Add tag"
+									type="dropdown"
+									bind:value={tagValTemp}
+									invalid={invalidFields.includes('tagInput')}
+									onInput={handleTagSelect}
+									options={options}
+								/>
+							</div>
+							<button on:click|preventDefault={toggleInputField} class="ml-2 text-blue-500 {invalidFields.includes('tagInput') && tagValues.length < 1 ? 'hidden' : ''}">←</button>
+						</div>
+					{:else}
+						<button on:click|preventDefault={toggleInputField} class="tag mt-1 mb-4 bg-tagYellow w-10 h-10 rounded-full flex items-center justify-center text-center">
+							+
+						</button>
+					{/if}
+				</div>
+
 				<InputField
-					id="tagInput"
-					label="Tag Input"
-					placeholder="Search and select an option"
-					type="dropdown"
-					bind:value={tagValue}
-					invalid={invalidFields.includes('tagInput')}
+					id="startDate"
+					label="Start Date"
+					placeholder="DD/MM/YYYY"
+					type="date"
+					bind:value={startDate}
+					invalid={invalidFields.includes('startDate')}
 					onInput={handleInputChange}
-					options={['Apple', 'Pineapple', 'Banana', 'Orange', 'Pear', 'Mango']}
 				/>
 
 				<InputField
-					id="dateRange"
-					label="Date Range"
-					placeholder="Select date range"
-					type="dateRange"
-					bind:value={dateRange}
-					invalid={invalidFields.includes('dateRange')}
+					id="endDate"
+					label="End Date"
+					placeholder="DD/MM/YYYY"
+					type="date"
+					bind:value={endDate}
+					invalid={invalidFields.includes('endDate')}
+					onInput={handleInputChange}
+				/>
+
+				<InputField
+					id="startTime"
+					label="Start Time"
+					placeholder="9:00 AM"
+					type="time"
+					bind:value={startTime}
+					invalid={invalidFields.includes('startTime')}
+					onInput={handleInputChange}
+				/>
+
+				<InputField
+					id="endTime"
+					label="End Time"
+					placeholder="5:00 PM"
+					type="time"
+					bind:value={endTime}
+					invalid={invalidFields.includes('endTime')}
 					onInput={handleInputChange}
 				/>
 

@@ -45,6 +45,7 @@ const myFunc = () => {
 	import EyeOutline from 'svelte-material-icons/EyeOutline.svelte';
 	import EyeOffOutline from 'svelte-material-icons/EyeOffOutline.svelte';
 	import Flatpickr from 'svelte-flatpickr';
+	import SveltyPicker from 'svelty-picker';
 	import 'flatpickr/dist/flatpickr.css';
 	import { TelInput, normalizedCountries } from 'svelte-tel-input';
 	import type { CountryCode } from 'svelte-tel-input/types';
@@ -82,7 +83,7 @@ const myFunc = () => {
 				(country) => country.iso2 === selectedCountry
 			).dialCode;
 			value = `+${countryCode}${value}`;
-		} else if (type != 'dropdown'){
+		} else if (type != 'dropdown' && type != 'time'){
 			if (id.toLowerCase().includes('email')) {
 				event.target.value = value.replace(/\s/g, '');
 			}
@@ -97,19 +98,6 @@ const myFunc = () => {
 		dateFormat: 'd/m/Y',
 		minDate,
 		maxDate,
-		allowInput: true,
-		onChange: (selectedDates: any, dateStr: string, instance: any) => {
-			value = dateStr;
-			handleInput({ target: { value: dateStr } });
-		}
-	};
-
-	const flatpickrTimeOptions = {
-		enableTime: true,
-		noCalendar: true,
-		dateFormat: 'h:i K',
-		minTime,
-		maxTime,
 		allowInput: true,
 		onChange: (selectedDates: any, dateStr: string, instance: any) => {
 			value = dateStr;
@@ -147,14 +135,18 @@ const myFunc = () => {
 		}
 	};
 
-	const handleFocus = () => {
+	const handleFocus = (event: any) => {
 		isOpen = true;
 		filteredOptions = options.sort();
+		if (event.target.value.toLowerCase() == ''){
+			highlightedIndex = -1;
+		}
 	};
 
 	const handleBlur = () => {
 		setTimeout(() => {
-			if (highlightedIndex >= 0 && highlightedIndex < filteredOptions.length) {
+			if (highlightedIndex >= 0 && highlightedIndex < filteredOptions.length && options.includes(value)) {
+				console.log(value);
 				value = filteredOptions[highlightedIndex];
 				onInput({ target: { value: filteredOptions[highlightedIndex] } });
 			} else {
@@ -349,12 +341,17 @@ const myFunc = () => {
 				style="appearance: textfield; -webkit-appearance: none; -moz-appearance: textfield;"
 			/>
 		{:else if type === 'time'}
-			<Flatpickr
-				{id}
-				bind:value
+			<SveltyPicker
+				inputId={id}
+				bind:value={value}
 				{placeholder}
-				options={flatpickrTimeOptions}
-				class="mt-1 p-2 w-full bg-placeholderGray border-none rounded {invalid
+				mode="time"
+				format="H:i P"
+				displayFormat="H:i P"
+				manualInput={true}
+				on:input={handleInput}
+				on:change={handleInput}
+				inputClasses="mt-1 p-2 w-full bg-placeholderGray border-none rounded {invalid
 					? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'
 					: ''} {classPlaceholder}"
 			/>
