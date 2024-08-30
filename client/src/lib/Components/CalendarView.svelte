@@ -116,6 +116,7 @@
 
 	.header {
 		width: 90%;
+		margin-left: 2rem;
 	}
 
 	.calendar-grid {

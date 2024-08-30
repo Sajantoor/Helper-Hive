@@ -1,0 +1,159 @@
+import { Request, Response } from "express";
+import User from "../database/models/user";
+import Organization from "../database/models/organization";
+import { UserRole } from "../utils/types";
+import { clearCookies, generateAccessToken, hashPassword, setAuthCookies, TokenData, validateAccessToken } from "../middlewares/authentication";
+import bcrypt from "bcrypt";
+import { sendPasswordResetEmail } from "../utils/email";
+
+type LoginRequest = {
+    email: string;
+    password: string;
+}
+
+export async function login(req: Request, res: Response) {
+    const { email, password } = req.body as LoginRequest;
+    if (!email || !password) {
+        return res.status(400).json({ message: "Email and password are required" });
+    }
+
+    let user = await User.findOne({ email });
+    let userRole: UserRole = "volunteer";
+
+    if (!user) {
+        user = await Organization.findOne({ email });
+        userRole = "organization";
+    }
+
+    if (!user) {
+        return res.status(401).json({ message: "Invalid email or password" });
+    }
+
+    const passwordMatch = await bcrypt.compare(password, user.password);
+
+    if (!passwordMatch) {
+        return res.status(401).json({ message: "Invalid email or password" });
+    }
+
+    const tokenData: TokenData = {
+        userId: user.id as string,
+        userRole,
+        accountConfirmed: user.emailConfirmed,
+    }
+
+    await setAuthCookies(res, tokenData);
+    res.status(200).json({ message: "Login successful" });
+}
+
+export async function logout(res: Response) {
+    clearCookies(res);
+    res.status(200).json({ message: "Logout successful" });
+}
+
+export async function forgotPassword(req: Request, res: Response) {
+    const { email } = req.body as { email: string };
+    if (!email) {
+        return res.status(400).json({ message: "Email is required" });
+    }
+
+    const user = await User.findOne({ email }) || await Organization.findOne({
+        email,
+    });
+
+    if (!user) {
+        // we don't want to expose if the user is not found
+        console.log("User not found in password reset " + email);
+        return res.status(200).json({ message: "Password reset email sent" });
+    }
+
+    const token = generateAccessToken({
+        userId: user.id as string,
+        userRole: user instanceof User ? "volunteer" : "organization",
+        accountConfirmed: user.emailConfirmed,
+    }, "1h");
+
+    await sendPasswordResetEmail(user.email, token);
+    res.status(200).json({ message: "Password reset email sent" });
+}
+
+export async function resetPassword(req: Request, res: Response) {
+    const { password } = req.body as { password: string };
+    const token = req.params.id;
+
+    if (!password || !token) {
+        return res.status(400).json({ message: "Password and token are required" });
+    }
+
+    const data = validateAccessToken(token);
+
+    if (!data) {
+        return res.status(400).json({ message: "Invalid token" });
+    }
+
+    let user;
+
+    if (data.userRole === "volunteer") {
+        user = await User.findById(data.userId);
+    } else {
+        user = await Organization.findById(data.userId);
+    }
+
+    if (!user) {
+        return res.status(400).json({ message: "Invalid token" });
+    }
+
+    user.password = await hashPassword(password);
+
+    try {
+        await user.save();
+    } catch (error) {
+        return res.status(500).json({ message: "Error resetting password", error });
+    }
+
+    return res.status(200).json({ message: "Password reset successful" });
+}
+
+export async function confirmAccount(req: Request, res: Response) {
+    const token = req.params.id;
+
+    if (!token) {
+        return res.status(400).json({ message: "Token is required required" });
+    }
+
+    const data = validateAccessToken(token);
+
+    if (!data) {
+        return res.status(400).json({ message: "Invalid token" });
+    }
+
+    let user;
+
+    if (data.userRole === "volunteer") {
+        user = await User.findById(data.userId);
+    } else {
+        user = await Organization.findById(data.userId);
+    }
+
+    if (!user) {
+        return res.status(400).json({ message: "Invalid token" });
+    }
+
+    user.emailConfirmed = true;
+
+    try {
+        await user.save();
+    } catch (error) {
+        return res.status(500).json({ message: "Error confirming account", error });
+    }
+
+    // give them a new token 
+    const tokenData: TokenData = {
+        userId: data.userId,
+        userRole: data.userRole,
+        accountConfirmed: true,
+    }
+
+    await setAuthCookies(res, tokenData);
+    return res.status(200).json({ message: "Account confirmed" });
+}
+
