@@ -3,9 +3,28 @@
 	import Text from '../Text/Text.svelte';
 
 	export let location = '';
+	export let locationAddress = '';
 
-	let mapUrl: string = `https://maps.google.com/maps?q=${location}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
-	let mapsLink: string = `https://maps.google.com/maps?q=${location}`;
+	$: mapUrl = `https://maps.google.com/maps?q=${location}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
+	$: mapsLink = `https://maps.google.com/maps?q=${location}`;
+
+	$: getFullAddress(location);
+
+	async function getFullAddress(input: string) {
+		const apiKey = 'API_KEY_HERE';
+		try {
+			const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${input}&key=${apiKey}`);
+			const data = await response.json();
+			if (data.results && data.results.length > 0) {
+				locationAddress = data.results[0].formatted_address;
+			} else {
+				locationAddress = 'Address not found';
+			}
+		} catch (error) {
+			console.error('Error fetching address:', error);
+			locationAddress = 'Error fetching address';
+		}
+	}
 </script>
 
 <div class="location mt-6">

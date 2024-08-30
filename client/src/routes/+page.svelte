@@ -73,6 +73,7 @@
 <NavBar />
 
 <Text class="smallText text-right mr-2 mt-1"><a href="/login" class="text-blue-500">Login here</a></Text>
+<Text class="smallText text-right mr-2 mt-1"><a href="/CreateEvent" class="text-blue-500">Create Event</a></Text>
 
 <EventScroller {events} />
 <CalendarView />

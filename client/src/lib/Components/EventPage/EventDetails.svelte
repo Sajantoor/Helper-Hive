@@ -2,7 +2,7 @@
 	import Section from '../Text/Section.svelte';
 	import Text from '../Text/Text.svelte';
 
-	import CalendarMonth from 'svelte-material-icons/CalendarMonth.svelte';
+	import CalendarMonth from 'svelte-material-icons/CalendarMonthOutline.svelte';
 	import MapMarkerOutline from 'svelte-material-icons/MapMarkerOutline.svelte';
 
 	export let eventTitle: string = '';

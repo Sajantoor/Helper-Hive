@@ -20,9 +20,12 @@ const myFunc = () => {
 	
 	classLabel = 'classes to add to label'
 	classPlaceholder = 'classes to add to placeholder'
+	classDiv = 'override div style'
+	classField = 'override input field spacing/size'
 	rows = number of rows, turns into textarea
 	
-	onInput={myFunc} // event for on:input, on:change, onChange
+	onInput={myFunc} // event for on:input, on:change, onChangeBlur
+	onBlur={myFunc} // event for on:blur
 	invalid={ boolean check for invalid input }
 		// highlights the field when true
 	
@@ -57,11 +60,14 @@ const myFunc = () => {
 	export let value = '';
 	export let invalid = false;
 	export let onInput = () => {};
+	export let onBlur = () => {};
 	export let showPassword = false;
 	export let type = 'text';
 	export let valid = false;
 	export let classLabel = '';
 	export let classPlaceholder = '';
+	export let classDiv = 'mb-4 w-full';
+	export let classField = 'mt-1 p-2 w-full';
 	export let rows = 0;
 	export let minDate = '01/01/1900';
 	export let maxDate = '31/12/2100';
@@ -75,6 +81,8 @@ const myFunc = () => {
 	let searchQuery = '';
 	let isOpen = false;
 	let highlightedIndex = -1;
+	let inputElement: HTMLInputElement;
+	let GOOGLE_MAPS_API_KEY = 'API_KEY_HERE';
 
 	const handleInput = (event: any) => {
 		if (type === 'phone') {
@@ -83,7 +91,7 @@ const myFunc = () => {
 				(country) => country.iso2 === selectedCountry
 			).dialCode;
 			value = `+${countryCode}${value}`;
-		} else if (type != 'dropdown' && type != 'time'){
+		} else if (type != 'dropdown' && type != 'time' && type != 'location'){
 			if (id.toLowerCase().includes('email')) {
 				event.target.value = value.replace(/\s/g, '');
 			}
@@ -91,6 +99,31 @@ const myFunc = () => {
 		}
 		onInput(event);
 	};
+	
+	const handleFieldBlur = (event: any) => {
+		onBlur(event);
+		onInput(event);
+	};
+	
+	onMount(() => {
+		filteredOptions = options.sort();
+		if (type === 'location') {
+			const script = document.createElement('script');
+			script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places`;
+			script.async = true;
+			script.onload = () => {
+				const autocomplete = new google.maps.places.Autocomplete(inputElement);
+				autocomplete.addListener('place_changed', () => {
+					const place = autocomplete.getPlace();
+					if (place.formatted_address) {
+						value = place.formatted_address;
+						handleInput(new Event('input'));
+					}
+				});
+			};
+			document.head.appendChild(script);
+		}
+	});
 
 	// Datetime functions
 
@@ -100,6 +133,10 @@ const myFunc = () => {
 		maxDate,
 		allowInput: true,
 		onChange: (selectedDates: any, dateStr: string, instance: any) => {
+			value = dateStr;
+			handleInput({ target: { value: dateStr } });
+		},
+		onClose: (selectedDates: any, dateStr: string, instance: any) => {
 			value = dateStr;
 			handleInput({ target: { value: dateStr } });
 		}
@@ -115,6 +152,10 @@ const myFunc = () => {
 		maxTime,
 		allowInput: true,
 		onChange: (selectedDates: any, dateStr: string, instance: any) => {
+			value = dateStr;
+			handleInput({ target: { value: dateStr } });
+		},
+		onClose: (selectedDates: any, dateStr: string, instance: any) => {
 			value = dateStr;
 			handleInput({ target: { value: dateStr } });
 		}
@@ -141,12 +182,12 @@ const myFunc = () => {
 		if (event.target.value.toLowerCase() == ''){
 			highlightedIndex = -1;
 		}
+		event.target.focus();
 	};
 
-	const handleBlur = () => {
+	export function handleBlur(){
 		setTimeout(() => {
 			if (highlightedIndex >= 0 && highlightedIndex < filteredOptions.length && options.includes(value)) {
-				console.log(value);
 				value = filteredOptions[highlightedIndex];
 				onInput({ target: { value: filteredOptions[highlightedIndex] } });
 			} else {
@@ -192,13 +233,24 @@ const myFunc = () => {
 		handleInput();
 	};
 
-	onMount(() => {
-		filteredOptions = options.sort();
-	});
+	export function forceClick() {
+		if (inputElement) {
+			inputElement.click();
+		}
+	}
+
+	export function forceFocus() {
+		if (inputElement) {
+			inputElement.click();
+			setTimeout(() => {
+				inputElement.focus();
+			}, 100); // Add a slight delay
+		}
+	}
 </script>
 
 {#if type === 'dropdown'}
-<div class="mb-4" on:click|preventDefault>
+<div class={classDiv} on:click|preventDefault>
 	<label for={id}>
 		<Text class="smallText {classLabel}">{label}</Text>
 	</label>
@@ -208,10 +260,11 @@ const myFunc = () => {
 				{id}
 				type="text"
 				bind:value
+				bind:this={inputElement}
 				{placeholder}
-				class="mt-1 p-2 w-full bg-placeholderGray border-none rounded {invalid
-					? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'
-					: ''} {classPlaceholder}"
+				class="{classField} bg-placeholderGray border-none rounded
+					{invalid ? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown' : ''}
+					{classPlaceholder}"
 				on:input={handleSearch}
 				on:keydown={handleKeyDown}
 				on:focus={handleFocus}
@@ -235,7 +288,7 @@ const myFunc = () => {
 	</div>
 </div>
 {:else}
-<div class="mb-4">
+<div class={classDiv}>
 	<label for={id}>
 		<Text class="smallText {classLabel}">{label}</Text>
 	</label>
@@ -246,20 +299,23 @@ const myFunc = () => {
 					{id}
 					type="text"
 					bind:value
+					bind:this={inputElement}
 					{placeholder}
-					class="mt-1 p-2 w-full bg-placeholderGray border-none rounded {invalid
+					class="{classField} bg-placeholderGray border-none rounded {invalid
 						? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'
 						: ''} {classPlaceholder}"
 					on:input={handleInput}
 					on:change={handleInput}
+					on:blur={handleFieldBlur}
 				/>
 			{:else}
 				<input
 					{id}
 					type="password"
 					bind:value
+					bind:this={inputElement}
 					{placeholder}
-					class="mt-1 p-2 w-full bg-placeholderGray border-none rounded {invalid
+					class="{classField} bg-placeholderGray border-none rounded {invalid
 						? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'
 						: ''} {classPlaceholder}"
 					on:input={handleInput}
@@ -308,10 +364,12 @@ const myFunc = () => {
 					bind:country={selectedCountry}
 					bind:value
 					bind:valid
+					bind:this={inputElement}
 					class="h-9 pl-3 pr-3 rounded-r grow bg-placeholderGray {invalid
 						? 'bg-tagYellow placeholder-altTextBrown text-altTextBrown'
 						: ''}"
 					on:input={handleInput}
+					on:blur={handleFieldBlur}
 					options={{ autoPlaceholder: false }}
 					{placeholder}
 				/>
@@ -320,9 +378,10 @@ const myFunc = () => {
 			<Flatpickr
 				{id}
 				bind:value
+				bind:this={inputElement}
 				{placeholder}
 				options={flatpickrOptions}
-				class="mt-1 p-2 w-full bg-placeholderGray border-none rounded {invalid
+				class="{classField} bg-placeholderGray border-none rounded {invalid
 					? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'
 					: ''} {classPlaceholder}"
 			/>
@@ -332,18 +391,21 @@ const myFunc = () => {
 				type="number"
 				min="1"
 				bind:value
+				bind:this={inputElement}
 				{placeholder}
-				class="mt-1 p-2 w-full bg-placeholderGray border-none rounded {invalid
+				class="{classField} bg-placeholderGray border-none rounded {invalid
 					? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'
 					: ''} {classPlaceholder}"
 				on:input={handleInput}
 				on:change={handleInput}
+				on:blur={handleFieldBlur}
 				style="appearance: textfield; -webkit-appearance: none; -moz-appearance: textfield;"
 			/>
 		{:else if type === 'time'}
 			<SveltyPicker
 				inputId={id}
 				bind:value={value}
+				bind:this={inputElement}
 				{placeholder}
 				mode="time"
 				format="H:i P"
@@ -351,7 +413,8 @@ const myFunc = () => {
 				manualInput={true}
 				on:input={handleInput}
 				on:change={handleInput}
-				inputClasses="mt-1 p-2 w-full bg-placeholderGray border-none rounded {invalid
+				on:blur={handleFieldBlur}
+				inputClasses="{classField} bg-placeholderGray border-none rounded {invalid
 					? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'
 					: ''} {classPlaceholder}"
 			/>
@@ -359,9 +422,10 @@ const myFunc = () => {
 			<Flatpickr
 				{id}
 				bind:value
+				bind:this={inputElement}
 				{placeholder}
 				options={flatpickrDateRangeOptions}
-				class="mt-1 p-2 w-full bg-placeholderGray border-none rounded {invalid
+				class="{classField} bg-placeholderGray border-none rounded {invalid
 					? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'
 					: ''} {classPlaceholder}"
 			/>
@@ -369,25 +433,29 @@ const myFunc = () => {
 			<textarea
 				{id}
 				bind:value
+				bind:this={inputElement}
 				{placeholder}
 				rows={rows}
-				class="mt-1 p-2 w-full bg-placeholderGray border-none rounded {invalid
+				class="{classField} bg-placeholderGray border-none rounded {invalid
 					? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'
 					: ''} {classPlaceholder}"
 				on:input={handleInput}
 				on:change={handleInput}
+				on:blur={handleFieldBlur}
 			></textarea>
 		{:else}
 			<input
 				{id}
 				type="text"
+				bind:this={inputElement}
 				bind:value
 				{placeholder}
-				class="mt-1 p-2 w-full bg-placeholderGray border-none rounded {invalid
+				class="{classField} bg-placeholderGray border-none rounded {invalid
 					? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'
 					: ''} {classPlaceholder}"
 				on:input={handleInput}
 				on:change={handleInput}
+				on:blur={handleFieldBlur}
 			/>
 		{/if}
 	</div>
