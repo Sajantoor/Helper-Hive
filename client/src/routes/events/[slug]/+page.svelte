@@ -1,6 +1,14 @@
-<script>
+<script lang="ts">
 	import EventPage from '$lib/Components/EventPage/EventPage.svelte';
+	import ArrowLeft from 'svelte-material-icons/ArrowLeft.svelte';
+
+	import { page } from '$app/stores';
+	$: slug = $page.params.slug;
 </script>
+
+<button on:click={() => window.history.back()}>
+	<ArrowLeft size={20} class="ml-10 top-12 absolute" />
+</button>
 
 <EventPage
 	eventTitle="Science World Children's Day"

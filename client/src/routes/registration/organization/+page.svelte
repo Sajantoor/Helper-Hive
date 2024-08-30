@@ -3,12 +3,13 @@
 	import InputField from '$lib/Components/InputField.svelte';
 	import Popup from '$lib/Components/TCPopup.svelte';
 	import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
 
-	let firstName = '';
-	let lastName = '';
+	let organizationName = '';
 	let email = '';
 	let phoneNumber = '';
-	let dob = '';
+	let firstName = '';
+	let lastName = '';
 	let password = '';
 	let reenterPassword = '';
 	let termsAgreed = false;
@@ -20,11 +21,11 @@
 
 	const validateForm = () => {
 		formValid =
-			Boolean(firstName) &&
-			Boolean(lastName) &&
+			Boolean(organizationName) &&
 			Boolean(email) &&
 			phoneValid &&
-			Boolean(dob) &&
+			Boolean(firstName) &&
+			Boolean(lastName) &&
 			Boolean(password) &&
 			Boolean(reenterPassword) &&
 			termsAgreed &&
@@ -47,33 +48,37 @@
 				console.log('Email already exists');
 			} else {
 				console.log({
+					organizationName,
+					email,
 					phoneNumber,
 					firstName,
 					lastName,
-					email,
-					dob,
 					password,
 					reenterPassword,
 					termsAgreed,
 					liabilityAgreed
 				});
-				alert('Form successfully submitted');
+				goto('/login');
 			}
 		}
 	};
 
-	const handleInputChange = () => {
+	const handlePasswordChange = () => {
 		passwordsMatch = password === reenterPassword;
+		validateForm();
+	};
+
+	const handleInputChange = () => {
 		validateForm();
 	};
 
 	const highlightInvalidFields = () => {
 		invalidFields = [];
-		if (!firstName) invalidFields.push('firstName');
-		if (!lastName) invalidFields.push('lastName');
+		if (!organizationName) invalidFields.push('organizationName');
 		if (!validateEmail(email)) invalidFields.push('email');
 		if (!phoneValid) invalidFields.push('phoneNumber');
-		if (!dob) invalidFields.push('dob');
+		if (!firstName) invalidFields.push('firstName');
+		if (!lastName) invalidFields.push('lastName');
 		if (!password) invalidFields.push('password');
 		if (!reenterPassword) invalidFields.push('reenterPassword');
 		if (!termsAgreed) invalidFields.push('termsAgreed');
@@ -82,11 +87,7 @@
 
 		if (invalidFields.length > 0) {
 			const firstInvalidField = document.getElementById(invalidFields[0]);
-			if (firstInvalidField) {
-				firstInvalidField.scrollIntoView({ behavior: 'smooth' });
-			} else {
-				console.error('Element not found:', invalidFields[0]);
-			}
+			firstInvalidField?.scrollIntoView({ behavior: 'smooth' });
 		}
 	};
 
@@ -111,11 +112,11 @@
 		<div
 			class="flex flex-col justify-start lg:items-start items-center w-full lg:w-3/10 lg:max-w-[30%] lg:text-left text-center"
 		>
-			<Text class="section lg:w-1/2 mb-4 whitespace-normal pt-10">Volunteer Registration</Text>
+			<Text class="section lg:w-1/2 mb-4 whitespace-normal pt-10">Organization Registration</Text>
 			<Text class="smallText">
-				Wrong Place? <a href="/OrganizationRegistration" class="text-blue-500 underline"
-					>Click here</a
-				> for Organization Registration
+				Wrong Place? <a href="/registration/volunteer" class="text-blue-500 underline">Click here</a
+				>
+				for Volunteer Registration
 			</Text>
 		</div>
 
@@ -125,27 +126,17 @@
 			<Text class="heading mb-6 text-center">Sign Up Now to Become a Member</Text>
 
 			<form on:submit|preventDefault={handleSubmit} class="space-y-4" novalidate>
-				<!-- Personal Information Section -->
-				<Text class="heading mb-2">Personal Information</Text>
+				<!-- Org and Personnel Section -->
+				<Text class="heading mb-2">Organization Information</Text>
 
-				<div class="grid grid-cols-2 gap-4">
-					<InputField
-						id="firstName"
-						label="First Name"
-						placeholder="First Name"
-						bind:value={firstName}
-						invalid={invalidFields.includes('firstName')}
-						onInput={handleInputChange}
-					/>
-					<InputField
-						id="lastName"
-						label="Last Name"
-						placeholder="Last Name"
-						bind:value={lastName}
-						invalid={invalidFields.includes('lastName')}
-						onInput={handleInputChange}
-					/>
-				</div>
+				<InputField
+					id="organizationName"
+					label="Name of Organization"
+					placeholder="Name of Organization"
+					bind:value={organizationName}
+					invalid={invalidFields.includes('organizationName')}
+					onInput={handleInputChange}
+				/>
 
 				<InputField
 					id="email"
@@ -167,18 +158,30 @@
 					onInput={handleInputChange}
 				/>
 
-				<InputField
-					id="dob"
-					label="Date of Birth"
-					placeholder="DD/MM/YYYY"
-					type="date"
-					bind:value={dob}
-					invalid={invalidFields.includes('dob')}
-					onInput={handleInputChange}
-				/>
+				<div style="margin-top: 2.5rem;">
+					<Text class="heading mb-2">Contact Personnel</Text>
+				</div>
+				<div class="grid grid-cols-2 gap-4">
+					<InputField
+						id="firstName"
+						label="First Name"
+						placeholder="First Name"
+						bind:value={firstName}
+						invalid={invalidFields.includes('firstName')}
+						onInput={handleInputChange}
+					/>
+					<InputField
+						id="lastName"
+						label="Last Name"
+						placeholder="Last Name"
+						bind:value={lastName}
+						invalid={invalidFields.includes('lastName')}
+						onInput={handleInputChange}
+					/>
+				</div>
 
 				<!-- Create Password Section -->
-				<div style="margin-top: 2.5rem;">
+				<div style="margin-top: 2rem;">
 					<Text class="heading mb-2">Create Password</Text>
 				</div>
 				<div class="relative">
@@ -189,7 +192,7 @@
 						type="password"
 						bind:value={password}
 						invalid={invalidFields.includes('password')}
-						onInput={handleInputChange}
+						onInput={handlePasswordChange}
 					/>
 					<InputField
 						id="reenterPassword"
@@ -198,7 +201,7 @@
 						type="password"
 						bind:value={reenterPassword}
 						invalid={invalidFields.includes('reenterPassword')}
-						onInput={handleInputChange}
+						onInput={handlePasswordChange}
 					/>
 					{#if !passwordsMatch}
 						<Text class="smallText text-red-500 absolute -bottom-8">Passwords do not match</Text>
@@ -228,18 +231,13 @@
 							: ''}"
 					>
 						<Text
-							>Click here to indicate that you have read and agree to Helper Hive's
-							<button>
-								<a
-									href="#"
-									tabindex="-1"
-									class="text-blue-500 underline"
-									on:click|preventDefault={() => openPopup('termsPopup')}
-								>
-									<Text>Terms & Conditions</Text>
-								</a>
-							</button>
-						</Text>
+							>Click here to indicate that you have read and agree to Helper Hive's <a
+								href="#"
+								tabindex="-1"
+								class="text-blue-500 underline"
+								on:click|preventDefault={() => openPopup('termsPopup')}>Terms & Conditions</a
+							></Text
+						>
 					</label>
 				</div>
 				<div class="flex items-center mb-4 lg:justify-center">
@@ -261,11 +259,13 @@
 							: ''}"
 					>
 						<Text
-							>Click here to indicate that you have read and agree to Helper Hive's
-							<button on:click|preventDefault={() => openPopup('liabilityPopup')}>
-								<a href="#" tabindex="-1" class="text-blue-500 underline">Liability Agreement </a>
-							</button>
-						</Text>
+							>Click here to indicate that you have read and agree to Helper Hive's <a
+								href="#"
+								tabindex="-1"
+								class="text-blue-500 underline"
+								on:click|preventDefault={() => openPopup('liabilityPopup')}>Liability Agreement</a
+							></Text
+						>
 					</label>
 				</div>
 
@@ -289,4 +289,4 @@
 </div>
 
 <Popup id="termsPopup" title="Terms & Conditions" type="terms" />
-<Popup id="liabilityPopup" title="Volunteer Liability Information" type="liabilityVol" />
+<Popup id="liabilityPopup" title="Organization Liability Information" type="liabilityOrg" />

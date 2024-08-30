@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Text from '$lib/Components/Text/Text.svelte';
 	import InputField from '$lib/Components/InputField.svelte';
+	import { goto } from '$app/navigation';
 
 	let email = '';
 	let password = '';
@@ -15,18 +16,19 @@
 		if (invalidFields.length > 0) {
 			const firstInvalidField = document.getElementById(invalidFields[0]);
 			firstInvalidField?.scrollIntoView({ behavior: 'smooth' });
+			return;
+		}
+
+		// Submission logic goes here
+		if (password === 'incorrect') {
+			passwordError = true;
 		} else {
-			// Submission logic goes here
-			if (password === 'incorrect') {
-				passwordError = true;
-			} else {
-				passwordError = false;
-				console.log({
-					email,
-					password
-				});
-				alert('Login successfully submitted');
-			}
+			passwordError = false;
+			console.log({
+				email,
+				password
+			});
+			goto('/dashboard');
 		}
 	};
 </script>
@@ -75,7 +77,7 @@
 			</form>
 
 			<Text class="mt-4 text-center"
-				>Not a member? <a href="/VolunteerRegistration" class="text-blue-500 underline"
+				>Not a member? <a href="/registration/volunteer" class="text-blue-500 underline"
 					>Register here</a
 				></Text
 			>
