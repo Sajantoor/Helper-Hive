@@ -11,7 +11,7 @@
 </script>
 
 <div class="calendarEvent max-w-80 w-full h-1/4 m-5 border-white border-2">
-	<a on:click={() => goto(`events/${id}`)}>
+	<a on:click={() => goto(`/app/events/${id}`)}>
 		<img src={img} alt={title} class="h-36 w-full object-cover" />
 		<div class="p-2 flex justify-between items-end">
 			<div class="inline-block mr-6">

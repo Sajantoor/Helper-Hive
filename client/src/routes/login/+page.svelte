@@ -28,7 +28,7 @@
 				email,
 				password
 			});
-			goto('/dashboard');
+			goto('/app');
 		}
 	};
 </script>

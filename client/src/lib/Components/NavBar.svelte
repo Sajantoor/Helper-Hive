@@ -10,7 +10,7 @@
 			<img src={logoSrc} alt="Logo" class="h-10 ml-5" />
 		</div>
 		<div class="nav-links flex gap-14">
-			<a href="/dashboard" class="text-black hover:underline">Home</a>
+			<a href="/app" class="text-black hover:underline">Home</a>
 			<!-- <a href="/organizations" class="text-black hover:underline">Organizations</a> -->
 		</div>
 	</div>

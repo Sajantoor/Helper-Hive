@@ -6,8 +6,8 @@
 	$: slug = $page.params.slug;
 </script>
 
-<button on:click={() => window.history.back()}>
-	<ArrowLeft size={20} class="ml-10 top-12 absolute" />
+<button class="absolute" on:click={() => window.history.back()}>
+	<ArrowLeft size={20} class="ml-10 mt-10 absolute" />
 </button>
 
 <EventPage

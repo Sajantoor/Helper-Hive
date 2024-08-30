@@ -21,7 +21,7 @@
 >
 	<a
 		on:click={() => {
-			goto(`/events/${id}`);
+			goto(`/app/events/${id}`);
 		}}
 	>
 		<img src={img} alt={title} class="h-36 w-full object-cover" />

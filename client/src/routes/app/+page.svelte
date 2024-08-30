@@ -1,5 +1,4 @@
 <script lang="ts">
-	import NavBar from '$lib/Components/NavBar.svelte';
 	import EventScroller from '$lib/Components/EventScroller.svelte';
 	import CalendarView from '$lib/Components/CalendarView.svelte';
 	import Searchbar from '$lib/Components/Searchbar.svelte';
@@ -74,7 +73,6 @@
 </script>
 
 <div class="dashboard mb-8">
-	<NavBar />
 	<Text class="text-2xl font-bold ml-[5%] mt-[1%] mb-[1%]">Events</Text>
 	<Searchbar />
 
