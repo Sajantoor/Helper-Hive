@@ -4,6 +4,7 @@
 	import FileUpload from '$lib/Components/Upload.svelte';
 	import TagSelect from '$lib/Components/TagSelect.svelte';
 	import Location from '$lib/Components/EventPage/Location.svelte';
+	import NavBar from '$lib/Components/NavBar.svelte';
 
 	import FileDocumentOutline from 'svelte-material-icons/FileDocumentOutline.svelte';
 	import CloseCircle from 'svelte-material-icons/CloseCircle.svelte';
@@ -25,11 +26,13 @@
 		'Support',
 		'Cleaning',
 		'Athletics',
+		'Event Planning',
 		'Family'
 	];
 	let hostImage =
 		'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT46Pp3V6MJmwjab7ghq7TSOu5COQongTQ83Q&s';
 	let hostName = 'The City of Vancouver';
+	let hostInstagram = 'https://google.com';
 
 	let title: string = '';
 
@@ -244,7 +247,8 @@
 	};
 </script>
 
-<a href="/" class="absolute left-8 text-xl transform scale-x-[-1] hover:text-primaryYellow">➜</a>
+<NavBar />
+<a href="/" class="absolute left-8 mt-6 text-xl transform scale-x-[-1] hover:text-primaryYellow">➜</a>
 <form on:submit|preventDefault={handleSubmit} class="space-y-6" novalidate>
 	<div class="mx-auto mt-8 mb-8 w-[70vw] flex flex-col grid-cols-1 mdlg:grid mdlg:grid-cols-[44%_56%] mdlg:gap-[2rem_5rem] mdlg:justify-center">
 		<!-- Image Upload -->
@@ -300,7 +304,7 @@
 					</div>
 					<div
 						class="absolute top-[-12px] right-0 cursor-pointer"
-						on:click={() => removeOtherFile(index)}
+						on:click|preventDefault={() => removeOtherFile(index)}
 					>
 						<CloseCircle class="text-red-500" size={24} />
 					</div>
@@ -314,7 +318,11 @@
 						<img class="rounded-full h-14 w-14" src={hostImage} alt={hostName} />
 						<Text class="ml-8">{hostName}</Text>
 					</div>
-					<Instagram class="text-primaryYellow" size={40} />
+					{#if hostInstagram}
+					<div class="cursor-pointer" on:click|preventDefault={() => window.open(hostInstagram, '_blank')}>
+						<Instagram class="text-primaryYellow" size={40} />
+					</div>
+					{/if}
 				</div>
 			</div>
 			<div class="w-full max-w-[450px]">
@@ -450,8 +458,7 @@
 	<div class="pt-28 pb-10 w-full flex justify-center">
 		<button
 			type="submit"
-			class={`w-1/5 ${formValid ? 'bg-primaryYellow text-black' : 'bg-tagYellow text-altTextBrown'} py-2 px-4 rounded-lg mx-auto text`}
-			style="margin-top: 2.5rem;"
+			class={`mdlg:w-1/5 w-4/6 ${formValid ? 'bg-primaryYellow text-black' : 'bg-tagYellow text-altTextBrown'} py-2 px-4 mt-[2.5rem] rounded-lg mx-auto text`}
 		>
 			<Text>Publish Event</Text>
 		</button>
