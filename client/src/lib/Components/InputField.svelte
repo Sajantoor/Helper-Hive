@@ -67,7 +67,7 @@ const myFunc = () => {
 	export let classLabel = '';
 	export let classPlaceholder = '';
 	export let classDiv = 'mb-4 w-full';
-	export let classField = 'mt-1 p-2 w-full';
+	export let classField = 'mt-1 pl-3 p-2 w-full';
 	export let rows = 0;
 	export let minDate = '01/01/1900';
 	export let maxDate = '31/12/2100';
@@ -263,7 +263,7 @@ const myFunc = () => {
 					bind:value
 					bind:this={inputElement}
 					{placeholder}
-					class="{classField} bg-placeholderGray border-none rounded
+					class="{classField} bg-placeholderGray border-none rounded-lg
 					{invalid ? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown' : ''}
 					{classPlaceholder}"
 					on:input={handleSearch}
@@ -307,7 +307,7 @@ const myFunc = () => {
 						bind:value
 						bind:this={inputElement}
 						{placeholder}
-						class="{classField} bg-placeholderGray border-none rounded {invalid
+						class="{classField} bg-placeholderGray border-none rounded-lg {invalid
 							? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'
 							: ''} {classPlaceholder}"
 						on:input={handleInput}
@@ -321,7 +321,7 @@ const myFunc = () => {
 						bind:value
 						bind:this={inputElement}
 						{placeholder}
-						class="{classField} bg-placeholderGray border-none rounded {invalid
+						class="{classField} bg-placeholderGray border-none rounded-lg {invalid
 							? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'
 							: ''} {classPlaceholder}"
 						on:input={handleInput}
@@ -347,7 +347,7 @@ const myFunc = () => {
 				<div class="flex">
 					<select
 						{id}
-						class="h-9 pl-3 rounded-l bg-placeholderGray text-placeholderGrayText cursor-pointer {invalid
+						class="h-9 pl-3 rounded-l-lg bg-placeholderGray text-placeholderGrayText cursor-pointer {invalid
 							? 'bg-tagYellow text-altTextBrown'
 							: ''}"
 						aria-label="Default select example"
@@ -371,7 +371,7 @@ const myFunc = () => {
 						bind:value
 						bind:valid
 						bind:this={inputElement}
-						class="h-9 pl-3 pr-3 rounded-r grow bg-placeholderGray {invalid
+						class="h-9 pl-3 pr-3 rounded-r-lg grow bg-placeholderGray {invalid
 							? 'bg-tagYellow placeholder-altTextBrown text-altTextBrown'
 							: ''}"
 						on:input={handleInput}
@@ -387,7 +387,7 @@ const myFunc = () => {
 					bind:this={inputElement}
 					{placeholder}
 					options={flatpickrOptions}
-					class="{classField} bg-placeholderGray border-none rounded {invalid
+					class="{classField} bg-placeholderGray border-none rounded-lg {invalid
 						? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'
 						: ''} {classPlaceholder}"
 				/>
@@ -399,7 +399,7 @@ const myFunc = () => {
 					bind:value
 					bind:this={inputElement}
 					{placeholder}
-					class="{classField} bg-placeholderGray border-none rounded {invalid
+					class="{classField} bg-placeholderGray border-none rounded-lg {invalid
 						? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'
 						: ''} {classPlaceholder}"
 					on:input={handleInput}
@@ -420,7 +420,7 @@ const myFunc = () => {
 					on:input={handleInput}
 					on:change={handleInput}
 					on:blur={handleFieldBlur}
-					inputClasses="{classField} bg-placeholderGray border-none rounded {invalid
+					inputClasses="{classField} bg-placeholderGray border-none rounded-lg {invalid
 						? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'
 						: ''} {classPlaceholder}"
 				/>
@@ -431,7 +431,7 @@ const myFunc = () => {
 					bind:this={inputElement}
 					{placeholder}
 					options={flatpickrDateRangeOptions}
-					class="{classField} bg-placeholderGray border-none rounded {invalid
+					class="{classField} bg-placeholderGray border-none rounded-lg {invalid
 						? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'
 						: ''} {classPlaceholder}"
 				/>
@@ -442,7 +442,7 @@ const myFunc = () => {
 					bind:this={inputElement}
 					{placeholder}
 					{rows}
-					class="{classField} bg-placeholderGray border-none rounded {invalid
+					class="{classField} bg-placeholderGray border-none rounded-lg {invalid
 						? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'
 						: ''} {classPlaceholder}"
 					on:input={handleInput}
@@ -456,7 +456,7 @@ const myFunc = () => {
 					bind:this={inputElement}
 					bind:value
 					{placeholder}
-					class="{classField} bg-placeholderGray border-none rounded {invalid
+					class="{classField} bg-placeholderGray border-none rounded-lg {invalid
 						? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'
 						: ''} {classPlaceholder}"
 					on:input={handleInput}

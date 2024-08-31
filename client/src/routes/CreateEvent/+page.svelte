@@ -246,33 +246,33 @@
 
 <a href="/" class="absolute left-8 text-xl transform scale-x-[-1] hover:text-primaryYellow">➜</a>
 <form on:submit|preventDefault={handleSubmit} class="space-y-6" novalidate>
-	<div
-		class="mx-auto mt-8 mb-8 w-[70vw] flex flex-col lg:grid lg:grid-cols-[44%_56%] lg:grid-rows-auto lg:gap-[2rem_5rem] lg:justify-center"
-	>
-		<div class="order-2 lg:order-1">
-			<div class="relative aspect-[5/4] mb-8 w-full">
-				<FileUpload
-					id="imageUpload"
-					type="image"
-					placeholder="Upload a picture..."
-					invalid={invalidFields.includes('imageUpload')}
-					on:drop={(event) => handleFileDrop(event, 'image')}
-				/>
-				{#if imageUrl}
-					<div
-						class="absolute inset-0 bg-cover bg-center rounded-3xl"
-						style="background-image: url({imageUrl});"
-					>
-						<div class="absolute top-0 right-0 cursor-pointer" on:click={removeImage}>
-							<Circle class="text-white rounded-full p-1" size={30} />
-						</div>
-						<div class="absolute top-0 right-0 cursor-pointer" on:click={removeImage}>
-							<CloseCircle class="text-primaryYellow rounded-full p-1" size={30} />
-						</div>
+	<div class="mx-auto mt-8 mb-8 w-[70vw] flex flex-col grid-cols-1 mdlg:grid mdlg:grid-cols-[44%_56%] mdlg:gap-[2rem_5rem] mdlg:justify-center">
+		<!-- Image Upload -->
+		<div class="relative mb-8 mdlg:mb-0 aspect-[7/5] flex flex-col mdlg:aspect-[5/4] w-full order-1 mdlg:order-1 mdlg:col-span-1">
+			<FileUpload
+				id="imageUpload"
+				type="image"
+				placeholder="Upload a picture..."
+				invalid={invalidFields.includes('imageUpload')}
+				on:drop={(event) => handleFileDrop(event, 'image')}
+			/>
+			{#if imageUrl}
+				<div
+					class="absolute inset-0 bg-cover bg-center rounded-3xl"
+					style="background-image: url({imageUrl});"
+				>
+					<div class="absolute top-0 right-0 cursor-pointer" on:click={removeImage}>
+						<Circle class="text-white rounded-full p-1" size={30} />
 					</div>
-				{/if}
-			</div>
-
+					<div class="absolute top-0 right-0 cursor-pointer" on:click={removeImage}>
+						<CloseCircle class="text-primaryYellow rounded-full p-1" size={30} />
+					</div>
+				</div>
+			{/if}
+		</div>
+		
+		<!-- File upload, host, location display -->
+		<div class="order-3 mdlg:order-3 mdlg:col-span-1">
 			<div class="h-20 mb-8 w-full">
 				<FileUpload
 					id="fileUpload"
@@ -322,7 +322,8 @@
 			</div>
 		</div>
 
-		<div class="flex flex-col gap-4 order-1 lg:order-2">
+		<!-- Input fields -->
+		<div class="flex flex-col gap-4 order-2 mdlg:order-2 mdlg:col-span-1 mdlg:row-span-2">
 			<InputField
 				id="title"
 				placeholder="Add a title to your event..."
@@ -397,7 +398,7 @@
 				/>
 			</div>
 
-			<Text class="heading">Tag Select</Text>
+			<Text class="font-bold">Tag Select</Text>
 			<TagSelect
 				id="tagInput"
 				placeholder="Add tag"

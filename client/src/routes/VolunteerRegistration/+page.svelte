@@ -17,6 +17,10 @@
 	let formValid = false;
 	let phoneValid = false;
 	let invalidFields: string[] = [];
+	
+	const thirteenYearsAgo = new Date();
+	thirteenYearsAgo.setFullYear(thirteenYearsAgo.getFullYear() - 13);
+	const maxDate = `${('0' + thirteenYearsAgo.getDate()).slice(-2)}/${('0' + (thirteenYearsAgo.getMonth() + 1)).slice(-2)}/${thirteenYearsAgo.getFullYear()}`;
 
 	const validateForm = () => {
 		formValid =
@@ -175,6 +179,7 @@
 					bind:value={dob}
 					invalid={invalidFields.includes('dob')}
 					onInput={handleInputChange}
+					{maxDate}
 				/>
 
 				<!-- Create Password Section -->

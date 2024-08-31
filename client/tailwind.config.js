@@ -4,7 +4,7 @@ export default {
 	theme: {
 		extend: {
 			screens: {
-				'mdlg': '800px', // Custom breakpoint between md and lg
+				'mdlg': '896px', // Custom breakpoint between md and lg
 			},
 			colors: {
 				primaryYellow: '#FABD22',
