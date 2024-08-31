@@ -91,7 +91,7 @@ const myFunc = () => {
 				(country) => country.iso2 === selectedCountry
 			).dialCode;
 			value = `+${countryCode}${value}`;
-		} else if (type != 'dropdown' && type != 'time' && type != 'location'){
+		} else if (type != 'dropdown' && type != 'time' && type != 'location') {
 			if (id.toLowerCase().includes('email')) {
 				event.target.value = value.replace(/\s/g, '');
 			}
@@ -99,12 +99,12 @@ const myFunc = () => {
 		}
 		onInput(event);
 	};
-	
+
 	const handleFieldBlur = (event: any) => {
 		onBlur(event);
 		onInput(event);
 	};
-	
+
 	onMount(() => {
 		filteredOptions = options.sort();
 		if (type === 'location') {
@@ -165,13 +165,10 @@ const myFunc = () => {
 
 	const handleSearch = (event: any) => {
 		searchQuery = event.target.value.toLowerCase();
-		filteredOptions = options
-			.filter(option => option.toLowerCase().includes(searchQuery))
-			.sort();
-		if (searchQuery == ''){
+		filteredOptions = options.filter((option) => option.toLowerCase().includes(searchQuery)).sort();
+		if (searchQuery == '') {
 			highlightedIndex = -1;
-		}
-		else{
+		} else {
 			highlightedIndex = 0;
 		}
 	};
@@ -179,15 +176,19 @@ const myFunc = () => {
 	const handleFocus = (event: any) => {
 		isOpen = true;
 		filteredOptions = options.sort();
-		if (event.target.value.toLowerCase() == ''){
+		if (event.target.value.toLowerCase() == '') {
 			highlightedIndex = -1;
 		}
 		event.target.focus();
 	};
 
-	export function handleBlur(){
+	export function handleBlur() {
 		setTimeout(() => {
-			if (highlightedIndex >= 0 && highlightedIndex < filteredOptions.length && options.includes(value)) {
+			if (
+				highlightedIndex >= 0 &&
+				highlightedIndex < filteredOptions.length &&
+				options.includes(value)
+			) {
 				value = filteredOptions[highlightedIndex];
 				onInput({ target: { value: filteredOptions[highlightedIndex] } });
 			} else {
@@ -197,7 +198,7 @@ const myFunc = () => {
 			isOpen = false;
 			handleInput();
 		}, 200); // Delay to allow click event to register
-	};
+	}
 
 	const handleKeyDown = (event: any) => {
 		if (event.key === 'ArrowDown') {
@@ -209,7 +210,7 @@ const myFunc = () => {
 			value = filteredOptions[highlightedIndex];
 			event.preventDefault();
 		} else if (event.key === 'Enter' || event.key === 'Tab') {
-			if (event.key === 'Enter'){
+			if (event.key === 'Enter') {
 				event.preventDefault();
 			}
 			if (highlightedIndex >= 0 && highlightedIndex < filteredOptions.length) {
@@ -220,7 +221,7 @@ const myFunc = () => {
 			handleInput();
 		}
 	};
-	
+
 	const handleMouseEnter = (index: number) => {
 		highlightedIndex = index;
 		value = filteredOptions[highlightedIndex];
@@ -250,214 +251,219 @@ const myFunc = () => {
 </script>
 
 {#if type === 'dropdown'}
-<div class={classDiv} on:click|preventDefault>
-	<label for={id}>
-		<Text class="smallText {classLabel}">{label}</Text>
-	</label>
-	<div class="relative inline-block w-full">
-		<div class="relative">
-			<input
-				{id}
-				type="text"
-				bind:value
-				bind:this={inputElement}
-				{placeholder}
-				class="{classField} bg-placeholderGray border-none rounded
-					{invalid ? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown' : ''}
-					{classPlaceholder}"
-				on:input={handleSearch}
-				on:keydown={handleKeyDown}
-				on:focus={handleFocus}
-				on:blur={handleBlur}
-				on:click={handleFocus}
-			/>
-			{#if isOpen}
-				<ul class="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded shadow-lg max-h-60 overflow-auto">
-					{#each filteredOptions as option, index}
-						<li
-							class="cursor-pointer select-none relative py-2 pl-3 pr-9 {highlightedIndex === index ? 'bg-gray-100' : ''}"
-							on:mouseenter={() => handleMouseEnter(index)}
-							on:click={() => handleClickOption(option)}
-						>
-							{option}
-						</li>
-					{/each}
-				</ul>
-			{/if}
-		</div>
-	</div>
-</div>
-{:else}
-<div class={classDiv}>
-	<label for={id}>
-		<Text class="smallText {classLabel}">{label}</Text>
-	</label>
-	<div class="relative inline-block w-full">
-		{#if type === 'password'}
-			{#if showPassword}
+	<div class={classDiv} on:click|preventDefault>
+		<label for={id}>
+			<Text class="smallText {classLabel}">{label}</Text>
+		</label>
+		<div class="relative inline-block w-full">
+			<div class="relative">
 				<input
 					{id}
 					type="text"
 					bind:value
 					bind:this={inputElement}
 					{placeholder}
+					class="{classField} bg-placeholderGray border-none rounded
+					{invalid ? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown' : ''}
+					{classPlaceholder}"
+					on:input={handleSearch}
+					on:keydown={handleKeyDown}
+					on:focus={handleFocus}
+					on:blur={handleBlur}
+					on:click={handleFocus}
+				/>
+				{#if isOpen}
+					<ul
+						class="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded shadow-lg max-h-60 overflow-auto"
+					>
+						{#each filteredOptions as option, index}
+							<li
+								class="cursor-pointer select-none relative py-2 pl-3 pr-9 {highlightedIndex ===
+								index
+									? 'bg-gray-100'
+									: ''}"
+								on:mouseenter={() => handleMouseEnter(index)}
+								on:click={() => handleClickOption(option)}
+							>
+								{option}
+							</li>
+						{/each}
+					</ul>
+				{/if}
+			</div>
+		</div>
+	</div>
+{:else}
+	<div class={classDiv}>
+		<label for={id}>
+			<Text class="smallText {classLabel}">{label}</Text>
+		</label>
+		<div class="relative inline-block w-full">
+			{#if type === 'password'}
+				{#if showPassword}
+					<input
+						{id}
+						type="text"
+						bind:value
+						bind:this={inputElement}
+						{placeholder}
+						class="{classField} bg-placeholderGray border-none rounded {invalid
+							? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'
+							: ''} {classPlaceholder}"
+						on:input={handleInput}
+						on:change={handleInput}
+						on:blur={handleFieldBlur}
+					/>
+				{:else}
+					<input
+						{id}
+						type="password"
+						bind:value
+						bind:this={inputElement}
+						{placeholder}
+						class="{classField} bg-placeholderGray border-none rounded {invalid
+							? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'
+							: ''} {classPlaceholder}"
+						on:input={handleInput}
+						on:change={handleInput}
+					/>
+				{/if}
+				<button
+					type="button"
+					class="absolute top-1/2 right-4 transform -translate-y-1/2 border-none bg-none cursor-pointer"
+					tabindex="-1"
+					on:mousedown={() => (showPassword = true)}
+					on:mouseup={() => (showPassword = false)}
+					on:mouseleave={() => (showPassword = false)}
+					style="--eye-pos-y: {eyePosY}%"
+				>
+					{#if showPassword}
+						<EyeOutline class="text-altTextGray" />
+					{:else}
+						<EyeOffOutline class="text-altTextGray" />
+					{/if}
+				</button>
+			{:else if type === 'phone'}
+				<div class="flex">
+					<select
+						{id}
+						class="h-9 pl-3 rounded-l bg-placeholderGray text-placeholderGrayText cursor-pointer {invalid
+							? 'bg-tagYellow text-altTextBrown'
+							: ''}"
+						aria-label="Default select example"
+						name="Country"
+						bind:value={selectedCountry}
+						tabindex="-1"
+					>
+						<option value={null} hidden={selectedCountry !== null}>--</option>
+						{#each normalizedCountries as currentCountry (currentCountry.id)}
+							<option
+								value={currentCountry.iso2}
+								selected={currentCountry.iso2 === selectedCountry}
+								aria-selected={currentCountry.iso2 === selectedCountry}
+							>
+								{currentCountry.iso2} (+{currentCountry.dialCode})
+							</option>
+						{/each}
+					</select>
+					<TelInput
+						bind:country={selectedCountry}
+						bind:value
+						bind:valid
+						bind:this={inputElement}
+						class="h-9 pl-3 pr-3 rounded-r grow bg-placeholderGray {invalid
+							? 'bg-tagYellow placeholder-altTextBrown text-altTextBrown'
+							: ''}"
+						on:input={handleInput}
+						on:blur={handleFieldBlur}
+						options={{ autoPlaceholder: false }}
+						{placeholder}
+					/>
+				</div>
+			{:else if type === 'date'}
+				<Flatpickr
+					{id}
+					bind:value
+					bind:this={inputElement}
+					{placeholder}
+					options={flatpickrOptions}
+					class="{classField} bg-placeholderGray border-none rounded {invalid
+						? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'
+						: ''} {classPlaceholder}"
+				/>
+			{:else if type === 'number'}
+				<input
+					{id}
+					type="number"
+					min="1"
+					bind:value
+					bind:this={inputElement}
+					{placeholder}
 					class="{classField} bg-placeholderGray border-none rounded {invalid
 						? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'
 						: ''} {classPlaceholder}"
 					on:input={handleInput}
 					on:change={handleInput}
 					on:blur={handleFieldBlur}
+					style="appearance: textfield; -webkit-appearance: none; -moz-appearance: textfield;"
 				/>
+			{:else if type === 'time'}
+				<SveltyPicker
+					inputId={id}
+					bind:value
+					bind:this={inputElement}
+					{placeholder}
+					mode="time"
+					format="H:i P"
+					displayFormat="H:i P"
+					manualInput={true}
+					on:input={handleInput}
+					on:change={handleInput}
+					on:blur={handleFieldBlur}
+					inputClasses="{classField} bg-placeholderGray border-none rounded {invalid
+						? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'
+						: ''} {classPlaceholder}"
+				/>
+			{:else if type === 'dateRange'}
+				<Flatpickr
+					{id}
+					bind:value
+					bind:this={inputElement}
+					{placeholder}
+					options={flatpickrDateRangeOptions}
+					class="{classField} bg-placeholderGray border-none rounded {invalid
+						? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'
+						: ''} {classPlaceholder}"
+				/>
+			{:else if rows > 0}
+				<textarea
+					{id}
+					bind:value
+					bind:this={inputElement}
+					{placeholder}
+					{rows}
+					class="{classField} bg-placeholderGray border-none rounded {invalid
+						? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'
+						: ''} {classPlaceholder}"
+					on:input={handleInput}
+					on:change={handleInput}
+					on:blur={handleFieldBlur}
+				></textarea>
 			{:else}
 				<input
 					{id}
-					type="password"
-					bind:value
+					type="text"
 					bind:this={inputElement}
+					bind:value
 					{placeholder}
 					class="{classField} bg-placeholderGray border-none rounded {invalid
 						? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'
 						: ''} {classPlaceholder}"
 					on:input={handleInput}
 					on:change={handleInput}
+					on:blur={handleFieldBlur}
 				/>
 			{/if}
-			<button
-				type="button"
-				class="absolute top-1/2 right-4 transform -translate-y-1/2 border-none bg-none cursor-pointer"
-				tabindex="-1"
-				on:mousedown={() => (showPassword = true)}
-				on:mouseup={() => (showPassword = false)}
-				on:mouseleave={() => (showPassword = false)}
-				style="--eye-pos-y: {eyePosY}%"
-			>
-				{#if showPassword}
-					<EyeOutline class="text-altTextGray" />
-				{:else}
-					<EyeOffOutline class="text-altTextGray" />
-				{/if}
-			</button>
-		{:else if type === 'phone'}
-			<div class="flex">
-				<select
-					{id}
-					class="h-9 pl-3 rounded-l bg-placeholderGray text-placeholderGrayText cursor-pointer {invalid
-						? 'bg-tagYellow text-altTextBrown'
-						: ''}"
-					aria-label="Default select example"
-					name="Country"
-					bind:value={selectedCountry}
-					tabindex="-1"
-				>
-					<option value={null} hidden={selectedCountry !== null}>--</option>
-					{#each normalizedCountries as currentCountry (currentCountry.id)}
-						<option
-							value={currentCountry.iso2}
-							selected={currentCountry.iso2 === selectedCountry}
-							aria-selected={currentCountry.iso2 === selectedCountry}
-						>
-							{currentCountry.iso2} (+{currentCountry.dialCode})
-						</option>
-					{/each}
-				</select>
-				<TelInput
-					bind:country={selectedCountry}
-					bind:value
-					bind:valid
-					bind:this={inputElement}
-					class="h-9 pl-3 pr-3 rounded-r grow bg-placeholderGray {invalid
-						? 'bg-tagYellow placeholder-altTextBrown text-altTextBrown'
-						: ''}"
-					on:input={handleInput}
-					on:blur={handleFieldBlur}
-					options={{ autoPlaceholder: false }}
-					{placeholder}
-				/>
-			</div>
-		{:else if type === 'date'}
-			<Flatpickr
-				{id}
-				bind:value
-				bind:this={inputElement}
-				{placeholder}
-				options={flatpickrOptions}
-				class="{classField} bg-placeholderGray border-none rounded {invalid
-					? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'
-					: ''} {classPlaceholder}"
-			/>
-		{:else if type === 'number'}
-			<input
-				{id}
-				type="number"
-				min="1"
-				bind:value
-				bind:this={inputElement}
-				{placeholder}
-				class="{classField} bg-placeholderGray border-none rounded {invalid
-					? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'
-					: ''} {classPlaceholder}"
-				on:input={handleInput}
-				on:change={handleInput}
-				on:blur={handleFieldBlur}
-				style="appearance: textfield; -webkit-appearance: none; -moz-appearance: textfield;"
-			/>
-		{:else if type === 'time'}
-			<SveltyPicker
-				inputId={id}
-				bind:value={value}
-				bind:this={inputElement}
-				{placeholder}
-				mode="time"
-				format="H:i P"
-				displayFormat="H:i P"
-				manualInput={true}
-				on:input={handleInput}
-				on:change={handleInput}
-				on:blur={handleFieldBlur}
-				inputClasses="{classField} bg-placeholderGray border-none rounded {invalid
-					? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'
-					: ''} {classPlaceholder}"
-			/>
-		{:else if type === 'dateRange'}
-			<Flatpickr
-				{id}
-				bind:value
-				bind:this={inputElement}
-				{placeholder}
-				options={flatpickrDateRangeOptions}
-				class="{classField} bg-placeholderGray border-none rounded {invalid
-					? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'
-					: ''} {classPlaceholder}"
-			/>
-		{:else if rows > 0}
-			<textarea
-				{id}
-				bind:value
-				bind:this={inputElement}
-				{placeholder}
-				rows={rows}
-				class="{classField} bg-placeholderGray border-none rounded {invalid
-					? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'
-					: ''} {classPlaceholder}"
-				on:input={handleInput}
-				on:change={handleInput}
-				on:blur={handleFieldBlur}
-			></textarea>
-		{:else}
-			<input
-				{id}
-				type="text"
-				bind:this={inputElement}
-				bind:value
-				{placeholder}
-				class="{classField} bg-placeholderGray border-none rounded {invalid
-					? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'
-					: ''} {classPlaceholder}"
-				on:input={handleInput}
-				on:change={handleInput}
-				on:blur={handleFieldBlur}
-			/>
-		{/if}
+		</div>
 	</div>
-</div>
 {/if}
