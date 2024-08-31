@@ -1,7 +1,8 @@
 import express from "express";
+import cors from "cors";
 import cookieParser from "cookie-parser";
 import db, { connectDB } from "./database/db";
-import { createEvent, getEvent, getEvents, updateEvent } from "./routes/events";
+import { createEvent, deleteEvent, getEvent, getEvents, updateEvent } from "./routes/events";
 import { getOrganizations, getOrganization, registerOrganization, updateOrganization, deleteOrganization } from "./routes/organizations";
 import { getUser, registerUser, updateUser, deleteUser } from "./routes/user";
 import { authorize, authorizeOrganization, authorizeUser, renewToken } from "./middlewares/authentication";
@@ -9,9 +10,13 @@ import { confirmAccount, forgotPassword, login, logout, resetPassword } from "./
 import { getUserFutureEvents, getUserAllEvents, getOrganizationEvents, registerForEvent, deregisterForEvent } from "./routes/registration";
 
 const app = express();
+app.use(cors({
+    origin: process.env.CLIENT_URL,
+    credentials: true,
+}));
+
 app.use(express.json());
 app.use(cookieParser());
-
 const port = 4000;
 connectDB();
 
@@ -23,7 +28,7 @@ app.get("/health", (req, res) => {
     res.send("UP!");
 });
 
-const API_PREFIX = "/api/v1";
+const API_PREFIX = "/api";
 const EVENTS_API = `${API_PREFIX}/events`;
 const ORGANIZATIONS_API = `${API_PREFIX}/organizations`;
 const USERS_API = `${API_PREFIX}/users`;
@@ -46,6 +51,7 @@ app.get(`${EVENTS_API}`, authorize, getEvents);
 app.get(`${EVENTS_API}/:id`, authorize, getEvent);
 app.post(`${EVENTS_API}`, authorize, authorizeOrganization, createEvent);
 app.patch(`${EVENTS_API}/:id`, authorize, authorizeOrganization, updateEvent);
+app.delete(`${EVENTS_API}/:id`, authorize, authorizeOrganization, deleteEvent);
 
 app.get(`${ORGANIZATIONS_API}`, authorize, getOrganizations);
 app.get(`${ORGANIZATIONS_API}`, authorize, getOrganization);

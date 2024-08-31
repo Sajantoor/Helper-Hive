@@ -5,11 +5,11 @@
 	import Text from './Text/Text.svelte';
 	import { goto } from '$app/navigation';
 
-	export let id: string = 'test';
+	export let id: string = '';
 	export let img: string = '';
 	export let title: string = '';
 	export let location: string = '';
-	export let date: Date = new Date();
+	export let date: Date;
 	export let organization: string = '';
 	export let organizationLogo: string = '';
 
@@ -52,7 +52,7 @@
 
 	.eventCard {
 		border-color: #f4f4f4;
-		flex: 0 0 calc(25% - 2.5rem); /** 4 cards per view, adjust percentage for more/less cards */
-		max-width: calc(25% - 2.5rem);
+		/* flex: 0 0 calc(25% - 2.5rem); * 4 cards per view, adjust percentage for more/less cards */
+		/* max-width: calc(25% - 2.5rem); */
 	}
 </style>

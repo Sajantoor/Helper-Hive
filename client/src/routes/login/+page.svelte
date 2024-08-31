@@ -2,13 +2,14 @@
 	import Text from '$lib/Components/Text/Text.svelte';
 	import InputField from '$lib/Components/InputField.svelte';
 	import { goto } from '$app/navigation';
+	import { PUBLIC_SERVER_HOST } from '$env/static/public';
 
 	let email = '';
 	let password = '';
 	let passwordError = false;
 	let invalidFields: string[] = [];
 
-	const handleSubmit = () => {
+	function validateFields(): boolean {
 		invalidFields = [];
 		if (!email) invalidFields.push('email');
 		if (!password) invalidFields.push('password');
@@ -16,21 +17,31 @@
 		if (invalidFields.length > 0) {
 			const firstInvalidField = document.getElementById(invalidFields[0]);
 			firstInvalidField?.scrollIntoView({ behavior: 'smooth' });
-			return;
+			return false;
 		}
 
-		// Submission logic goes here
-		if (password === 'incorrect') {
-			passwordError = true;
+		return true;
+	}
+
+	async function handleSubmit() {
+		if (!validateFields()) return;
+
+		const data = { email, password };
+		const response = await fetch(`${PUBLIC_SERVER_HOST}/api/login`, {
+			method: 'POST',
+			credentials: 'include',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(data)
+		});
+
+		if (response.ok) {
+			goto('/app/');
 		} else {
-			passwordError = false;
-			console.log({
-				email,
-				password
-			});
-			goto('/app');
+			passwordError = true;
 		}
-	};
+	}
 </script>
 
 <div class="flex flex-col mdlg:flex-row justify-center items-center min-h-screen">

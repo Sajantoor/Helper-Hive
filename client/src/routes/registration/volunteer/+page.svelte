@@ -32,6 +32,7 @@
 			liabilityAgreed &&
 			passwordsMatch &&
 			validateEmail(email);
+		return formValid;
 	};
 
 	const validateEmail = (email: string) => {
@@ -40,26 +41,29 @@
 	};
 
 	const handleSubmit = () => {
+		let isFormValid = validateForm();
 		highlightInvalidFields();
 
-		if (formValid) {
-			// Submission logic goes here
-			if (email === 'already@exists.com') {
-				console.log('Email already exists');
-			} else {
-				console.log({
-					phoneNumber,
-					firstName,
-					lastName,
-					email,
-					dob,
-					password,
-					reenterPassword,
-					termsAgreed,
-					liabilityAgreed
-				});
-				goto('/login');
-			}
+		if (!isFormValid) {
+			return;
+		}
+
+		// Submission logic goes here
+		if (email === 'already@exists.com') {
+			console.log('Email already exists');
+		} else {
+			console.log({
+				phoneNumber,
+				firstName,
+				lastName,
+				email,
+				dob,
+				password,
+				reenterPassword,
+				termsAgreed,
+				liabilityAgreed
+			});
+			goto('/login');
 		}
 	};
 
