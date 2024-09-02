@@ -58,6 +58,7 @@ const myFunc = () => {
 	export let label = '';
 	export let placeholder = '';
 	export let value = '';
+	export let date: Date;
 	export let invalid = false;
 	export let onInput = () => {};
 	export let onBlur = () => {};
@@ -383,7 +384,7 @@ const myFunc = () => {
 			{:else if type === 'date'}
 				<Flatpickr
 					{id}
-					bind:value
+					bind:value={date}
 					bind:this={inputElement}
 					{placeholder}
 					options={flatpickrOptions}
