@@ -5,6 +5,7 @@
 	import Text from '../Text/Text.svelte';
 	import Heading from '../Text/Heading.svelte';
 
+	export let id: string = '';
 	export let eventTitle: string = '';
 	export let eventImage: string = '';
 	export let eventDescription: string = '';
@@ -23,7 +24,16 @@
 <div class="event-page">
 	<img class="eventImg rounded-3xl" src={eventImage} alt={eventTitle} />
 
-	<EventDetails {eventTitle} {tags} {startDate} {endDate} {hours} {location} {spotsAvailable} />
+	<EventDetails
+		{id}
+		{eventTitle}
+		{tags}
+		{startDate}
+		{endDate}
+		{hours}
+		{location}
+		{spotsAvailable}
+	/>
 
 	<div>
 		<HostInfo {hostImage} {hostName} {files} />

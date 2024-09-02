@@ -4,7 +4,9 @@
 
 	import CalendarMonth from 'svelte-material-icons/CalendarMonth.svelte';
 	import MapMarkerOutline from 'svelte-material-icons/MapMarkerOutline.svelte';
+	import { PUBLIC_SERVER_HOST } from '$env/static/public';
 
+	export let id = '';
 	export let eventTitle: string = '';
 	export let tags: string[] = [];
 	export let startDate: Date = new Date();
@@ -12,6 +14,7 @@
 	export let hours: string = '';
 	export let location = '';
 	export let spotsAvailable: number = 0;
+	let registered = checkIfRegistered() || false;
 
 	const regex = /^(.*?),\s*(\w+)\s*(.*)$/;
 	const match = location.match(regex);
@@ -23,10 +26,60 @@
 		address = match[3];
 	}
 
-	const formatDate = (date: Date) => {
+	function formatDate(date: Date) {
 		const options: Intl.DateTimeFormatOptions = { weekday: 'long', month: 'long', day: 'numeric' };
 		return date.toLocaleDateString(undefined, options);
-	};
+	}
+
+	function checkIfRegistered() {
+		// make api call to check if user is registered
+		return false;
+	}
+
+	function handleRegister() {
+		if (registered) {
+			deregisterForEvent();
+		} else {
+			registerForEvent();
+		}
+	}
+
+	async function registerForEvent() {
+		const response = await fetch(`${PUBLIC_SERVER_HOST}/api/registrations/register/event/${id}`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			credentials: 'include'
+		});
+
+		if (!response.ok) {
+			console.error('Failed to register for event');
+			return;
+		}
+
+		registered = true;
+		spotsAvailable--;
+	}
+
+	async function deregisterForEvent() {
+		const response = await fetch(`${PUBLIC_SERVER_HOST}/api/registrations/deregister/event/${id}`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			credentials: 'include'
+		});
+
+		if (!response.ok) {
+			console.error('Failed to deregister for event');
+			return;
+		}
+
+		// deregister for the event
+		registered = false;
+		spotsAvailable++;
+	}
 
 	const isSameDay = startDate.toDateString() === endDate.toDateString();
 	let displayDate = isSameDay
@@ -68,7 +121,10 @@
 
 	<div class="mt-4">
 		<Text class="text-altTextGray">{spotsAvailable} Spots Avaliable</Text>
-		<button class={spotsAvailable > 0 ? 'bg-primaryYellow' : 'bg-placeholderGray'}>
+		<button
+			class={spotsAvailable > 0 && !registered ? 'bg-primaryYellow' : 'bg-placeholderGray'}
+			on:click={handleRegister}
+		>
 			<Text class="font-semibold">Register</Text>
 		</button>
 	</div>

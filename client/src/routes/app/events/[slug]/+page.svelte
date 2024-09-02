@@ -29,6 +29,7 @@
 </button>
 
 <EventPage
+	id={data._id}
 	eventTitle={data.name}
 	eventImage={data.details.photo}
 	tags={data.details.tags}
