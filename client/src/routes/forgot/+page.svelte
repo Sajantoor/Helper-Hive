@@ -2,6 +2,7 @@
 	import Text from '$lib/Components/Text/Text.svelte';
 	import InputField from '$lib/Components/InputField.svelte';
 	import LeftArrow from 'svelte-material-icons/ChevronLeft.svelte';
+	import { PUBLIC_SERVER_HOST } from '$env/static/public';
 
 	let email = '';
 	let formValid = false;
@@ -17,12 +18,31 @@
 		formValid = Boolean(email) && validateEmail(email);
 	};
 
-	const handleSubmit = () => {
+	const handleSubmit = async () => {
 		highlightInvalidFields();
 		if (formValid) {
 			// Submission logic here
 			console.log('Sent email to ' + email);
 			submitted = true;
+		}
+
+		if (!formValid) {
+			return;
+		}
+
+		const response = await fetch(`${PUBLIC_SERVER_HOST}/api/forgot-password`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ email })
+		});
+
+		if (response.ok) {
+			submitted = true;
+		} else {
+			const data = await response.json();
+			console.error('Failed to send forgot password: ' + data);
 		}
 	};
 
