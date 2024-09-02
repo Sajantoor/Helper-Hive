@@ -14,7 +14,9 @@
 	const iconSize = 22;
 </script>
 
-<div class="eventCard max-w-80 w-full h-1/4 m-5 rounded-xl overflow-hidden border-2 border-neutral-100 inline-block">
+<div
+	class="eventCard max-w-80 w-full h-1/4 m-5 rounded-xl overflow-hidden border-2 border-neutral-100 inline-block flex-shrink-0"
+>
 	<img src={img} alt={title} class="h-36 w-full object-cover" />
 	<div class="p-2">
 		<Text class="font-semibold mb-2 mt-1">{title}</Text>
