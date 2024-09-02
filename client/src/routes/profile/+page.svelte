@@ -208,6 +208,39 @@
 	$: hoursToShow = showAllHours ? hours : hours.slice(0, 2);
 </script>
 
+<NavBar />
+
+<div class="ml-10 mt-2 p-8 mr-10 pb-28">
+	{#if isCurrentUser}
+		<div class="editProfile float-right">
+			<button class="editProfile flex border-2 rounded-full p-2 pl-4 pr-4">
+				<Pencil size={25} />
+				<Text class="ml-2">Edit Profile</Text>
+			</button>
+		</div>
+	{/if}
+
+	<img
+		src={profilePicSrc}
+		alt="Profile"
+		class="h-40 w-40 mr-10 rounded-full object-cover float-left"
+	/>
+	<Section class="block">{name}</Section>
+
+	{#if bio}
+		<Text class="bioText">{bio}</Text>
+	{/if}
+
+	{#if completedHours}
+		<div class="float-right">
+			<Heading>Completed Hours:</Heading>
+			<Heading class="float-right text-primaryYellow">{completedHours}</Heading>
+		</div>
+	{/if}
+</div>
+
+<div class="sectionMarker"></div>
+
 <!-- Upcoming Events Section -->
 <div class="ml-10 mt-2 p-8 mr-10">
 	<Heading class="mt-4">Your Upcoming Events</Heading>
