@@ -67,8 +67,8 @@
 	<div class="flex items-center w-1/3 {showInputField ? '' : 'hidden'}">
 		<InputField
 			id="{id}tagInput"
-			placeholder="  {placeholder}"
-			classPlaceholder="rounded-full {invalid && tagValues.length < 1 ? 'shadow-lg' : ''}"
+			placeholder="{placeholder}"
+			classPlaceholder="rounded-full pl-3 {invalid && tagValues.length < 1 ? 'shadow-lg' : ''}"
 			type="dropdown"
 			bind:value={tagValTemp}
 			bind:this={tagComp}
