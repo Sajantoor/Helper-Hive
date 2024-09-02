@@ -4,6 +4,7 @@
 	import Popup from '$lib/Components/TCPopup.svelte';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
+	import { PUBLIC_SERVER_HOST } from '$env/static/public';
 
 	let organizationName = '';
 	let email = '';
@@ -39,28 +40,39 @@
 		return re.test(email);
 	};
 
-	const handleSubmit = () => {
+	const handleSubmit = async () => {
 		highlightInvalidFields();
 
-		if (formValid) {
-			// Submission logic goes here
-			if (email === 'already@exists.com') {
-				console.log('Email already exists');
-			} else {
-				console.log({
-					organizationName,
-					email,
-					phoneNumber,
-					firstName,
-					lastName,
-					password,
-					reenterPassword,
-					termsAgreed,
-					liabilityAgreed
-				});
-				goto('/login');
-			}
+		if (!formValid) {
+			return;
 		}
+
+		const body = {
+			name: organizationName,
+			logo: '',
+			email,
+			phoneNumber,
+			contactPerson: {
+				firstName,
+				lastName
+			},
+			password
+		};
+
+		const response = await fetch(`${PUBLIC_SERVER_HOST}/api/organizations/register`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(body)
+		});
+
+		if (!response.ok) {
+			console.error('Failed to register organization');
+			return;
+		}
+
+		goto('/login');
 	};
 
 	const handlePasswordChange = () => {
