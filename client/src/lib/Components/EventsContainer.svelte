@@ -6,7 +6,7 @@
 	let showAll = false;
 </script>
 
-<div class="container" class:limited={!showAll} class:showMore={showAll}>
+<div class="container">
 	<div class="items">
 		{#each events as event, i}
 			<EventCard
@@ -19,10 +19,6 @@
 			/>
 		{/each}
 	</div>
-
-	{#if !showAll && events.length > 8}
-		<button on:click={() => (showAll = true)}>Show More</button>
-	{/if}
 </div>
 
 <style>
@@ -38,14 +34,5 @@
 	.items {
 		margin: 0 20px;
 		width: 100%;
-	}
-
-	.limited {
-		max-height: calc(25%); /* 25% is the height for event cards */
-		overflow: hidden;
-	}
-
-	.showMore {
-		max-height: none;
 	}
 </style>
