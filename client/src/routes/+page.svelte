@@ -1,5 +1,4 @@
 <script lang="ts">
-	import NavBar from '$lib/Components/NavBar.svelte';
 	import SmallText from '$lib/Components/Text/SmallText.svelte';
 	import Text from '$lib/Components/Text/Text.svelte';
 </script>

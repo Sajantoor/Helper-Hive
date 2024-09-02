@@ -19,6 +19,12 @@
 		font-size: 0.9rem;
 	}
 
+	.bioText {
+		width: 70%;
+		word-break: break-all;
+		word-wrap: break-word;
+	}
+
 	.heading {
 		font-size: 1.25rem;
 		font-weight: bold;
