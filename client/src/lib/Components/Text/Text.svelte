@@ -21,8 +21,6 @@
 
 	.bioText {
 		width: 70%;
-		word-break: break-all;
-		word-wrap: break-word;
 	}
 
 	.heading {
