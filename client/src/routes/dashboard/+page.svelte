@@ -91,7 +91,9 @@
 	{/if}
 	<Text class="text-2xl font-bold ml-[5%] mt-[1%] mb-[1%]">Featured Events</Text>
 
-	<EventScroller {events} />
+	<div class="w-full overflow-hidden">
+		<EventScroller {events} />
+	</div>
 	<CalendarView />
 </div>
 
@@ -115,5 +117,12 @@
 		display: inline-block;
 		white-space: nowrap;
 		text-align: center;
+	}
+	
+	:global(html, body) {
+		overflow-x: hidden;
+	}
+	:global(body) {
+		position: relative;
 	}
 </style>

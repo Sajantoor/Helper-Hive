@@ -138,3 +138,12 @@
 
 <EventScroller {events} />
 <CalendarView />
+
+<style>
+	:global(html, body) {
+		overflow-x: hidden;
+	}
+	:global(body) {
+		position: relative;
+	}
+</style>
