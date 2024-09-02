@@ -4,7 +4,7 @@
 	import FileUpload from '$lib/Components/Upload.svelte';
 	import TagSelect from '$lib/Components/TagSelect.svelte';
 	import Location from '$lib/Components/EventPage/Location.svelte';
-	import NavBar from '$lib/Components/NavBar.svelte';
+	import ArrowLeft from 'svelte-material-icons/ArrowLeft.svelte';
 
 	import FileDocumentOutline from 'svelte-material-icons/FileDocumentOutline.svelte';
 	import CloseCircle from 'svelte-material-icons/CloseCircle.svelte';
@@ -247,12 +247,18 @@
 	};
 </script>
 
-<NavBar />
-<a href="/" class="absolute left-8 mt-6 text-xl transform scale-x-[-1] hover:text-primaryYellow">➜</a>
+<button class="absolute" on:click={() => window.history.back()}>
+	<ArrowLeft size={20} class="ml-10 mt-10 absolute" />
+</button>
+
 <form on:submit|preventDefault={handleSubmit} class="space-y-6" novalidate>
-	<div class="mx-auto mt-8 mb-8 w-[70vw] flex flex-col grid-cols-1 mdlg:grid mdlg:grid-cols-[44%_56%] mdlg:gap-[2rem_5rem] mdlg:justify-center">
+	<div
+		class="mx-auto mt-8 mb-8 w-[70vw] flex flex-col grid-cols-1 mdlg:grid mdlg:grid-cols-[44%_56%] mdlg:gap-[2rem_5rem] mdlg:justify-center"
+	>
 		<!-- Image Upload -->
-		<div class="relative mb-8 mdlg:mb-0 aspect-[7/5] flex flex-col mdlg:aspect-[5/4] w-full order-1 mdlg:order-1 mdlg:col-span-1">
+		<div
+			class="relative mb-8 mdlg:mb-0 aspect-[7/5] flex flex-col mdlg:aspect-[5/4] w-full order-1 mdlg:order-1 mdlg:col-span-1"
+		>
 			<FileUpload
 				id="imageUpload"
 				type="image"
@@ -274,7 +280,7 @@
 				</div>
 			{/if}
 		</div>
-		
+
 		<!-- File upload, host, location display -->
 		<div class="order-3 mdlg:order-3 mdlg:col-span-1">
 			<div class="h-20 mb-8 w-full">
@@ -319,9 +325,12 @@
 						<Text class="ml-8">{hostName}</Text>
 					</div>
 					{#if hostInstagram}
-					<div class="cursor-pointer" on:click|preventDefault={() => window.open(hostInstagram, '_blank')}>
-						<Instagram class="text-primaryYellow" size={40} />
-					</div>
+						<div
+							class="cursor-pointer"
+							on:click|preventDefault={() => window.open(hostInstagram, '_blank')}
+						>
+							<Instagram class="text-primaryYellow" size={40} />
+						</div>
 					{/if}
 				</div>
 			</div>
