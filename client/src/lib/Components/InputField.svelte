@@ -101,8 +101,8 @@ const myFunc = () => {
 	};
 
 	const handleFieldBlur = (event: any) => {
-		onBlur(event);
 		onInput(event);
+		onBlur(event);
 	};
 
 	onMount(() => {
@@ -132,6 +132,7 @@ const myFunc = () => {
 		minDate,
 		maxDate,
 		allowInput: true,
+		disableMobile: true,
 		onChange: (selectedDates: any, dateStr: string, instance: any) => {
 			value = dateStr;
 			handleInput({ target: { value: dateStr } });
@@ -326,6 +327,7 @@ const myFunc = () => {
 							: ''} {classPlaceholder}"
 						on:input={handleInput}
 						on:change={handleInput}
+						on:blur={handleFieldBlur}
 					/>
 				{/if}
 				<button
