@@ -53,42 +53,44 @@
 	}
 </script>
 
-<div class="flex items-center mx-auto relative">
-	<div class="flex-none w-12 flex justify-center bg-white z-10">
-		{#if currentSlide > 0}
-			<button class="p-2 rounded-full transition bg-white hover:bg-gray-200 shadow-md" on:click={prevSlide}>
-				<ArrowLeft />
-			</button>
-		{/if}
-	</div>
-	<div class="flex-grow overflow-hidden">
-		<div class="flex transition-transform duration-300 ease-in-out" style="transform: translateX(calc(-100% * {currentSlide}));">
-			{#each events as event, i}
-				<EventCard
-					img={event.img}
-					title={event.title}
-					date={event.date}
-					organization={event.organization.name}
-					location={event.location}
-					organizationLogo={event.organization.logo}
-					class="flex-shrink-0"
-				/>
-			{/each}
+<div class="w-full overflow-hidden">
+	<div class="flex items-center mx-auto relative">
+		<div class="flex-none w-12 flex justify-center bg-white z-10">
+			{#if currentSlide > 0}
+				<button class="p-2 rounded-full transition bg-white hover:bg-gray-200 shadow-md" on:click={prevSlide}>
+					<ArrowLeft />
+				</button>
+			{/if}
+		</div>
+		<div class="flex-grow overflow-hidden">
+			<div class="flex transition-transform duration-300 ease-in-out" style="transform: translateX(calc(-100% * {currentSlide}));">
+				{#each events as event, i}
+					<EventCard
+						img={event.img}
+						title={event.title}
+						date={event.date}
+						organization={event.organization.name}
+						location={event.location}
+						organizationLogo={event.organization.logo}
+						class="flex-shrink-0"
+					/>
+				{/each}
+			</div>
+		</div>
+		<div class="flex-none w-12 flex justify-center bg-white z-10">
+			{#if currentSlide < totalSlides - 1}
+				<button class="p-2 rounded-full transition bg-white hover:bg-gray-200 shadow-md" on:click={nextSlide}>
+					<ArrowRight />
+				</button>
+			{/if}
 		</div>
 	</div>
-	<div class="flex-none w-12 flex justify-center bg-white z-10">
-		{#if currentSlide < totalSlides - 1}
-			<button class="p-2 rounded-full transition bg-white hover:bg-gray-200 shadow-md" on:click={nextSlide}>
-				<ArrowRight />
-			</button>
-		{/if}
-	</div>
-</div>
 
-<div class="flex justify-center mt-4">
-	{#each Array.from({ length: totalSlides }) as _, i}
-		<button class="w-2.5 h-2.5 bg-yellow-300 rounded-full mx-1
-		transition-colors duration-300 {i === currentSlide ? 'bg-yellow-500' : ''}"
-		on:click={() => (currentSlide = i)} />
-	{/each}
+	<div class="flex justify-center mt-4">
+		{#each Array.from({ length: totalSlides }) as _, i}
+			<button class="w-2.5 h-2.5 rounded-full mx-1 transition-colors duration-300
+			{i === currentSlide ? 'bg-primaryYellow' : 'bg-tagYellow'}"
+			on:click={() => (currentSlide = i)} />
+		{/each}
+	</div>
 </div>
