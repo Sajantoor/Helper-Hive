@@ -16,6 +16,7 @@
 	export let location: string = '';
 	export let hostImage: string = '';
 	export let hostName: string = '';
+	export let hostInstagram: string = '';
 	export let preShiftInfo: string = '';
 	export let spotsAvailable: number = 0;
 	export let files: string[] = [];
@@ -36,7 +37,7 @@
 	/>
 
 	<div>
-		<HostInfo {hostImage} {hostName} {files} />
+		<HostInfo {hostImage} {hostName} {hostInstagram} {files} />
 		{#if location}
 			<Location {location} />
 		{/if}
@@ -81,7 +82,7 @@
 		height: 100%;
 	}
 
-	@media (max-width: 768px) {
+	@media (max-width: 896px) {
 		.event-page {
 			display: flex;
 			flex-direction: column;

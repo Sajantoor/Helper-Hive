@@ -5,10 +5,11 @@
 	import SmallText from '../Text/SmallText.svelte';
 	import Heading from '../Text/Heading.svelte';
 
-	let iconSize = 30;
+	let iconSize = 40;
 
 	export let hostImage: string = '';
 	export let hostName: string = '';
+	export let hostInstagram: string = '';
 	export let files: string[] = [];
 </script>
 
@@ -20,7 +21,11 @@
 
 			<Text class="ml-8">{hostName}</Text>
 		</div>
-		<Instagram class="text-primaryYellow" size={iconSize} />
+		{#if hostInstagram}
+		<div class="cursor-pointer" on:click|preventDefault={() => window.open(hostInstagram, '_blank')}>
+			<Instagram class="text-primaryYellow" size={iconSize} />
+		</div>
+		{/if}
 	</div>
 	<div class="mb-8 mt-8">
 		{#each files as file}

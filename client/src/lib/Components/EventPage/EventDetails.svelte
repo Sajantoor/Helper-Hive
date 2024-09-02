@@ -2,7 +2,7 @@
 	import Section from '../Text/Section.svelte';
 	import Text from '../Text/Text.svelte';
 
-	import CalendarMonth from 'svelte-material-icons/CalendarMonth.svelte';
+	import CalendarMonth from 'svelte-material-icons/CalendarMonthOutline.svelte';
 	import MapMarkerOutline from 'svelte-material-icons/MapMarkerOutline.svelte';
 	import { PUBLIC_SERVER_HOST } from '$env/static/public';
 
@@ -122,10 +122,10 @@
 	<div class="mt-4">
 		<Text class="text-altTextGray">{spotsAvailable} Spots Avaliable</Text>
 		<button
-			class={spotsAvailable > 0 && !registered ? 'bg-primaryYellow' : 'bg-placeholderGray'}
+			class={`w-full ${spotsAvailable > 0 && !registered ? 'bg-primaryYellow text-black' : 'bg-placeholderGray text-placeholderGrayText cursor-default'} py-2 px-4 mt-2 rounded-lg mx-auto text`}
 			on:click={handleRegister}
 		>
-			<Text class="font-semibold">Register</Text>
+			<Text>Register</Text>
 		</button>
 	</div>
 </div>
@@ -155,12 +155,5 @@
 		display: inline-block;
 		white-space: nowrap;
 		text-align: center;
-	}
-
-	button {
-		width: 90%;
-		border-radius: 1rem;
-		padding: 0.6rem;
-		margin-top: 0.5rem;
 	}
 </style>
