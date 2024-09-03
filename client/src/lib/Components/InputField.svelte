@@ -53,11 +53,13 @@ const myFunc = () => {
 	import { TelInput, normalizedCountries } from 'svelte-tel-input';
 	import type { CountryCode } from 'svelte-tel-input/types';
 	import { onMount } from 'svelte';
+	import { PUBLIC_GOOGLE_MAPS_API_KEY } from '$env/static/public';
 
 	export let id = '';
 	export let label = '';
 	export let placeholder = '';
 	export let value = '';
+	export let date: Date;
 	export let invalid = false;
 	export let onInput = () => {};
 	export let onBlur = () => {};
@@ -82,7 +84,7 @@ const myFunc = () => {
 	let isOpen = false;
 	let highlightedIndex = -1;
 	let inputElement: HTMLInputElement;
-	let GOOGLE_MAPS_API_KEY = 'API_KEY_HERE';
+	let GOOGLE_MAPS_API_KEY = PUBLIC_GOOGLE_MAPS_API_KEY;
 
 	const handleInput = (event: any) => {
 		if (type === 'phone') {
@@ -384,7 +386,7 @@ const myFunc = () => {
 			{:else if type === 'date'}
 				<Flatpickr
 					{id}
-					bind:value
+					bind:value={date}
 					bind:this={inputElement}
 					{placeholder}
 					options={flatpickrOptions}

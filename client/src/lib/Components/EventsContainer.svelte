@@ -1,8 +1,8 @@
 <script lang="ts">
 	import EventCard from '$lib/Components/EventCard.svelte';
-	import type { Event } from '$lib/Types/Events';
+	import type { EventContent } from '$lib/Types/Events';
 
-	export let events: Event[] = [];
+	export let events: EventContent[] = [];
 	let showAll = false;
 </script>
 
@@ -10,11 +10,12 @@
 	<div class="items">
 		{#each events as event, i}
 			<EventCard
-				img={event.img}
-				title={event.title}
-				date={event.date}
+				id={event._id}
+				img={event.details.photo}
+				title={event.name}
+				date={event.date.startDay}
 				organization={event.organization.name}
-				location={event.location}
+				location={event.details.location}
 				organizationLogo={event.organization.logo}
 			/>
 		{/each}

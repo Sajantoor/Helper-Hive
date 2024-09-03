@@ -157,3 +157,46 @@ export async function confirmAccount(req: Request, res: Response) {
     return res.status(200).json({ message: "Account confirmed" });
 }
 
+export async function profile(req: Request, res: Response) {
+    const user = res.locals.user;
+    let response: {
+        id: string;
+        email: string;
+        name: string;
+        profilePicture?: string | null;
+    }
+
+    if (user.userRole === "volunteer") {
+        const profile = await User.findById(user.userId);
+
+        if (!profile) {
+            return res.status(404).json({ message: "Profile not found" });
+        }
+
+        response = {
+            id: profile.id,
+            email: profile.email,
+            name: profile.firstName + " " + profile.lastName,
+            profilePicture: profile.profilePicture
+        }
+    } else if (user.userRole === "organization") {
+        const profile = await Organization.findById(user.userId);
+
+        if (!profile) {
+            return res.status(404).json({ message: "Profile not found" });
+        }
+
+        response = {
+            id: profile.id,
+            email: profile.email,
+            name: profile.name,
+            profilePicture: profile.logo
+        }
+    } else {
+        return res.status(500).json({ message: "Internal server error" });
+    }
+
+
+    return res.status(200).json(response);
+}
+

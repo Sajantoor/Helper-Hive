@@ -1,17 +1,28 @@
-export interface Event extends CalendarElementData {
-    id: number;
-    organization: Organization;
-}
-
-export interface CalendarElementData {
-    img: string;
-    title: string;
-    location: string;
-    date: Date;
-}
-
-export interface Organization {
-    id: number;
+export type EventContent = {
+    _id: string;
     name: string;
-    logo: string;
+    date: {
+        startDay: Date;
+        endDay: Date;
+        startTime: Date;
+        endTime: Date;
+    };
+    details: {
+        description: string;
+        preShiftInfo: string;
+        location: string;
+        tags: string[];
+        photo: string;
+        files: string[];
+    };
+    registration: {
+        totalSpots: number;
+        totalRegistered: number;
+        isRegistered?: boolean;
+    }
+    organization: {
+        _id: string,
+        name: string,
+        logo: string;
+    }
 }
