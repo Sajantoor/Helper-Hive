@@ -6,8 +6,8 @@ import { createEvent, deleteEvent, getEvent, getEvents, updateEvent } from "./ro
 import { getOrganizations, getOrganization, registerOrganization, updateOrganization, deleteOrganization } from "./routes/organizations";
 import { getUser, registerUser, updateUser, deleteUser } from "./routes/user";
 import { authorize, authorizeOrganization, authorizeUser, renewToken } from "./middlewares/authentication";
-import { confirmAccount, forgotPassword, login, logout, resetPassword } from "./routes/login";
-import { getUserFutureEvents, getUserAllEvents, getOrganizationEvents, registerForEvent, deregisterForEvent } from "./routes/registration";
+import { confirmAccount, forgotPassword, login, logout, profile, resetPassword } from "./routes/login";
+import { getUserFutureEvents, getUserPastEvents, getOrganizationEvents, registerForEvent, deregisterForEvent } from "./routes/registration";
 
 const app = express();
 app.use(cors({
@@ -46,6 +46,7 @@ app.post(`${USERS_API}/register`, registerUser);
 // Authenticated Routes
 app.post(`${API_PREFIX}/logout`, authorize, logout);
 app.post(`${API_PREFIX}/token`, authorize, renewToken);
+app.get(`${API_PREFIX}/profile`, authorize, profile);
 
 app.get(`${EVENTS_API}`, authorize, getEvents);
 app.get(`${EVENTS_API}/:id`, authorize, getEvent);
@@ -62,9 +63,9 @@ app.get(`${USERS_API}/:id`, authorize, getUser);
 app.patch(`${USERS_API}`, authorize, authorizeUser, updateUser);
 app.delete(`${USERS_API}`, authorize, authorizeUser, deleteUser);
 
-app.get(`${REGISTRATION_API}/user/:id/future-events`, getUserFutureEvents);
-app.get(`${REGISTRATION_API}/user/:id/all-events`, getUserAllEvents); // we can rename this to getPresentAndPastEvents
-app.get(`${REGISTRATION_API}/organization/:id/events`, getOrganizationEvents);
+app.get(`${REGISTRATION_API}/future`, authorize, getUserFutureEvents);
+app.get(`${REGISTRATION_API}/past`, authorize, getUserPastEvents);
+app.get(`${REGISTRATION_API}/organization/:id/events`, authorize, getOrganizationEvents);
 app.post(`${REGISTRATION_API}/register/event/:id`, authorize, authorizeUser, registerForEvent);
 app.post(`${REGISTRATION_API}/deregister/event/:id`, authorize, authorizeUser, deregisterForEvent);
 

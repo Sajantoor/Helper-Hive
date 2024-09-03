@@ -4,195 +4,21 @@
 	import Heading from '$lib/Components/Text/Heading.svelte';
 	import Text from '$lib/Components/Text/Text.svelte';
 	import Pencil from 'svelte-material-icons/Pencil.svelte';
-	import type { Event } from '$lib/Types/Events';
+	import type { EventContent } from '$lib/Types/Events';
 	import EventsContainer from '$lib/Components/EventsContainer.svelte';
 
-	let profilePicSrc = 'https://cdn-icons-png.freepik.com/512/4032/4032866.png';
-	let name = 'Jess Murray';
+	export let data;
+
+	let profilePicSrc = data.profile.profilePicture;
+	let name = data.profile.name;
 	let isCurrentUser = true;
-	let bio =
-		'Adventurous soul, avid learner, and always up for a good laugh. Living life one moment at a time.';
-	let completedHours = 31;
+	let bio = '';
+	let completedHours = 0;
 
-	let events: Event[] = [
-		{
-			id: 1,
-			img: 'https://assets.simpleviewinc.com/simpleview/image/upload/crm/vancouverbc/Science-World-03-large_7A18828C-0A13-47CD-92DB4404AE5A222C_fb32edf9-a996-4f5f-a2aaa1980fe8d6b7.jpg',
-			title: "1 World Children's Day",
-			date: new Date(),
-			organization: {
-				id: 1,
-				name: 'The City of Vancouver',
-				logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT46Pp3V6MJmwjab7ghq7TSOu5COQongTQ83Q&s'
-			},
-			location: 'Vancouver, BC 1455 Quebec St'
-		},
-		{
-			id: 1,
-			img: 'https://assets.simpleviewinc.com/simpleview/image/upload/crm/vancouverbc/Science-World-03-large_7A18828C-0A13-47CD-92DB4404AE5A222C_fb32edf9-a996-4f5f-a2aaa1980fe8d6b7.jpg',
-			title: "2 World Children's Day",
-			date: new Date(),
-			organization: {
-				id: 1,
-				name: 'The City of Vancouver',
-				logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT46Pp3V6MJmwjab7ghq7TSOu5COQongTQ83Q&s'
-			},
-			location: 'Vancouver, BC 1455 Quebec St'
-		},
-		{
-			id: 1,
-			img: 'https://assets.simpleviewinc.com/simpleview/image/upload/crm/vancouverbc/Science-World-03-large_7A18828C-0A13-47CD-92DB4404AE5A222C_fb32edf9-a996-4f5f-a2aaa1980fe8d6b7.jpg',
-			title: "3 World Children's Day",
-			date: new Date(),
-			organization: {
-				id: 1,
-				name: 'The City of Vancouver',
-				logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT46Pp3V6MJmwjab7ghq7TSOu5COQongTQ83Q&s'
-			},
-			location: 'Vancouver, BC 1455 Quebec St'
-		},
-		{
-			id: 1,
-			img: 'https://assets.simpleviewinc.com/simpleview/image/upload/crm/vancouverbc/Science-World-03-large_7A18828C-0A13-47CD-92DB4404AE5A222C_fb32edf9-a996-4f5f-a2aaa1980fe8d6b7.jpg',
-			title: "4 Science World Children's Day",
-			date: new Date(),
-			organization: {
-				id: 1,
-				name: 'The City of Vancouver',
-				logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT46Pp3V6MJmwjab7ghq7TSOu5COQongTQ83Q&s'
-			},
-			location: 'Vancouver, BC 1455 Quebec St'
-		},
-		{
-			id: 1,
-			img: 'https://assets.simpleviewinc.com/simpleview/image/upload/crm/vancouverbc/Science-World-03-large_7A18828C-0A13-47CD-92DB4404AE5A222C_fb32edf9-a996-4f5f-a2aaa1980fe8d6b7.jpg',
-			title: "5 Science World Children's Day",
-			date: new Date(),
-			organization: {
-				id: 1,
-				name: 'The City of Vancouver',
-				logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT46Pp3V6MJmwjab7ghq7TSOu5COQongTQ83Q&s'
-			},
-			location: 'Vancouver, BC 1455 Quebec St'
-		},
-		{
-			id: 1,
-			img: 'https://assets.simpleviewinc.com/simpleview/image/upload/crm/vancouverbc/Science-World-03-large_7A18828C-0A13-47CD-92DB4404AE5A222C_fb32edf9-a996-4f5f-a2aaa1980fe8d6b7.jpg',
-			title: "1 World Children's Day",
-			date: new Date(),
-			organization: {
-				id: 1,
-				name: 'The City of Vancouver',
-				logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT46Pp3V6MJmwjab7ghq7TSOu5COQongTQ83Q&s'
-			},
-			location: 'Vancouver, BC 1455 Quebec St'
-		},
-		{
-			id: 1,
-			img: 'https://assets.simpleviewinc.com/simpleview/image/upload/crm/vancouverbc/Science-World-03-large_7A18828C-0A13-47CD-92DB4404AE5A222C_fb32edf9-a996-4f5f-a2aaa1980fe8d6b7.jpg',
-			title: "2 World Children's Day",
-			date: new Date(),
-			organization: {
-				id: 1,
-				name: 'The City of Vancouver',
-				logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT46Pp3V6MJmwjab7ghq7TSOu5COQongTQ83Q&s'
-			},
-			location: 'Vancouver, BC 1455 Quebec St'
-		},
-		{
-			id: 1,
-			img: 'https://assets.simpleviewinc.com/simpleview/image/upload/crm/vancouverbc/Science-World-03-large_7A18828C-0A13-47CD-92DB4404AE5A222C_fb32edf9-a996-4f5f-a2aaa1980fe8d6b7.jpg',
-			title: "5 Science World Children's Day",
-			date: new Date(),
-			organization: {
-				id: 1,
-				name: 'The City of Vancouver',
-				logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT46Pp3V6MJmwjab7ghq7TSOu5COQongTQ83Q&s'
-			},
-			location: 'Vancouver, BC 1455 Quebec St'
-		},
-		{
-			id: 1,
-			img: 'https://assets.simpleviewinc.com/simpleview/image/upload/crm/vancouverbc/Science-World-03-large_7A18828C-0A13-47CD-92DB4404AE5A222C_fb32edf9-a996-4f5f-a2aaa1980fe8d6b7.jpg',
-			title: "1 World Children's Day",
-			date: new Date(),
-			organization: {
-				id: 1,
-				name: 'The City of Vancouver',
-				logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT46Pp3V6MJmwjab7ghq7TSOu5COQongTQ83Q&s'
-			},
-			location: 'Vancouver, BC 1455 Quebec St'
-		},
-		{
-			id: 1,
-			img: 'https://assets.simpleviewinc.com/simpleview/image/upload/crm/vancouverbc/Science-World-03-large_7A18828C-0A13-47CD-92DB4404AE5A222C_fb32edf9-a996-4f5f-a2aaa1980fe8d6b7.jpg',
-			title: "2 World Children's Day",
-			date: new Date(),
-			organization: {
-				id: 1,
-				name: 'The City of Vancouver',
-				logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT46Pp3V6MJmwjab7ghq7TSOu5COQongTQ83Q&s'
-			},
-			location: 'Vancouver, BC 1455 Quebec St'
-		}
-	];
+	let upcomingEvents: EventContent[] = data.futureEvents;
+	let pastEvents: EventContent[] = data.pastEvents;
 
-	let hours = [
-		{
-			organization: 'The City of Vancouver',
-			logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT46Pp3V6MJmwjab7ghq7TSOu5COQongTQ83Q&s',
-			event: 'Science World Day',
-			date: 'August 2, 2024',
-			time: '7:30 AM to 8:30 AM',
-			hours: 1.0,
-			status: 'Verified'
-		},
-		{
-			organization: 'The City of Vancouver',
-			logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT46Pp3V6MJmwjab7ghq7TSOu5COQongTQ83Q&s',
-			event: 'Science World Day',
-			date: 'August 2, 2024',
-			time: '7:30 AM to 8:30 AM',
-			hours: 1.0,
-			status: 'Not Verified'
-		},
-		{
-			organization: 'The City of Vancouver',
-			logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT46Pp3V6MJmwjab7ghq7TSOu5COQongTQ83Q&s',
-			event: 'Science World Day',
-			date: 'August 2, 2024',
-			time: '7:30 AM to 8:30 AM',
-			hours: 1.0,
-			status: 'Verified'
-		},
-		{
-			organization: 'The City of Vancouver',
-			logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT46Pp3V6MJmwjab7ghq7TSOu5COQongTQ83Q&s',
-			event: 'Science World Day',
-			date: 'August 2, 2024',
-			time: '7:30 AM to 8:30 AM',
-			hours: 1.0,
-			status: 'Not Verified'
-		},
-		{
-			organization: 'The City of Vancouver',
-			logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT46Pp3V6MJmwjab7ghq7TSOu5COQongTQ83Q&s',
-			event: 'Science World Day',
-			date: 'August 2, 2024',
-			time: '7:30 AM to 8:30 AM',
-			hours: 1.0,
-			status: 'Verified'
-		},
-		{
-			organization: 'The City of Vancouver',
-			logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT46Pp3V6MJmwjab7ghq7TSOu5COQongTQ83Q&s',
-			event: 'Science World Day',
-			date: 'August 2, 2024',
-			time: '7:30 AM to 8:30 AM',
-			hours: 1.0,
-			status: 'Not Verified'
-		}
-	];
+	let hours = data.pastEvents;
 
 	let showAllUpcoming = false;
 	let showAllPast = false;
@@ -203,12 +29,10 @@
 	const toggleShowAllHours = () => (showAllHours = !showAllHours);
 
 	// Computed variables
-	$: upcomingEventsToShow = showAllUpcoming ? events : events.slice(0, 8);
-	$: pastEventsToShow = showAllPast ? events : events.slice(0, 8);
+	$: upcomingEventsToShow = showAllUpcoming ? upcomingEvents : upcomingEvents.slice(0, 8);
+	$: pastEventsToShow = showAllPast ? pastEvents : pastEvents.slice(0, 8);
 	$: hoursToShow = showAllHours ? hours : hours.slice(0, 2);
 </script>
-
-<NavBar />
 
 <div class="ml-10 mt-2 p-8 mr-10 pb-28">
 	{#if isCurrentUser}
@@ -254,14 +78,14 @@
 	<button
 		class="moreButton mt-4"
 		on:click={toggleShowAllUpcoming}
-		disabled={events.length <= 8 && !showAllUpcoming}
+		disabled={upcomingEvents.length <= 8 && !showAllUpcoming}
 	>
-		{showAllUpcoming && events.length > 2 ? 'Show Less' : 'More'}
+		{showAllUpcoming && upcomingEvents.length > 2 ? 'Show Less' : 'More'}
 	</button>
 </div>
 
 <!-- Hours Section -->
-<div class="ml-10 mt-2 p-8 mr-10">
+<!-- <div class="ml-10 mt-2 p-8 mr-10">
 	<Heading>Your Hours</Heading>
 	<table class="table-auto w-full">
 		<thead>
@@ -278,7 +102,11 @@
 			{#each hoursToShow as hour}
 				<tr>
 					<td>
-						<img src={hour.logo} alt="Logo" class="inline-block h-6 w-6 mr-1 rounded-full" />
+						<img
+							src={hour.organization.logo}
+							alt="Logo"
+							class="inline-block h-6 w-6 mr-1 rounded-full"
+						/>
 						{hour.organization}
 					</td>
 					<td>{hour.event}</td>
@@ -304,7 +132,7 @@
 	>
 		{showAllHours ? 'Show Less' : 'More'}
 	</button>
-</div>
+</div> -->
 
 <!-- Past Events Section -->
 <div class="ml-10 mt-2 p-8 mr-10">
@@ -315,7 +143,7 @@
 	<button
 		class="moreButton mt-4"
 		on:click={toggleShowAllPast}
-		disabled={events.length <= 8 && !showAllPast}
+		disabled={pastEvents.length <= 8 && !showAllPast}
 	>
 		{showAllPast ? 'Show Less' : 'More'}
 	</button>

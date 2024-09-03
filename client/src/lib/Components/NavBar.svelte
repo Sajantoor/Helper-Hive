@@ -14,7 +14,9 @@
 			<!-- <a href="/organizations" class="text-black hover:underline">Organizations</a> -->
 		</div>
 	</div>
-	<div class="profile-pic">
-		<img src={profilePicSrc} alt="Profile" class="h-8 w-8 mr-8 rounded-full object-cover" />
-	</div>
+	<a href="/app/profile">
+		<div class="profile-pic">
+			<img src={profilePicSrc} alt="Profile" class="h-8 w-8 mr-8 rounded-full object-cover" />
+		</div>
+	</a>
 </nav>

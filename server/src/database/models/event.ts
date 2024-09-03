@@ -19,6 +19,7 @@ const eventSchema = new Schema({
             photo: { type: String, required: true },
             files: [{ type: String, required: false }],
             tags: [{ type: String, required: false }],
+            createdAt: { type: Date, required: true, default: Date.now },
         }),
     },
     registration: {

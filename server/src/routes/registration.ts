@@ -11,52 +11,66 @@ interface RegisterForEventBody {
 
 // GET all the events a user is currently registered for (in the future)
 export async function getUserFutureEvents(req: Request, res: Response) {
-    const userId = req.params.id;
+    const user = res.locals.user;
+    const userId = user.userId;
+    const userRole = user.userRole;
 
     if (!userId) {
         return res.status(400).json({ message: "Invalid user id" });
     }
 
+    const currentDate = new Date();
+    let events;
+
     try {
-        const user = await User.findById(userId);
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
+        if (userRole === "volunteer") {
+            events = await Event.find({
+                'date.endDay': { $gte: currentDate },
+                "registration.registeredVolunteers": userId,
+            });
+        } else if (userRole === "organization") {
+            events = await Event.find({
+                'date.endDay': { $gte: currentDate },
+                organization: userId
+            });
         }
-
-        const currentDate = new Date();
-        const futureEvents = await Event.find({
-            _id: { $in: user.registeredEvents },
-            startDate: { $gt: currentDate }
-        });
-
-        return res.status(200).json(futureEvents);
     } catch (error) {
         return res.status(500).json({ message: "Error fetching future events", error });
     }
+
+    return res.status(200).json(events);
 }
 
 // GET all events a user has ever registered for (past and present)
-export async function getUserAllEvents(req: Request, res: Response) {
-    const userId = req.params.id;
+export async function getUserPastEvents(req: Request, res: Response) {
+    const user = res.locals.user;
+    const userId = user.userId;
+    const userRole = user.userRole;
 
     if (!userId) {
         return res.status(400).json({ message: "Invalid user id" });
     }
 
+    const currentDate = new Date();
+    let events;
+
     try {
-        const user = await User.findById(userId);
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
+        if (userRole === "volunteer") {
+            events = await Event.find({
+                'date.endDay': { $lt: currentDate },
+                "registration.registeredVolunteers": userId,
+            });
+        } else if (userRole === "organization") {
+            events = await Event.find({
+                'date.endDay': { $lt: currentDate },
+                organization: userId
+            });
         }
-        const currentDate = new Date();
-        const pastAndPresentEvents = await Event.find({
-            _id: { $in: user.registeredEvents },
-            endDate: { $lte: currentDate }
-        });
-        return res.status(200).json(pastAndPresentEvents);
     } catch (error) {
-        return res.status(500).json({ message: "Error fetching events", error });
+        return res.status(500).json({ message: "Error fetching past events", error });
     }
+
+    return res.status(200).json(events);
 }
 
 // GET all events an organization has created
@@ -68,7 +82,7 @@ export async function getOrganizationEvents(req: Request, res: Response) {
     }
 
     try {
-        const events = await Event.find({ organizationId: organizationId });
+        const events = await Event.find({ organization: organizationId });
         return res.status(200).json(events);
     } catch (error) {
         return res.status(500).json({ message: "Error fetching organization events", error });

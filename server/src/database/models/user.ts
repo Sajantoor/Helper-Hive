@@ -7,6 +7,7 @@ const userSchema = new Schema({
     phoneNumber: { type: String, required: true, match: /^\+?[1-9]\d{1,14}$/ },
     password: { type: String, required: true },
     dateOfBirth: { type: Date, required: true },
+    profilePicture: { type: String, required: false },
     // emergencyContact: {
     //     name: { type: String, required: true },
     //     phoneNumber: { type: String, required: true, match: /^\+?[1-9]\d{1,14}$/ },
