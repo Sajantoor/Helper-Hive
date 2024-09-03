@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Text from '$lib/Components/Text/Text.svelte';
-	import InputField from '$lib/Components/InputField.svelte';
 	import LeftArrow from 'svelte-material-icons/ChevronLeft.svelte';
+	import TextInput from '$lib/Components/Input/TextInput.svelte';
 
 	let email = '';
 	let formValid = false;
@@ -59,7 +59,7 @@
 				>
 
 				<form on:submit|preventDefault={handleSubmit} class="space-y-6">
-					<InputField
+					<TextInput
 						id="email"
 						label="Email Address"
 						placeholder="Email Address"

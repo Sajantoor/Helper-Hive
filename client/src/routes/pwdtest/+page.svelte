@@ -1,8 +1,10 @@
 <script lang="ts">
 	import Text from '$lib/Components/Text/Text.svelte';
-	import InputField from '$lib/Components/InputField.svelte';
 	import Popup from '$lib/Components/TCPopup.svelte';
 	import { onMount } from 'svelte';
+	
+	import TextInput from '$lib/Components/Input/TextInput.svelte';
+	import PasswordInput from '$lib/Components/Input/PasswordInput.svelte';
 
 	let firstName = '';
 	let lastName = '';
@@ -12,12 +14,12 @@
 	let passwordsMatch = true;
 	let formValid = false;
 	let invalidFields: string[] = [];
-	let invalidComps: InputField[] = [];
+	let invalidComps: any[] = [];
 	
-	let firstNameComp: InputField;
-	let lastNameComp: InputField;
-	let passwordComp: InputField;
-	let reenterPasswordComp: InputField;
+	let firstNameComp: TextInput;
+	let lastNameComp: TextInput;
+	let passwordComp: PasswordInput;
+	let reenterPasswordComp: PasswordInput;
 	
 	let pwdStatus = 'Password must have';
 	let showPwdStatus = false;
@@ -138,7 +140,7 @@
 				<Text class="heading mb-2">Organization Information</Text>
 
 				<div class="grid grid-cols-2 gap-4">
-					<InputField
+					<TextInput
 						id="firstName"
 						label="First Name"
 						placeholder="First Name"
@@ -149,10 +151,10 @@
 						errorMsgs={["First name is required"]}
 						errorBools={[invalidFields.includes('firstName')]}
 						keepErrorSpacing={true}
-						showErrorsWhen={true}
+						showErrorsOnlyWhen={true}
 						keepErrorsOnBlur={false}
 					/>
-					<InputField
+					<TextInput
 						id="lastName"
 						label="Last Name"
 						placeholder="Last Name"
@@ -168,11 +170,10 @@
 					<Text class="heading mb-2">Create Password</Text>
 				</div>
 				<div class="relative">
-					<InputField
+					<PasswordInput
 						id="password"
 						label="Password"
 						placeholder="Password"
-						type="password"
 						bind:value={password}
 						bind:this={passwordComp}
 						invalid={invalidFields.includes('password')}
@@ -188,17 +189,16 @@
 							'',
 							'',
 							"text-green-500"]}
-						keepErrorSpacing={true}
-						showErrorsWhen={showPwdStatus || password == ''}
+						keepErrorSpacing={false}
+						showErrorsOnlyWhen={showPwdStatus || password == ''}
 						keepErrorsOnBlur={false}
 						onInput={() => handlePasswordChange(true)}
 						onBlur={passwordBlur}
 					/>
-					<InputField
+					<PasswordInput
 						id="reenterPassword"
 						label="Re-enter Password"
 						placeholder="Re-enter Password"
-						type="password"
 						bind:value={reenterPassword}
 						bind:this={reenterPasswordComp}
 						invalid={invalidFields.includes('reenterPassword')}

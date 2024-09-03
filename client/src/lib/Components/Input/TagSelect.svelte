@@ -1,9 +1,6 @@
-<!-- Keeping this file for now, just in case something still refers to it -->
-<!-- But it is obselete and we can delete it -->
-
 <script lang="ts">
 	import Text from '$lib/Components/Text/Text.svelte';
-	import InputField from '$lib/Components/InputField.svelte';
+	import DropDown from '$lib/Components/Input/DropDownInput.svelte';
 	import CloseCircle from 'svelte-material-icons/CloseCircle.svelte';
 
 	let tagValTemp: string = '';
@@ -68,11 +65,10 @@
 		{/each}
 	</div>
 	<div class="flex items-center w-1/3 {showInputField ? '' : 'hidden'}">
-		<InputField
+		<DropDown
 			id="{id}tagInput"
 			placeholder="{placeholder}"
 			classText="rounded-full pl-3 {invalid && tagValues.length < 1 ? 'shadow-lg' : ''}"
-			type="dropdown"
 			bind:value={tagValTemp}
 			bind:this={tagComp}
 			{invalid}

@@ -1,10 +1,15 @@
 <script lang="ts">
 	import Text from '$lib/Components/Text/Text.svelte';
-	import InputField from '$lib/Components/InputField.svelte';
 	import FileUpload from '$lib/Components/Upload.svelte';
-	import TagSelect from '$lib/Components/TagSelect.svelte';
 	import Location from '$lib/Components/EventPage/Location.svelte';
 	import NavBar from '$lib/Components/NavBar.svelte';
+	
+	import DateInput from '$lib/Components/Input/DateInput.svelte';
+	import LocationInput from '$lib/Components/Input/LocationInput.svelte';
+	import NumberInput from '$lib/Components/Input/NumberInput.svelte';
+	import TagSelect from '$lib/Components/Input/TagSelect.svelte';
+	import TextInput from '$lib/Components/Input/TextInput.svelte';
+	import TimeInput from '$lib/Components/Input/TimeInput.svelte';
 
 	import FileDocumentOutline from 'svelte-material-icons/FileDocumentOutline.svelte';
 	import CloseCircle from 'svelte-material-icons/CloseCircle.svelte';
@@ -134,7 +139,7 @@
 	};
 
 	async function saveLocation() {
-		if (location != '') {
+		if (location != '' &&location != 'Address not found') {
 			location2 = location;
 			location = locationAddress;
 			handleInputChange();
@@ -332,10 +337,10 @@
 
 		<!-- Input fields -->
 		<div class="flex flex-col gap-4 order-2 mdlg:order-2 mdlg:col-span-1 mdlg:row-span-2">
-			<InputField
+			<TextInput
 				id="title"
 				placeholder="Add a title to your event..."
-				classPlaceholder="italic"
+				classText="placeholder:italic"
 				classDiv=""
 				bind:value={title}
 				invalid={invalidFields.includes('title')}
@@ -344,22 +349,20 @@
 
 			<div class="grid grid-cols-[auto_1fr_1fr] gap-4">
 				<CalendarMonth class="text-primaryYellow" size={40} />
-				<InputField
+				<DateInput
 					placeholder="Select start date..."
-					classPlaceholder="italic"
+					classText="placeholder:italic"
 					classDiv=""
-					type="date"
 					bind:value={startDate}
 					invalid={invalidFields.includes('startDate')}
 					onInput={handleInputChange}
 					{minDate}
 				/>
-				<InputField
+				<DateInput
 					id="endDate"
 					placeholder="Select end date..."
-					classPlaceholder="italic"
+					classText="placeholder:italic"
 					classDiv=""
-					type="date"
 					bind:value={endDate}
 					invalid={invalidFields.includes('endDate')}
 					onInput={handleInputChange}
@@ -369,21 +372,20 @@
 
 			<div class="grid grid-cols-[auto_1fr_1fr] gap-4">
 				<ClockOutline class="text-primaryYellow" size={40} />
-				<InputField
+				<TimeInput
 					id="startTime"
 					placeholder="Select start time..."
-					classPlaceholder="italic"
+					classText="placeholder:italic"
 					classDiv=""
-					type="time"
 					bind:value={startTime}
 					invalid={invalidFields.includes('startTime')}
 					onInput={handleInputChange}
 				/>
 
-				<InputField
+				<TimeInput
 					id="endTime"
 					placeholder="Select end time..."
-					classPlaceholder="italic"
+					classText="placeholder:italic"
 					classDiv=""
 					type="time"
 					bind:value={endTime}
@@ -394,11 +396,10 @@
 
 			<div class="grid grid-cols-[auto_1fr] gap-4">
 				<MapMarkerOutline class="text-primaryYellow" size={40} />
-				<InputField
+				<LocationInput
 					id="locationInput"
-					type="location"
 					placeholder="Select a location..."
-					classPlaceholder="italic"
+					classText="placeholder:italic"
 					bind:value={location}
 					invalid={invalidFields.includes('locationInput')}
 					onInput={handleInputChange}
@@ -418,7 +419,7 @@
 				{tagLimit}
 			/>
 
-			<InputField
+			<NumberInput
 				id="shiftopenings"
 				label="Number of Shift Openings"
 				type="number"
@@ -430,24 +431,24 @@
 				onInput={handleInputChange}
 			/>
 
-			<InputField
+			<TextInput
 				id="aboutevent"
 				label="About your event"
 				placeholder="Include additional details about the event..."
 				classLabel="heading mt-2"
-				classPlaceholder="italic rounded-lg p-3"
+				classText="placeholder:italic rounded-lg p-3"
 				bind:value={aboutevent}
 				invalid={invalidFields.includes('aboutevent')}
 				onInput={handleInputChange}
 				rows={6}
 			/>
 
-			<InputField
+			<TextInput
 				id="preshift"
 				label="Important Pre-Shift Information"
 				placeholder="Include details about any requirements, expectations, or information to know prior to arrival for shift..."
 				classLabel="heading"
-				classPlaceholder="italic rounded-lg p-3"
+				classText="placeholder:italic rounded-lg p-3"
 				bind:value={preshift}
 				invalid={invalidFields.includes('preshift')}
 				onInput={handleInputChange}

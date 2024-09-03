@@ -22,7 +22,7 @@
 			}
 		} catch (error) {
 			console.error('Error fetching address:', error);
-			locationAddress = 'Error fetching address';
+			locationAddress = 'Address not found';
 		}
 	}
 </script>

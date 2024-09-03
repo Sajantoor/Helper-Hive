@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Text from '$lib/Components/Text/Text.svelte';
-	import InputField from '$lib/Components/InputField.svelte';
+	import PasswordInput from '$lib/Components/Input/PasswordInput.svelte';
+	import TextInput from '$lib/Components/Input/TextInput.svelte';
 
 	let email = '';
 	let password = '';
@@ -46,7 +47,7 @@
 			{/if}
 
 			<form on:submit|preventDefault={handleSubmit} class="space-y-6">
-				<InputField
+				<TextInput
 					id="email"
 					label="Email Address"
 					placeholder="Email Address"
@@ -54,7 +55,7 @@
 					invalid={invalidFields.includes('email')}
 				/>
 
-				<InputField
+				<PasswordInput
 					id="password"
 					label="Password"
 					placeholder="Password"

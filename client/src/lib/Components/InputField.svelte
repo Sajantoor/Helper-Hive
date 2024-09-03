@@ -1,3 +1,6 @@
+<!-- Keeping this file for now, just in case something still refers to it -->
+<!-- But it is obselete and we can delete it -->
+
 <!-- 
 Usage in page:
 
@@ -19,7 +22,7 @@ const myFunc = () => {
 	bind:value={myValue}
 	
 	classLabel = 'classes to add to label'
-	classPlaceholder = 'classes to add to placeholder'
+	classText = 'classes to add to input/placeholder'
 	classDiv = 'override div style'
 	classField = 'override input field spacing/size'
 	rows = number of rows, turns into textarea
@@ -65,7 +68,7 @@ const myFunc = () => {
 	export let type = 'text';
 	export let valid = false;
 	export let classLabel = '';
-	export let classPlaceholder = '';
+	export let classText = '';
 	export let classDiv = 'mb-2 w-full';
 	export let classField = 'mt-1 pl-3 p-2 w-full';
 	export let rows = 0;
@@ -80,7 +83,7 @@ const myFunc = () => {
 	export let errorStyles = [];
 	export let keepErrorSpacing = true;
 	export let keepErrorsOnBlur= false;
-	export let showErrorsWhen = true; // conditional, like invalid
+	export let showErrorsOnlyWhen = true; // conditional, like invalid
 	let fieldActive = false;
 	let errorToShow = null;
 	
@@ -101,7 +104,6 @@ const myFunc = () => {
 
 	const handleInput = (event: any) => {
 		fieldActive = true;
-		updateError();
 		if (type === 'phone') {
 			value = event.target.value;
 			const countryCode = normalizedCountries.find(
@@ -114,6 +116,7 @@ const myFunc = () => {
 			}
 			value = event.target.value;
 		}
+		updateError();
 		onInput(event);
 	};
 
@@ -149,7 +152,7 @@ const myFunc = () => {
 		setTimeout(() => {
 			errorToShow = null;
 			for (let i = 0; i < errorMsgs.length; i++) {
-				if (errorBools[i] && showErrorsWhen && (keepErrorsOnBlur || fieldActive || invalid)) {
+				if (errorBools[i] && showErrorsOnlyWhen && (keepErrorsOnBlur || fieldActive || invalid)) {
 					errorToShow = { msg: errorMsgs[i], style: errorStyles[i] };
 				}
 			}
@@ -297,7 +300,7 @@ const myFunc = () => {
 					{placeholder}
 					class="{classField} bg-placeholderGray border-none rounded-lg
 					{invalid ? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown' : ''}
-					{classPlaceholder}"
+					{classText}"
 					on:input={handleSearch}
 					on:keydown={handleKeyDown}
 					on:focus={handleFocus}
@@ -350,7 +353,7 @@ const myFunc = () => {
 						{placeholder}
 						class="{classField} bg-placeholderGray border-none rounded-lg {invalid
 							? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'
-							: ''} {classPlaceholder}"
+							: ''} {classText}"
 						on:input={handleInput}
 						on:change={handleInput}
 						on:blur={handleFieldBlur}
@@ -364,7 +367,7 @@ const myFunc = () => {
 						{placeholder}
 						class="{classField} bg-placeholderGray border-none rounded-lg {invalid
 							? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'
-							: ''} {classPlaceholder}"
+							: ''} {classText}"
 						on:input={handleInput}
 						on:change={handleInput}
 						on:blur={handleFieldBlur}
@@ -430,7 +433,7 @@ const myFunc = () => {
 					options={flatpickrOptions}
 					class="{classField} bg-placeholderGray border-none rounded-lg {invalid
 						? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'
-						: ''} {classPlaceholder}"
+						: ''} {classText}"
 				/>
 			{:else if type === 'number'}
 				<input
@@ -442,7 +445,7 @@ const myFunc = () => {
 					{placeholder}
 					class="{classField} bg-placeholderGray border-none rounded-lg {invalid
 						? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'
-						: ''} {classPlaceholder}"
+						: ''} {classText}"
 					on:input={handleInput}
 					on:change={handleInput}
 					on:blur={handleFieldBlur}
@@ -463,7 +466,7 @@ const myFunc = () => {
 					on:blur={handleFieldBlur}
 					inputClasses="{classField} bg-placeholderGray border-none rounded-lg {invalid
 						? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'
-						: ''} {classPlaceholder}"
+						: ''} {classText}"
 				/>
 			{:else if type === 'dateRange'}
 				<Flatpickr
@@ -474,7 +477,7 @@ const myFunc = () => {
 					options={flatpickrDateRangeOptions}
 					class="{classField} bg-placeholderGray border-none rounded-lg {invalid
 						? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'
-						: ''} {classPlaceholder}"
+						: ''} {classText}"
 				/>
 			{:else if rows > 0}
 				<textarea
@@ -485,7 +488,7 @@ const myFunc = () => {
 					{rows}
 					class="{classField} bg-placeholderGray border-none rounded-lg {invalid
 						? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'
-						: ''} {classPlaceholder}"
+						: ''} {classText}"
 					on:input={handleInput}
 					on:change={handleInput}
 					on:blur={handleFieldBlur}
@@ -499,7 +502,7 @@ const myFunc = () => {
 					{placeholder}
 					class="{classField} bg-placeholderGray border-none rounded-lg {invalid
 						? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'
-						: ''} {classPlaceholder}"
+						: ''} {classText}"
 					on:input={handleInput}
 					on:change={handleInput}
 					on:blur={handleFieldBlur}

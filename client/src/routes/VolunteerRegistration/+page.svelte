@@ -1,8 +1,12 @@
 <script lang="ts">
 	import Text from '$lib/Components/Text/Text.svelte';
-	import InputField from '$lib/Components/InputField.svelte';
 	import Popup from '$lib/Components/TCPopup.svelte';
 	import { onMount } from 'svelte';
+	
+	import DateInput from '$lib/Components/Input/DateInput.svelte';
+	import PasswordInput from '$lib/Components/Input/PasswordInput.svelte';
+	import PhoneInput from '$lib/Components/Input/PhoneInput.svelte';
+	import TextInput from '$lib/Components/Input/TextInput.svelte';
 
 	let firstName = '';
 	let lastName = '';
@@ -133,7 +137,7 @@
 				<Text class="heading mb-2">Personal Information</Text>
 
 				<div class="grid grid-cols-2 gap-4">
-					<InputField
+					<TextInput
 						id="firstName"
 						label="First Name"
 						placeholder="First Name"
@@ -141,7 +145,7 @@
 						invalid={invalidFields.includes('firstName')}
 						onInput={handleInputChange}
 					/>
-					<InputField
+					<TextInput
 						id="lastName"
 						label="Last Name"
 						placeholder="Last Name"
@@ -151,7 +155,7 @@
 					/>
 				</div>
 
-				<InputField
+				<TextInput
 					id="email"
 					label="Email Address"
 					placeholder="Email Address"
@@ -160,22 +164,20 @@
 					onInput={handleInputChange}
 				/>
 
-				<InputField
+				<PhoneInput
 					id="phoneNumber"
 					label="Phone Number"
 					placeholder="Phone Number"
-					type="phone"
 					bind:value={phoneNumber}
 					bind:valid={phoneValid}
 					invalid={invalidFields.includes('phoneNumber')}
 					onInput={handleInputChange}
 				/>
 
-				<InputField
+				<DateInput
 					id="dob"
 					label="Date of Birth"
 					placeholder="DD/MM/YYYY"
-					type="date"
 					bind:value={dob}
 					invalid={invalidFields.includes('dob')}
 					onInput={handleInputChange}
@@ -187,7 +189,7 @@
 					<Text class="heading mb-2">Create Password</Text>
 				</div>
 				<div class="relative">
-					<InputField
+					<PasswordInput
 						id="password"
 						label="Password"
 						placeholder="Password"
@@ -196,7 +198,7 @@
 						invalid={invalidFields.includes('password')}
 						onInput={handleInputChange}
 					/>
-					<InputField
+					<PasswordInput
 						id="reenterPassword"
 						label="Re-enter Password"
 						placeholder="Re-enter Password"
