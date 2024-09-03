@@ -5,21 +5,31 @@
 	import CalendarMonth from 'svelte-material-icons/CalendarMonthOutline.svelte';
 	import MapMarkerOutline from 'svelte-material-icons/MapMarkerOutline.svelte';
 	import { PUBLIC_SERVER_HOST } from '$env/static/public';
+	import type { EventContent } from '$lib/Types/Events';
 
-	export let id = '';
-	export let eventTitle: string = '';
-	export let tags: string[] = [];
-	export let startDate: Date = new Date();
-	export let endDate: Date = new Date();
-	export let hours: string = '';
-	export let location = '';
-	export let spotsAvailable: number = 0;
-	export let registered = false;
+	export let event: EventContent;
+	const id = event._id;
+	const eventTitle = event.name;
+	const tags = event.details.tags;
+	const startDate = event.date.startDay;
+	const endDate = event.date.endDay;
+	const location = event.details.location;
+
+	let spotsAvailable = event.registration.totalSpots - event.registration.totalRegistered;
+	let registered = event.registration.isRegistered || false;
+
+	export let hours: string = getTime(event.date.startTime, event.date.endTime);
 
 	const regex = /^(.*?),\s*(\w+)\s*(.*)$/;
 	const match = location.match(regex);
 
+	const isSameDay = startDate.toDateString() === endDate.toDateString();
+	let displayDate = isSameDay
+		? formatDate(startDate)
+		: `${formatDate(startDate)} - ${formatDate(endDate)}`;
+
 	let city: string, province: string, address: string;
+
 	if (match) {
 		city = match[1];
 		province = match[2];
@@ -29,6 +39,25 @@
 	function formatDate(date: Date) {
 		const options: Intl.DateTimeFormatOptions = { weekday: 'long', month: 'long', day: 'numeric' };
 		return date.toLocaleDateString(undefined, options);
+	}
+
+	function formatTime(hours: number, minutes: number): string {
+		const period = hours >= 12 ? 'PM' : 'AM';
+		const formattedHours = hours % 12 || 12; // Convert to 12-hour format
+		const formattedMinutes = minutes.toString().padStart(2, '0'); // Ensure two digits for minutes
+		return `${formattedHours}:${formattedMinutes} ${period}`;
+	}
+
+	function getTime(start: Date, end: Date): string {
+		const startHours = start.getHours();
+		const startMinutes = start.getMinutes();
+		const endHours = end.getHours();
+		const endMinutes = end.getMinutes();
+
+		const formattedStart = formatTime(startHours, startMinutes);
+		const formattedEnd = formatTime(endHours, endMinutes);
+
+		return `${formattedStart} - ${formattedEnd}`;
 	}
 
 	function handleRegister() {
@@ -75,11 +104,6 @@
 		registered = false;
 		spotsAvailable++;
 	}
-
-	const isSameDay = startDate.toDateString() === endDate.toDateString();
-	let displayDate = isSameDay
-		? formatDate(startDate)
-		: `${formatDate(startDate)} - ${formatDate(endDate)}`;
 </script>
 
 <div class="event-details">
