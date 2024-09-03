@@ -53,6 +53,7 @@ const myFunc = () => {
 	import { TelInput, normalizedCountries } from 'svelte-tel-input';
 	import type { CountryCode } from 'svelte-tel-input/types';
 	import { onMount } from 'svelte';
+	import { PUBLIC_GOOGLE_MAPS_API_KEY } from '$env/static/public';
 
 	export let id = '';
 	export let label = '';
@@ -83,7 +84,7 @@ const myFunc = () => {
 	let isOpen = false;
 	let highlightedIndex = -1;
 	let inputElement: HTMLInputElement;
-	let GOOGLE_MAPS_API_KEY = 'API_KEY_HERE';
+	let GOOGLE_MAPS_API_KEY = PUBLIC_GOOGLE_MAPS_API_KEY;
 
 	const handleInput = (event: any) => {
 		if (type === 'phone') {

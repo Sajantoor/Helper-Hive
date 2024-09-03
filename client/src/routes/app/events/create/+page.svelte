@@ -55,7 +55,7 @@
 
 	let imageFile: File | null = null;
 	let otherFiles: File[] = [];
-	let imageUrl: string = '';
+	let imageBase64: string = '';
 	let otherFileUrls: string[] = [];
 
 	let location: string = '';
@@ -119,9 +119,8 @@
 				preShiftInfo: preShift,
 				tags: tagValues,
 				location: locationAddress,
+				photo: imageBase64,
 				// TODO: this is temporary
-				photo:
-					'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/17/c8/d2/56/science-world-at-telus.jpg?w=1200&h=-1&s=1',
 				files: []
 			}
 		};
@@ -235,13 +234,28 @@
 		return true;
 	};
 
+	const createBase64Image = (file: File): Promise<string> => {
+		return new Promise((resolve, reject) => {
+			const reader = new FileReader();
+			reader.onload = () => {
+				resolve(reader.result as string);
+			};
+			reader.onerror = reject;
+			reader.readAsDataURL(file);
+		});
+	};
+
 	// File functions
-	const handleFileDrop = (event: any, type: string): void => {
+	const handleFileDrop = async (event: any, type: string) => {
 		const files = event.detail.files.detail;
 		if (files.acceptedFiles.length > 0) {
 			if (type === 'image' && !imageFile) {
 				imageFile = files.acceptedFiles[0];
-				imageUrl = URL.createObjectURL(imageFile);
+				if (!imageFile) {
+					return;
+				}
+
+				imageBase64 = await createBase64Image(imageFile);
 				const index = invalidFields.indexOf('imageUpload');
 				if (index > -1) {
 					invalidFields.splice(index, 1);
@@ -269,7 +283,7 @@
 
 	const removeImage = (): void => {
 		imageFile = null;
-		imageUrl = '';
+		imageBase64 = '';
 		handleInputChange();
 	};
 
@@ -301,10 +315,10 @@
 				invalid={invalidFields.includes('imageUpload')}
 				on:drop={(event) => handleFileDrop(event, 'image')}
 			/>
-			{#if imageUrl}
+			{#if imageBase64}
 				<div
 					class="absolute inset-0 bg-cover bg-center rounded-3xl"
-					style="background-image: url({imageUrl});"
+					style="background-image: url({imageBase64});"
 				>
 					<div class="absolute top-0 right-0 cursor-pointer" on:click={removeImage}>
 						<Circle class="text-white rounded-full p-1" size={30} />
