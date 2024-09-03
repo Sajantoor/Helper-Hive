@@ -30,11 +30,35 @@
 
 	const validatePassword = () => {
 		passwordValid = false;
-		pwdStatus = 'Password must have';
-		if (!password.includes('G')) pwdStatus = pwdStatus + ' the letter G,';
-		if (!password.includes('d')) pwdStatus = pwdStatus + ' the letter d,';
-		pwdStatus = pwdStatus.replace(/.$/,".").replace(/,(?=[^,]+$)/, ', and');
-		if (password.includes('G') && password.includes('d')) passwordValid = true;
+		pwdStatus = 'Password must contain';
+
+		if (!/[A-Z]/.test(password)) pwdStatus += ' an uppercase letter,';
+		if (!/[a-z]/.test(password)) pwdStatus += ' a lowercase letter,';
+		if (!/[0-9]/.test(password)) pwdStatus += ' a number,';
+		if (!/[!@#$%^&*]/.test(password)) pwdStatus += ' a special character,';
+		if (password.length < 8) pwdStatus += ' at least 8 characters,';
+
+		pwdStatus = pwdStatus.replace(/,$/, '.').replace(/,(?=[^,]+$)/, ', and');
+
+		if (password.length >= 8 && /[A-Z]/.test(password) && /[a-z]/.test(password) && /[0-9]/.test(password) && /[!@#$%^&*]/.test(password)) {
+			passwordValid = true;
+		}
+	};
+	
+	const highlightInvalidFields = () => {
+		invalidFields = [];
+		if (!firstName) invalidFields.push('firstName');
+		if (!lastName) invalidFields.push('lastName');
+		if (!password) invalidFields.push('password');
+		if (!reenterPassword) invalidFields.push('reenterPassword');
+		if (!passwordValid) invalidFields.push('password');
+		if (!passwordsMatch) invalidFields.push('reenterPassword');
+		if (!termsAgreed) invalidFields.push('termsAgreed');
+
+		if (invalidFields.length > 0) {
+			const firstInvalidField = document.getElementById(invalidFields[0]);
+			firstInvalidField?.scrollIntoView({ behavior: 'smooth' });
+		}
 	};
 
 	const handleSubmit = () => {
@@ -69,21 +93,6 @@
 
 	const handleInputChange = () => {
 		validateForm();
-	};
-
-	const highlightInvalidFields = () => {
-		invalidFields = [];
-		if (!firstName) invalidFields.push('firstName');
-		if (!lastName) invalidFields.push('lastName');
-		if (!password) invalidFields.push('password');
-		if (!reenterPassword) invalidFields.push('reenterPassword');
-		if (!termsAgreed) invalidFields.push('termsAgreed');
-		if (!passwordsMatch) invalidFields.push('reenterPassword');
-
-		if (invalidFields.length > 0) {
-			const firstInvalidField = document.getElementById(invalidFields[0]);
-			firstInvalidField?.scrollIntoView({ behavior: 'smooth' });
-		}
 	};
 
 	const openPopup = (popupId: string) => {
