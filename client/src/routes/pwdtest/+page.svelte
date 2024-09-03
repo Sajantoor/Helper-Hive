@@ -35,12 +35,12 @@
 		if (!/[A-Z]/.test(password)) pwdStatus += ' an uppercase letter,';
 		if (!/[a-z]/.test(password)) pwdStatus += ' a lowercase letter,';
 		if (!/[0-9]/.test(password)) pwdStatus += ' a number,';
-		if (!/[!@#$%^&*]/.test(password)) pwdStatus += ' a special character,';
+		if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.`~<>\/?]/.test(password)) pwdStatus += ' a special character,';
 		if (password.length < 8) pwdStatus += ' at least 8 characters,';
 
 		pwdStatus = pwdStatus.replace(/,$/, '.').replace(/,(?=[^,]+$)/, ', and');
 
-		if (password.length >= 8 && /[A-Z]/.test(password) && /[a-z]/.test(password) && /[0-9]/.test(password) && /[!@#$%^&*]/.test(password)) {
+		if (password.length >= 8 && /[A-Z]/.test(password) && /[a-z]/.test(password) && /[0-9]/.test(password) && /[!@#$%^&*()_+\-=\[\]{};':"\\|,.`~<>\/?]/.test(password)) {
 			passwordValid = true;
 		}
 	};
