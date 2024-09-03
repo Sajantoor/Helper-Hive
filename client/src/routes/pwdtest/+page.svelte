@@ -12,6 +12,12 @@
 	let passwordsMatch = true;
 	let formValid = false;
 	let invalidFields: string[] = [];
+	let invalidComps: InputField[] = [];
+	
+	let firstNameComp: InputField;
+	let lastNameComp: InputField;
+	let passwordComp: InputField;
+	let reenterPasswordComp: InputField;
 	
 	let pwdStatus = 'Password must have';
 	let showPwdStatus = false;
@@ -47,6 +53,7 @@
 	
 	const highlightInvalidFields = () => {
 		invalidFields = [];
+		invalidComps = [];
 		if (!firstName) invalidFields.push('firstName');
 		if (!lastName) invalidFields.push('lastName');
 		if (!password) invalidFields.push('password');
@@ -55,9 +62,19 @@
 		if (!passwordsMatch) invalidFields.push('reenterPassword');
 		if (!termsAgreed) invalidFields.push('termsAgreed');
 
+		if (!firstName) invalidComps.push(firstNameComp);
+		if (!lastName) invalidComps.push(lastNameComp);
+		if (!password) invalidComps.push(passwordComp);
+		if (!reenterPassword) invalidComps.push(reenterPasswordComp);
+		if (!passwordValid) invalidComps.push(passwordComp);
+		if (!passwordsMatch) invalidComps.push(reenterPasswordComp);
+
 		if (invalidFields.length > 0) {
 			const firstInvalidField = document.getElementById(invalidFields[0]);
 			firstInvalidField?.scrollIntoView({ behavior: 'smooth' });
+			for (let i = 0; i < invalidComps.length; i++){
+				invalidComps[i].updateError();
+			}
 		}
 	};
 
@@ -78,12 +95,12 @@
 	};
 
 	function handlePasswordChange(showStatus: boolean = false){
-		console.log(showStatus);
 		if (showStatus){
 			showPwdStatus = true;
 			validatePassword();
 		} 
 		passwordsMatch = password === reenterPassword;
+		reenterPasswordComp.updateError();
 		validateForm();
 	}
 
@@ -126,14 +143,21 @@
 						label="First Name"
 						placeholder="First Name"
 						bind:value={firstName}
+						bind:this={firstNameComp}
 						invalid={invalidFields.includes('firstName')}
 						onInput={handleInputChange}
+						errorMsgs={["First name is required"]}
+						errorBools={[invalidFields.includes('firstName')]}
+						keepErrorSpacing={true}
+						showErrorsWhen={true}
+						keepErrorsOnBlur={false}
 					/>
 					<InputField
 						id="lastName"
 						label="Last Name"
 						placeholder="Last Name"
 						bind:value={lastName}
+						bind:this={lastNameComp}
 						invalid={invalidFields.includes('lastName')}
 						onInput={handleInputChange}
 					/>
@@ -149,35 +173,52 @@
 						label="Password"
 						placeholder="Password"
 						type="password"
-						classDiv="mb-2 w-full"
 						bind:value={password}
+						bind:this={passwordComp}
 						invalid={invalidFields.includes('password')}
+						errorMsgs={[
+							"Password required",
+							pwdStatus,
+							"Looks good!"]}
+						errorBools={[
+							invalidFields.includes('password') && !password,
+							password != '' && !passwordValid,
+							passwordValid]}
+						errorStyles={[
+							'',
+							'',
+							"text-green-500"]}
+						keepErrorSpacing={true}
+						showErrorsWhen={showPwdStatus || password == ''}
+						keepErrorsOnBlur={false}
 						onInput={() => handlePasswordChange(true)}
 						onBlur={passwordBlur}
 					/>
-					<div class="{showPwdStatus ? 'visible mb-3' : 'invisible'}">
-						{#if passwordValid}
-							<Text class="smallText text-green-500">Looks good!</Text>
-						{:else}
-							<Text class="smallText text-altTextBrown">{pwdStatus}</Text>
-						{/if}
-					</div>
 					<InputField
 						id="reenterPassword"
 						label="Re-enter Password"
 						placeholder="Re-enter Password"
 						type="password"
 						bind:value={reenterPassword}
+						bind:this={reenterPasswordComp}
 						invalid={invalidFields.includes('reenterPassword')}
+						errorMsgs={[
+							"Re-enter password required",
+							"Passwords do not match"]}
+						errorBools={[
+							invalidFields.includes('reenterPassword') && !reenterPassword,
+							!passwordsMatch]}
+						errorStyles={[
+							'',
+							"text-red-500"]}
+						keepErrorSpacing={true}
+						keepErrorsOnBlur={true}
 						onInput={() => handlePasswordChange()}
 					/>
-					{#if !passwordsMatch}
-						<Text class="smallText text-red-500 absolute -bottom-8">Passwords do not match</Text>
-					{/if}
 				</div>
 
 				<!-- Terms and Conditions Section -->
-				<div style="margin-top: 3rem;">
+				<div>
 					<Text class="heading mb-2">Agree to Terms and Conditions</Text>
 				</div>
 				<div class="flex items-center mb-4 lg:justify-center">

@@ -66,7 +66,7 @@ const myFunc = () => {
 	export let valid = false;
 	export let classLabel = '';
 	export let classPlaceholder = '';
-	export let classDiv = 'mb-4 w-full';
+	export let classDiv = 'mb-2 w-full';
 	export let classField = 'mt-1 pl-3 p-2 w-full';
 	export let rows = 0;
 	export let minDate = '01/01/1900';
@@ -74,8 +74,23 @@ const myFunc = () => {
 	export let minTime = '00:00';
 	export let maxTime = '23:59';
 	export let options: string[] = [];
+	
+	export let errorMsgs = [];
+	export let errorBools = [];
+	export let errorStyles = [];
+	export let keepErrorSpacing = true;
+	export let keepErrorsOnBlur= false;
+	export let showErrorsWhen = true; // conditional, like invalid
+	let fieldActive = false;
+	let errorToShow = null;
+	
+	$: {
+		const minLength = Math.min(errorMsgs.length, errorBools.length);
+		errorMsgs = errorMsgs.slice(0, minLength);
+		errorBools = errorBools.slice(0, minLength);
+		errorStyles = errorStyles.concat(Array(Math.max(0, minLength - errorStyles.length)).fill("text-altTextBrown"));
+	}
 
-	let eyePosY = -40;
 	let selectedCountry: CountryCode | null | undefined = 'CA';
 	let filteredOptions: string[] = [];
 	let searchQuery = '';
@@ -85,6 +100,8 @@ const myFunc = () => {
 	let GOOGLE_MAPS_API_KEY = 'API_KEY_HERE';
 
 	const handleInput = (event: any) => {
+		fieldActive = true;
+		updateError();
 		if (type === 'phone') {
 			value = event.target.value;
 			const countryCode = normalizedCountries.find(
@@ -102,7 +119,9 @@ const myFunc = () => {
 
 	const handleFieldBlur = (event: any) => {
 		onInput(event);
+		fieldActive = false;
 		onBlur(event);
+		updateError();
 	};
 
 	onMount(() => {
@@ -123,8 +142,20 @@ const myFunc = () => {
 			};
 			document.head.appendChild(script);
 		}
+		updateError();
 	});
-
+	
+	export function updateError() {
+		setTimeout(() => {
+			errorToShow = null;
+			for (let i = 0; i < errorMsgs.length; i++) {
+				if (errorBools[i] && showErrorsWhen && (keepErrorsOnBlur || fieldActive || invalid)) {
+					errorToShow = { msg: errorMsgs[i], style: errorStyles[i] };
+				}
+			}
+		}, 1); // 1 tick delay for vars to update
+	}
+	
 	// Datetime functions
 
 	const flatpickrOptions = {
@@ -293,13 +324,22 @@ const myFunc = () => {
 				{/if}
 			</div>
 		</div>
+		{#if errorMsgs.length > 0}
+			<div class="mb-3">
+				{#if errorToShow}
+					<Text class="smallText text-altTextBrown {errorToShow.style}">{errorToShow.msg}</Text>
+				{:else if keepErrorSpacing}
+					<Text class="smallText invisible">&nbsp;</Text>
+				{/if}
+			</div>
+		{/if}
 	</div>
 {:else}
 	<div class={classDiv}>
 		<label for={id}>
 			<Text class="smallText {classLabel}">{label}</Text>
 		</label>
-		<div class="relative inline-block w-full">
+		<div class="relative inline-block w-full mb-2">
 			{#if type === 'password'}
 				{#if showPassword}
 					<input
@@ -332,12 +372,11 @@ const myFunc = () => {
 				{/if}
 				<button
 					type="button"
-					class="absolute top-1/2 right-4 transform -translate-y-1/2 border-none bg-none cursor-pointer"
+					class="absolute top-1/2 right-4 transform -translate-y-[45%] border-none bg-none cursor-pointer"
 					tabindex="-1"
 					on:mousedown={() => (showPassword = true)}
 					on:mouseup={() => (showPassword = false)}
 					on:mouseleave={() => (showPassword = false)}
-					style="--eye-pos-y: {eyePosY}%"
 				>
 					{#if showPassword}
 						<EyeOutline class="text-altTextGray" />
@@ -467,5 +506,14 @@ const myFunc = () => {
 				/>
 			{/if}
 		</div>
+		{#if errorMsgs.length > 0}
+			<div class="mb-3">
+				{#if errorToShow}
+					<Text class="smallText text-altTextBrown {errorToShow.style}">{errorToShow.msg}</Text>
+				{:else if keepErrorSpacing}
+					<Text class="smallText invisible">&nbsp;</Text>
+				{/if}
+			</div>
+		{/if}
 	</div>
 {/if}
