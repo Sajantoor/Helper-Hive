@@ -133,6 +133,7 @@ const myFunc = () => {
 		minDate,
 		maxDate,
 		allowInput: true,
+		disableMobile: true,
 		onChange: (selectedDates: any, dateStr: string, instance: any) => {
 			value = dateStr;
 			handleInput({ target: { value: dateStr } });
