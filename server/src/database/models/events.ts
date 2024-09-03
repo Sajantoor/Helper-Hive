@@ -1,6 +1,31 @@
-import { Schema, model } from 'mongoose';
+import { Schema, Types, model } from 'mongoose';
 
-const eventSchema = new Schema({
+export interface IEvents {
+    name: string;
+    date: {
+        startDay: Date;
+        endDay?: Date;
+        startTime: Date;
+        endTime: Date;
+    };
+    details: {
+        description: string;
+        preShiftInfo: string;
+        location: string;
+        photo: string;
+        files?: string[];
+        tags?: string[];
+        createdAt: Date;
+    };
+    registration: {
+        totalSpots: number;
+        registeredVolunteers: string[];
+        totalRegistered: number;
+    };
+    organization: Types.ObjectId;
+}
+
+const eventsSchema = new Schema<IEvents>({
     name: { type: String, required: true },
     date: {
         type: new Schema({
@@ -38,6 +63,6 @@ const eventSchema = new Schema({
     organization: { type: Schema.Types.ObjectId, ref: 'organization', required: true },
 });
 
-const Event = model("event", eventSchema);
-export default Event;
+const Events = model("event", eventsSchema);
+export default Events;
 

@@ -1,31 +1,35 @@
 import { Request, Response } from "express";
-import Event from "../database/models/event";
-import { isOrganization, isVolunteer } from "../utils/checkUserRole";
+import Events, { IEvents } from "../database/models/events";
+import { isOrganization, isUser, isVolunteer } from "../utils/checkUserRole";
+import { z } from "zod";
+import { ErrorResponse } from "../../../common/types/errorResponse";
 
-interface EventBody {
-    name: string;
-    organization: string;
-    date: {
-        startDate: Date;
-        endDate: Date;
-        startTime: Date;
-        endTime: Date;
-    },
-    details: {
-        description: string;
-        preShiftInfo: string;
-        tags: string[];
-        location: string;
-        photo: string;
-        files: string[];
-    },
-    spots: {
-        total: number;
-    }
-}
+const eventBodySchema = z.object({
+    name: z.string(),
+    organization: z.string(),
+    date: z.object({
+        startDate: z.date(),
+        endDate: z.date(),
+        startTime: z.date(),
+        endTime: z.date(),
+    }),
+    details: z.object({
+        description: z.string(),
+        preShiftInfo: z.string(),
+        tags: z.array(z.string()).optional().default([]),
+        location: z.string(),
+        photo: z.string(),
+        files: z.array(z.string()).optional().default([]),
+    }),
+    registration: z.object({
+        totalSpots: z.number().int(),
+    }),
+});
+
+const updateEventBodySchema = eventBodySchema.partial();
 
 export async function getEvents(req: Request, res: Response) {
-    const events = await Event.find().populate({
+    const events = await Events.find().populate({
         path: 'organization',
         select: 'name logo',
     });
@@ -37,7 +41,8 @@ export async function getEvent(req: Request, res: Response) {
     const eventId = req.params.id;
 
     if (!eventId) {
-        return res.status(400).json({ message: "Invalid event id" });
+        const errorResponse: ErrorResponse = { message: "Invalid event id" };
+        return res.status(400).json(errorResponse);
     }
 
     let event = null;
@@ -45,16 +50,18 @@ export async function getEvent(req: Request, res: Response) {
     try {
         // TODO: if organization is and organization id is the same, 
         // return the event's attendees 
-        event = await Event.findById(eventId).populate({
+        event = await Events.findById(eventId).populate({
             path: 'organization',
             select: 'name logo',
         });
     } catch (error) {
-        return res.status(400).json({ message: "Invalid event id" });
+        const errorResponse: ErrorResponse = { message: "Invalid event id" };
+        return res.status(400).json(errorResponse);
     }
 
     if (event === null) {
-        return res.status(404).json({ message: "Event not found" });
+        const errorResponse: ErrorResponse = { message: "Event not found" };
+        return res.status(404).json(errorResponse);
     }
 
     event = event.toObject();
@@ -72,55 +79,69 @@ export async function getEvent(req: Request, res: Response) {
 }
 
 export async function createEvent(req: Request, res: Response) {
-    const eventBody = req.body as EventBody;
-    eventBody.organization = res.locals.user.userId;
+    const eventBody = eventBodySchema.safeParse(req.body);
 
-    if (!eventBody) {
-        return res.status(400).json({ message: "Invalid event body" });
+    if (!eventBody.success) {
+        const errorResponse = { message: "Invalid event body", error: eventBody.error.errors };
+        return res.status(400).json(errorResponse);
     }
 
-    // validate fields exist 
-    // if (!eventBody.name || !eventBody.date || !eventBody.details || !eventBody.spots) {
-    //     return res.status(400).json({ message: 'Missing required fields' });
-    // }
-
-
     try {
-        const newEvent = new Event(eventBody);
+        const newEvent = new Events(eventBody.data);
         const savedEvent = await newEvent.save();
         return res.status(201).json(savedEvent);
     } catch (error) {
-        return res.status(500).json({ message: "Error creating event", error });
+        const errorResponse: ErrorResponse = { message: "Error creating event", error };
+        return res.status(500).json(errorResponse);
     }
-
 }
 
 export async function updateEvent(req: Request, res: Response) {
     const eventId = req.params.id;
-    const eventBody = req.body as EventBody;
+    if (!eventId) {
+        const errorResponse: ErrorResponse = { message: "Invalid event id" };
+        return res.status(400).json(errorResponse);
+    }
 
-    if (!eventId || !eventBody) {
-        return res.status(400).json({ message: "Invalid event id or body" });
+    const eventBody = updateEventBodySchema.safeParse(req.body);
+
+    if (!eventBody.success) {
+        const errorResponse = { message: "Invalid event body", error: eventBody.error.errors };
+        return res.status(400).json(errorResponse);
+    }
+
+    if (eventBody.data.organization) {
+        const errorResponse: ErrorResponse = { message: "Organization cannot be updated" };
+        return res.status(400).json(errorResponse);
     }
 
     let event = null;
+
     try {
-        event = await Event.findById(eventId);
+        event = await Events.findById(eventId);
     } catch (error) {
-        return res.status(400).json({ message: "Invalid event id" });
+        const errorResponse: ErrorResponse = { message: "Invalid event id" };
+        return res.status(400).json(errorResponse);
     }
 
     if (event === null) {
-        return res.status(404).json({ message: "Event not found" });
+        const errorResponse: ErrorResponse = { message: "Event not found" };
+        return res.status(404).json(errorResponse);
     }
 
-    if (event.organization.toString() !== res.locals.user.userId) {
-        return res.status(403).json({
-            message: "User does not have permission to update this event"
-        });
+    if (isUser(res, event.organization.toString())) {
+        const errorResponse: ErrorResponse = { message: "User does not have permission to update this event" };
+        return res.status(403).json(errorResponse);
     }
-    // return the updated event, new option is set to true
-    const updatedEvent = await Event.findByIdAndUpdate(eventId, eventBody, { new: true });
+
+    let updatedEvent;
+    try {
+        // return the updated event, new option is set to true
+        updatedEvent = await Events.findByIdAndUpdate(eventId, eventBody, { new: true });
+    } catch (error) {
+        const errorResponse: ErrorResponse = { message: "Error updating event", error };
+        return res.status(500).json(errorResponse);
+    }
     return res.status(200).json(updatedEvent);
 }
 
@@ -128,26 +149,33 @@ export async function deleteEvent(req: Request, res: Response) {
     const eventId = req.params.id;
 
     if (!eventId) {
-        return res.status(400).json({ message: "Invalid event id" });
+        const errorResponse: ErrorResponse = { message: "Invalid event id" };
+        return res.status(400).json(errorResponse);
     }
 
     let event = null;
     try {
-        event = await Event.findById(eventId);
+        event = await Events.findById(eventId);
     } catch (error) {
-        return res.status(400).json({ message: "Invalid event id" });
+        const errorResponse: ErrorResponse = { message: "Invalid event id" };
+        return res.status(400).json(errorResponse);
     }
 
     if (event === null) {
-        return res.status(404).json({ message: "Event not found" });
+        const errorResponse: ErrorResponse = { message: "Event not found" };
+        return res.status(404).json(errorResponse);
     }
 
-    if (event.organization.toString() !== res.locals.user.userId) {
-        return res.status(403).json({
-            message: "User does not have permission to delete this event"
-        });
+    if (isUser(res, event.organization.toString())) {
+        const errorResponse: ErrorResponse = { message: "User does not have permission to delete this event" };
+        return res.status(403).json(errorResponse);
     }
 
-    await Event.findByIdAndDelete(eventId);
-    return res.status(204).send();
+    try {
+        await Events.findByIdAndDelete(eventId);
+        return res.status(204).send();
+    } catch (error) {
+        const errorResponse: ErrorResponse = { message: "Error deleting event", error };
+        return res.status(500).json(errorResponse);
+    }
 }
