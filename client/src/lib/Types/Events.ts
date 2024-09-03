@@ -18,6 +18,7 @@ export type EventContent = {
     registration: {
         totalSpots: number;
         totalRegistered: number;
+        isRegistered?: boolean;
     }
     organization: {
         _id: string,

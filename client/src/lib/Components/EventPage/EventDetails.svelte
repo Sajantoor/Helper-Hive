@@ -14,7 +14,7 @@
 	export let hours: string = '';
 	export let location = '';
 	export let spotsAvailable: number = 0;
-	let registered = checkIfRegistered() || false;
+	export let registered = false;
 
 	const regex = /^(.*?),\s*(\w+)\s*(.*)$/;
 	const match = location.match(regex);
@@ -29,11 +29,6 @@
 	function formatDate(date: Date) {
 		const options: Intl.DateTimeFormatOptions = { weekday: 'long', month: 'long', day: 'numeric' };
 		return date.toLocaleDateString(undefined, options);
-	}
-
-	function checkIfRegistered() {
-		// make api call to check if user is registered
-		return false;
 	}
 
 	function handleRegister() {

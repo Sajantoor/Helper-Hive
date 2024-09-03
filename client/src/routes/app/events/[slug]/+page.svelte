@@ -43,4 +43,5 @@
 	hostName={data.organization.name}
 	eventDescription={data.details.description}
 	preShiftInfo={data.details.preShiftInfo}
+	registered={data.registration.isRegistered}
 />

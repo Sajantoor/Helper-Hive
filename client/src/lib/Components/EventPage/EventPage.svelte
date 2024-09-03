@@ -19,6 +19,7 @@
 	export let hostInstagram: string = '';
 	export let preShiftInfo: string = '';
 	export let spotsAvailable: number = 0;
+	export let registered = false;
 	export let files: string[] = [];
 </script>
 
@@ -26,6 +27,7 @@
 	<img class="eventImg rounded-3xl" src={eventImage} alt={eventTitle} />
 
 	<EventDetails
+		{registered}
 		{id}
 		{eventTitle}
 		{tags}

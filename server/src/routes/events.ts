@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import Event from "../database/models/event";
+import { isOrganization, isVolunteer } from "../utils/checkUserRole";
 
 interface EventBody {
     name: string;
@@ -54,6 +55,17 @@ export async function getEvent(req: Request, res: Response) {
 
     if (event === null) {
         return res.status(404).json({ message: "Event not found" });
+    }
+
+    event = event.toObject();
+
+    if (isVolunteer(res)) {
+        const isRegistered = event.registration.registeredVolunteers.map((volunteer: object) => volunteer.toString()).includes(res.locals.user.userId);
+        event.registration.isRegistered = isRegistered;
+    }
+
+    if (!isOrganization(res) || (event.organization.toString() !== res.locals.user.userId)) {
+        delete event.registration.registeredVolunteers;
     }
 
     return res.status(200).json(event);
