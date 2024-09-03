@@ -40,18 +40,26 @@
 	let hostInstagram = 'https://google.com';
 
 	let title: string = '';
+	let titleComp: TextInput;
 
-	let startDate: string = '';
-	let endDate: string = '';
+	let startDate: Date;
+	let endDate: Date;
 	let startTime: string = '';
 	let endTime: string = '';
+	let startDateComp: DateInput;
+	let endDateComp: DateInput;
+	let startTimeComp: TimeInput;
+	let endTimeComp: TimeInput;
 
 	let tagValues: string[] = [];
 	let tagInput: TagSelect;
 
-	let shiftopenings: string = '';
-	let aboutevent: string = '';
-	let preshift: string = '';
+	let shiftOpenings: string = '';
+	let aboutEvent: string = '';
+	let preShift: string = '';
+	let shiftOpeningsComp: TextInput;
+	let aboutEventComp: TextInput;
+	let preShiftComp: TextInput;
 
 	let fileLimit: number = 5;
 	let tagLimit: number = 99;
@@ -62,13 +70,17 @@
 	let otherFileUrls: string[] = [];
 
 	let location: string = '';
+	let locationInputComp: LocationInput;
 	let location2 = 'Vancouver, BC 1455 Quebec St';
 	let locationAddress: string = '';
 
 	let formValid: boolean = false;
+	let datesValid: boolean = true;
 	let invalidFields: string[] = [];
+	let invalidComps: any[] = [];
 
 	const validateForm = (): void => {
+		verifyDateRange();
 		formValid =
 			Boolean(title) &&
 			Boolean(startDate) &&
@@ -76,12 +88,12 @@
 			Boolean(startTime) &&
 			Boolean(endTime) &&
 			tagValues.length > 0 &&
-			Boolean(aboutevent) &&
-			Boolean(shiftopenings) &&
+			Boolean(aboutEvent) &&
+			Boolean(shiftOpenings) &&
 			Boolean(location) &&
 			Boolean(locationAddress) &&
 			Boolean(imageFile) &&
-			verifyDateRange(startDate, endDate, startTime, endTime); // && otherFiles.length > 0  && Boolean(preshift);
+			datesValid; // && otherFiles.length > 0  && Boolean(preShift);
 	};
 
 	const handleInputChange = (): void => {
@@ -100,9 +112,9 @@
 				startTime,
 				endTime,
 				tagValues,
-				aboutevent,
-				shiftopenings,
-				preshift,
+				aboutEvent,
+				shiftOpenings,
+				preShift,
 				location,
 				locationAddress,
 				imageFile,
@@ -114,32 +126,54 @@
 
 	const highlightInvalidFields = (): void => {
 		invalidFields = [];
+		invalidComps = [];
+		
 		if (!title) invalidFields.push('title');
 		if (!startDate) invalidFields.push('startDate');
 		if (!endDate) invalidFields.push('endDate');
 		if (!startTime) invalidFields.push('startTime');
 		if (!endTime) invalidFields.push('endTime');
 		if (tagValues.length === 0) invalidFields.push('tagInput');
-		if (tagValues.length === 0) tagInput.toggleInputField('clickOnly');
-		if (!aboutevent) invalidFields.push('aboutevent');
-		// if (!preshift) invalidFields.push('preshift');
-		if (!shiftopenings) invalidFields.push('shiftopenings');
+		if (tagValues.length === 0) tagInput.toggleInputField('click blur');
+		if (!aboutEvent) invalidFields.push('aboutEvent');
+		// if (!preShift) invalidFields.push('preShift');
+		if (!shiftOpenings) invalidFields.push('shiftOpenings');
 		if (!location) invalidFields.push('locationInput');
 		if (location == 'Address not found') invalidFields.push('locationInput');
 		if (!locationAddress) invalidFields.push('locationInput');
 		if (!imageFile) invalidFields.push('imageUpload');
 		// if (otherFiles.length === 0) invalidFields.push('fileUpload');
-		if (!verifyDateRange(startDate, endDate, startTime, endTime))
-			invalidFields.push('endDate', 'endTime');
+		if (!datesValid) invalidFields.push('endDate', 'endTime');
+		
+		if (!title) invalidComps.push(titleComp);
+		if (!startDate) invalidComps.push(startDateComp);
+		if (!endDate) invalidComps.push(endDateComp);
+		if (!startTime) invalidComps.push(startTimeComp);
+		if (!endTime) invalidComps.push(endTimeComp);
+		if (tagValues.length === 0) invalidComps.push(tagInput);
+		if (!aboutEvent) invalidComps.push(aboutEventComp);
+		// if (!preShift) invalidComps.push(preShiftComp);
+		if (!shiftOpenings) invalidComps.push(shiftOpeningsComp);
+		if (!location) invalidComps.push(locationInputComp);
+		if (location == 'Address not found') invalidComps.push(locationInputComp);
+		if (!locationAddress) invalidComps.push(locationInputComp);
+		if (!datesValid) invalidComps.push(endTimeComp);
 
 		if (invalidFields.length > 0) {
+			for (let i = 0; i < invalidComps.length; i++){
+				invalidComps[i].updateError();
+			}
+			startDateComp.updateError();
+			startTimeComp.updateError();
+			endDateComp.updateError();
+			endTimeComp.updateError();
 			const firstInvalidField = document.getElementById(invalidFields[0]);
 			firstInvalidField.scrollIntoView({ behavior: 'smooth' });
 		}
 	};
 
 	async function saveLocation() {
-		if (location != '' &&location != 'Address not found') {
+		if (location != '' && location != 'Address not found') {
 			location2 = location;
 			location = locationAddress;
 			handleInputChange();
@@ -181,12 +215,8 @@
 		return new Date(dateStr);
 	}
 
-	const verifyDateRange = (
-		startDate: string | number | Date,
-		endDate: string | number | Date,
-		startTime: string,
-		endTime: string
-	) => {
+	const verifyDateRange = () => {
+		datesValid = true;
 		if (Boolean(startDate) && Boolean(endDate) && Boolean(startTime) && Boolean(endTime)) {
 			const startDateObj = parseDate(startDate);
 			const endDateObj = parseDate(endDate);
@@ -194,14 +224,13 @@
 			const endTimeNum = parseTimeToNumber(endTime);
 
 			if (endDateObj > startDateObj) {
-				return true;
+				datesValid = true;
 			} else if (endDateObj.getTime() === startDateObj.getTime()) {
-				return endTimeNum > startTimeNum;
+				datesValid = endTimeNum > startTimeNum;
 			} else {
-				return false;
+				datesValid = false;
 			}
 		}
-		return true;
 	};
 
 	// File functions
@@ -278,6 +307,11 @@
 					</div>
 				</div>
 			{/if}
+			<div>
+				{#if invalidFields.includes('imageUpload') && !imageFile}
+					<Text class="smallText mt-2 text-altTextBrown">Event picture is required</Text>
+				{/if}
+			</div>
 		</div>
 		
 		<!-- File upload, host, location display -->
@@ -336,14 +370,17 @@
 		</div>
 
 		<!-- Input fields -->
-		<div class="flex flex-col gap-4 order-2 mdlg:order-2 mdlg:col-span-1 mdlg:row-span-2">
+		<div class="flex flex-col gap-2 order-2 mdlg:order-2 mdlg:col-span-1 mdlg:row-span-2">
 			<TextInput
 				id="title"
 				placeholder="Add a title to your event..."
 				classText="placeholder:italic"
 				classDiv=""
 				bind:value={title}
+				bind:this={titleComp}
 				invalid={invalidFields.includes('title')}
+				errorMsgs={["Title is required"]}
+				errorBools={[invalidFields.includes('title')]}
 				onInput={handleInputChange}
 			/>
 
@@ -354,7 +391,10 @@
 					classText="placeholder:italic"
 					classDiv=""
 					bind:value={startDate}
+					bind:this={startDateComp}
 					invalid={invalidFields.includes('startDate')}
+					errorMsgs={["Start date is required"]}
+					errorBools={[invalidFields.includes('startDate') && !startDate]}
 					onInput={handleInputChange}
 					{minDate}
 				/>
@@ -364,7 +404,10 @@
 					classText="placeholder:italic"
 					classDiv=""
 					bind:value={endDate}
+					bind:this={endDateComp}
 					invalid={invalidFields.includes('endDate')}
+					errorMsgs={["End date is required"]}
+					errorBools={[invalidFields.includes('endDate') && !endDate]}
 					onInput={handleInputChange}
 					{minDate}
 				/>
@@ -378,7 +421,10 @@
 					classText="placeholder:italic"
 					classDiv=""
 					bind:value={startTime}
+					bind:this={startTimeComp}
 					invalid={invalidFields.includes('startTime')}
+					errorMsgs={["Start time is required"]}
+					errorBools={[invalidFields.includes('startTime') && !startTime]}
 					onInput={handleInputChange}
 				/>
 
@@ -387,9 +433,11 @@
 					placeholder="Select end time..."
 					classText="placeholder:italic"
 					classDiv=""
-					type="time"
 					bind:value={endTime}
+					bind:this={endTimeComp}
 					invalid={invalidFields.includes('endTime')}
+					errorMsgs={["End time is required", "End date and time must be after start"]}
+					errorBools={[invalidFields.includes('endTime') && !endTime, invalidFields.includes('endTime') && endTime && !datesValid]}
 					onInput={handleInputChange}
 				/>
 			</div>
@@ -401,7 +449,10 @@
 					placeholder="Select a location..."
 					classText="placeholder:italic"
 					bind:value={location}
+					bind:this={locationInputComp}
 					invalid={invalidFields.includes('locationInput')}
+					errorMsgs={["Location is required", "Address could not be found"]}
+					errorBools={[invalidFields.includes('locationInput') && !location, invalidFields.includes('locationInput') && location=="Address not found"]}
 					onInput={handleInputChange}
 					onBlur={saveLocation}
 				/>
@@ -418,39 +469,52 @@
 				{options}
 				{tagLimit}
 			/>
+			<div>
+				{#if invalidFields.includes('tagInput') && tagValues.length < 1}
+					<Text class="smallText mb-3 text-altTextBrown">Atleast one tag is required</Text>
+				{/if}
+			</div>
 
 			<NumberInput
-				id="shiftopenings"
+				id="shiftOpenings"
 				label="Number of Shift Openings"
-				type="number"
 				classLabel="font-bold"
 				classDiv=""
 				classField="mt-1 p-2 w-1/6"
-				bind:value={shiftopenings}
-				invalid={invalidFields.includes('shiftopenings')}
+				bind:value={shiftOpenings}
+				bind:this={shiftOpeningsComp}
+				invalid={invalidFields.includes('shiftOpenings')}
+				errorMsgs={["Shift openings is required"]}
+				errorBools={[invalidFields.includes('shiftOpenings')]}
 				onInput={handleInputChange}
 			/>
 
 			<TextInput
-				id="aboutevent"
+				id="aboutEvent"
 				label="About your event"
 				placeholder="Include additional details about the event..."
 				classLabel="heading mt-2"
 				classText="placeholder:italic rounded-lg p-3"
-				bind:value={aboutevent}
-				invalid={invalidFields.includes('aboutevent')}
+				bind:value={aboutEvent}
+				bind:this={aboutEventComp}
+				invalid={invalidFields.includes('aboutEvent')}
+				keepErrorSpacing={true}
+				errorMsgs={["Event information is required"]}
+				errorBools={[invalidFields.includes('aboutEvent')]}
+				errorStyles={["mt-0 mb-2"]}
 				onInput={handleInputChange}
 				rows={6}
 			/>
 
 			<TextInput
-				id="preshift"
+				id="preShift"
 				label="Important Pre-Shift Information"
 				placeholder="Include details about any requirements, expectations, or information to know prior to arrival for shift..."
 				classLabel="heading"
 				classText="placeholder:italic rounded-lg p-3"
-				bind:value={preshift}
-				invalid={invalidFields.includes('preshift')}
+				bind:value={preShift}
+				bind:this={preShiftComp}
+				invalid={invalidFields.includes('preShift')}
 				onInput={handleInputChange}
 				rows={6}
 			/>

@@ -12,7 +12,7 @@
 	let lastName = '';
 	let email = '';
 	let phoneNumber = '';
-	let dob = '';
+	let dob: Date;
 	let password = '';
 	let reenterPassword = '';
 	let termsAgreed = false;
@@ -20,13 +20,28 @@
 	let passwordsMatch = true;
 	let formValid = false;
 	let phoneValid = false;
+	let emailValid = false;
 	let invalidFields: string[] = [];
+	
+	let firstNameComp: TextInput;
+	let lastNameComp: TextInput;
+	let emailComp: TextInput;
+	let phoneNumberComp: PhoneInput;
+	let dobComp: DateInput;
+	let passwordComp: PasswordInput;
+	let reenterPasswordComp: PasswordInput;
+	let invalidComps: any[] = [];
+	
+	let pwdStatus = 'Password must have';
+	let showPwdStatus = false;
+	let passwordValid = false;
 	
 	const thirteenYearsAgo = new Date();
 	thirteenYearsAgo.setFullYear(thirteenYearsAgo.getFullYear() - 13);
 	const maxDate = `${('0' + thirteenYearsAgo.getDate()).slice(-2)}/${('0' + (thirteenYearsAgo.getMonth() + 1)).slice(-2)}/${thirteenYearsAgo.getFullYear()}`;
 
 	const validateForm = () => {
+		validateEmail();
 		formValid =
 			Boolean(firstName) &&
 			Boolean(lastName) &&
@@ -37,13 +52,32 @@
 			Boolean(reenterPassword) &&
 			termsAgreed &&
 			liabilityAgreed &&
+			passwordValid &&
 			passwordsMatch &&
-			validateEmail(email);
+			emailValid;
 	};
 
-	const validateEmail = (email: string) => {
+	const validateEmail = () => {
 		const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-		return re.test(email);
+		emailValid = re.test(email);
+	};
+
+	const validatePassword = () => {
+		passwordValid = false;
+		pwdStatus = 'Password must contain';
+
+		if (!/[A-Z]/.test(password)) pwdStatus += ' an uppercase letter,';
+		if (!/[a-z]/.test(password)) pwdStatus += ' a lowercase letter,';
+		if (!/[0-9]/.test(password)) pwdStatus += ' a number,';
+		if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.`~<>\/?]/.test(password)) pwdStatus += ' a special character,';
+		if (password.length < 8) pwdStatus += ' at least 8 characters,';
+
+		pwdStatus = pwdStatus.replace(/,$/, '.').replace(/,(?=[^,]+$)/, ', and');
+
+		if (password.length >= 8 && /[A-Z]/.test(password) && /[a-z]/.test(password) && /[0-9]/.test(password)
+		&& /[!@#$%^&*()_+\-=\[\]{};':"\\|,.`~<>\/?]/.test(password)) {
+			passwordValid = true;
+		}
 	};
 
 	const handleSubmit = () => {
@@ -71,30 +105,51 @@
 	};
 
 	const handleInputChange = () => {
-		passwordsMatch = password === reenterPassword;
 		validateForm();
 	};
 
+	function handlePasswordChange(showStatus: boolean = false){
+		if (showStatus){
+			showPwdStatus = true;
+			validatePassword();
+		} 
+		passwordsMatch = password === reenterPassword;
+		reenterPasswordComp.updateError();
+		validateForm();
+	}
+
 	const highlightInvalidFields = () => {
 		invalidFields = [];
+		invalidComps = [];
+		
 		if (!firstName) invalidFields.push('firstName');
 		if (!lastName) invalidFields.push('lastName');
-		if (!validateEmail(email)) invalidFields.push('email');
+		if (!emailValid) invalidFields.push('email');
 		if (!phoneValid) invalidFields.push('phoneNumber');
 		if (!dob) invalidFields.push('dob');
 		if (!password) invalidFields.push('password');
 		if (!reenterPassword) invalidFields.push('reenterPassword');
+		if (!passwordValid) invalidFields.push('password');
+		if (!passwordsMatch) invalidFields.push('reenterPassword');
 		if (!termsAgreed) invalidFields.push('termsAgreed');
 		if (!liabilityAgreed) invalidFields.push('liabilityAgreed');
-		if (!passwordsMatch) invalidFields.push('reenterPassword');
+		
+		if (!firstName) invalidComps.push(firstNameComp);
+		if (!lastName) invalidComps.push(lastNameComp);
+		if (!emailValid) invalidComps.push(emailComp);
+		if (!phoneValid) invalidComps.push(phoneNumberComp);
+		if (!dob) invalidComps.push(dobComp);
+		if (!password) invalidComps.push(passwordComp);
+		if (!reenterPassword) invalidComps.push(reenterPasswordComp);
+		if (!passwordValid) invalidComps.push(passwordComp);
+		if (!passwordsMatch) invalidComps.push(reenterPasswordComp);
 
 		if (invalidFields.length > 0) {
-			const firstInvalidField = document.getElementById(invalidFields[0]);
-			if (firstInvalidField) {
-				firstInvalidField.scrollIntoView({ behavior: 'smooth' });
-			} else {
-				console.error('Element not found:', invalidFields[0]);
+			for (let i = 0; i < invalidComps.length; i++){
+				invalidComps[i].updateError();
 			}
+			const firstInvalidField = document.getElementById(invalidFields[0]);
+			firstInvalidField.scrollIntoView({ behavior: 'smooth' });
 		}
 	};
 
@@ -142,7 +197,10 @@
 						label="First Name"
 						placeholder="First Name"
 						bind:value={firstName}
+						bind:this={firstNameComp}
 						invalid={invalidFields.includes('firstName')}
+						errorMsgs={["First name is required"]}
+						errorBools={[invalidFields.includes('firstName')]}
 						onInput={handleInputChange}
 					/>
 					<TextInput
@@ -150,7 +208,10 @@
 						label="Last Name"
 						placeholder="Last Name"
 						bind:value={lastName}
+						bind:this={lastNameComp}
 						invalid={invalidFields.includes('lastName')}
+						errorMsgs={["Last name is required"]}
+						errorBools={[invalidFields.includes('lastName')]}
 						onInput={handleInputChange}
 					/>
 				</div>
@@ -160,7 +221,10 @@
 					label="Email Address"
 					placeholder="Email Address"
 					bind:value={email}
+					bind:this={emailComp}
 					invalid={invalidFields.includes('email')}
+					errorMsgs={["Email address is required", "Must enter a valid email address"]}
+					errorBools={[!email && invalidFields.includes('email'), email && !emailValid && invalidFields.includes('email')]}
 					onInput={handleInputChange}
 				/>
 
@@ -169,8 +233,11 @@
 					label="Phone Number"
 					placeholder="Phone Number"
 					bind:value={phoneNumber}
+					bind:this={phoneNumberComp}
 					bind:valid={phoneValid}
 					invalid={invalidFields.includes('phoneNumber')}
+					errorMsgs={["Phone number is required", "Must enter a valid phone number"]}
+					errorBools={[!phoneNumber && invalidFields.includes('phoneNumber'), phoneNumber && !phoneValid && invalidFields.includes('phoneNumber')]}
 					onInput={handleInputChange}
 				/>
 
@@ -179,13 +246,17 @@
 					label="Date of Birth"
 					placeholder="DD/MM/YYYY"
 					bind:value={dob}
+					bind:this={dobComp}
 					invalid={invalidFields.includes('dob')}
+					errorMsgs={["Date of birth is required"]}
+					errorBools={[invalidFields.includes('dob')]}
+					keepErrorSpacing={true}
 					onInput={handleInputChange}
 					{maxDate}
 				/>
 
 				<!-- Create Password Section -->
-				<div style="margin-top: 2.5rem;">
+				<div style="margin-top: 2rem;">
 					<Text class="heading mb-2">Create Password</Text>
 				</div>
 				<div class="relative">
@@ -193,27 +264,49 @@
 						id="password"
 						label="Password"
 						placeholder="Password"
-						type="password"
 						bind:value={password}
+						bind:this={passwordComp}
 						invalid={invalidFields.includes('password')}
-						onInput={handleInputChange}
+						errorMsgs={[
+							"Password required",
+							pwdStatus,
+							"Looks good!"]}
+						errorBools={[
+							invalidFields.includes('password') && !password,
+							password != '' && !passwordValid,
+							passwordValid]}
+						errorStyles={[
+							'',
+							'',
+							"text-green-500"]}
+						keepErrorSpacing={true}
+						showErrorsOnlyWhen={showPwdStatus || password == ''}
+						onInput={() => handlePasswordChange(true)}
 					/>
 					<PasswordInput
 						id="reenterPassword"
 						label="Re-enter Password"
 						placeholder="Re-enter Password"
-						type="password"
 						bind:value={reenterPassword}
+						bind:this={reenterPasswordComp}
 						invalid={invalidFields.includes('reenterPassword')}
-						onInput={handleInputChange}
+						errorMsgs={[
+							"Re-enter password required",
+							"Passwords do not match"]}
+						errorBools={[
+							invalidFields.includes('reenterPassword') && !reenterPassword,
+							!passwordsMatch]}
+						errorStyles={[
+							'',
+							"text-red-500"]}
+						keepErrorSpacing={true}
+						keepErrorsOnBlur={true}
+						onInput={() => handlePasswordChange()}
 					/>
-					{#if !passwordsMatch}
-						<Text class="smallText text-red-500 absolute -bottom-8">Passwords do not match</Text>
-					{/if}
 				</div>
 
 				<!-- Terms and Conditions Section -->
-				<div style="margin-top: 3rem;">
+				<div style="margin-top: 2rem;">
 					<Text class="heading mb-2">Agree to Terms and Conditions</Text>
 				</div>
 				<div class="flex items-center mb-4 lg:justify-center">

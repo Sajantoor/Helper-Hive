@@ -40,14 +40,14 @@ const myFunc = () => {
 		// errors will only be visible while true
 />
 
-See event creation for example with geocoding and dispaly
+See login and reset password for clean examples
 -->
 
 <script lang="ts">
 	import Text from '$lib/Components/Text/Text.svelte';
+	import EyeOutline from 'svelte-material-icons/EyeOutline.svelte';
+	import EyeOffOutline from 'svelte-material-icons/EyeOffOutline.svelte';
 	import { onMount } from 'svelte';
-	
-	let GOOGLE_MAPS_API_KEY = 'API_KEY_HERE';
 
 	export let id = '';
 	export let label = '';
@@ -56,19 +56,20 @@ See event creation for example with geocoding and dispaly
 	export let invalid = false;
 	export let onInput = () => {};
 	export let onBlur = () => {};
+	export let showPassword = false;
 
 	export let classLabel = '';
 	export let classText = '';
-	export let classDiv = 'mb-2 w-full';
+	export let classDiv = 'w-full';
 	export let classField = 'mt-1 pl-3 p-2 w-full';
 	
 	export let errorMsgs = [];
 	export let errorBools = [];
 	export let errorStyles = [];
-	export let keepErrorSpacing = true;
+	export let keepErrorSpacing = false;
 	export let keepErrorsOnBlur= false;
 	export let showErrorsOnlyWhen = true;
-	
+
 	let inputElement: HTMLInputElement;
 	let fieldActive = false;
 	let errorToShow = null;
@@ -82,18 +83,7 @@ See event creation for example with geocoding and dispaly
 	const handleInput = (event: any) => {
 		fieldActive = true;
 		updateError();
-		if (type === 'phone') {
-			value = event.target.value;
-			const countryCode = normalizedCountries.find(
-				(country) => country.iso2 === selectedCountry
-			).dialCode;
-			value = `+${countryCode}${value}`;
-		} else if (type != 'dropdown' && type != 'time' && type != 'location') {
-			if (id.toLowerCase().includes('email')) {
-				event.target.value = value.replace(/\s/g, '');
-			}
-			value = event.target.value;
-		}
+		value = event.target.value;
 		onInput(event);
 	};
 
@@ -114,8 +104,8 @@ See event creation for example with geocoding and dispaly
 			}
 		}, 1); // 1 tick delay for vars to update
 	}
-
-	export function forceClick() {
+	
+		export function forceClick() {
 		if (inputElement) {
 			inputElement.click();
 		}
@@ -129,22 +119,8 @@ See event creation for example with geocoding and dispaly
 			}, 100);
 		}
 	}
-
+	
 	onMount(() => {
-		const script = document.createElement('script');
-		script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places`;
-		script.async = true;
-		script.onload = () => {
-			const autocomplete = new google.maps.places.Autocomplete(inputElement);
-			autocomplete.addListener('place_changed', () => {
-				const place = autocomplete.getPlace();
-				if (place.formatted_address) {
-					value = place.formatted_address;
-					handleInput(new Event('input'));
-				}
-			});
-		};
-		document.head.appendChild(script);
 		updateError();
 	});
 </script>
@@ -154,24 +130,54 @@ See event creation for example with geocoding and dispaly
 		<Text class="smallText {classLabel}">{label}</Text>
 	</label>
 	<div class="relative inline-block w-full mb-2">
-		<input
-			{id}
-			type="text"
-			bind:this={inputElement}
-			bind:value
-			{placeholder}
-			class="{classField} bg-placeholderGray border-none rounded-lg {invalid
-				? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'
-				: ''} {classText}"
-			on:input={handleInput}
-			on:change={handleInput}
-			on:blur={handleFieldBlur}
-		/>
+		{#if showPassword}
+			<input
+				{id}
+				type="text"
+				bind:value
+				bind:this={inputElement}
+				{placeholder}
+				class="{classField} bg-placeholderGray border-none rounded-lg {invalid
+					? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'
+					: ''} {classText}"
+				on:input={handleInput}
+				on:change={handleInput}
+				on:blur={handleFieldBlur}
+			/>
+		{:else}
+			<input
+				{id}
+				type="password"
+				bind:value
+				bind:this={inputElement}
+				{placeholder}
+				class="{classField} bg-placeholderGray border-none rounded-lg {invalid
+					? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'
+					: ''} {classText}"
+				on:input={handleInput}
+				on:change={handleInput}
+				on:blur={handleFieldBlur}
+			/>
+		{/if}
+		<button
+			type="button"
+			class="absolute top-1/2 right-4 transform -translate-y-[45%] border-none bg-none cursor-pointer"
+			tabindex="-1"
+			on:mousedown={() => (showPassword = true)}
+			on:mouseup={() => (showPassword = false)}
+			on:mouseleave={() => (showPassword = false)}
+		>
+			{#if showPassword}
+				<EyeOutline class="text-altTextGray" />
+			{:else}
+				<EyeOffOutline class="text-altTextGray" />
+			{/if}
+		</button>
 	</div>
 	{#if errorMsgs.length > 0}
-		<div class="mb-3">
+		<div>
 			{#if errorToShow}
-				<Text class="smallText text-altTextBrown {errorToShow.style}">{errorToShow.msg}</Text>
+				<Text class="smallText text-altTextBrown mb-2 {errorToShow.style}">{errorToShow.msg}</Text>
 			{:else if keepErrorSpacing}
 				<Text class="smallText invisible">&nbsp;</Text>
 			{/if}

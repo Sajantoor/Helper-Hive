@@ -7,13 +7,22 @@
 	let password = '';
 	let passwordError = false;
 	let invalidFields: string[] = [];
+	
+	let emailComp: TextInput;
+	let passwordComp: PasswordInput;
+	let invalidComps: any[] = [];
 
 	const handleSubmit = () => {
 		invalidFields = [];
 		if (!email) invalidFields.push('email');
+		if (!email) invalidComps.push(emailComp);
 		if (!password) invalidFields.push('password');
+		if (!password) invalidComps.push(passwordComp);
 
 		if (invalidFields.length > 0) {
+			for (let i = 0; i < invalidComps.length; i++){
+				invalidComps[i].updateError();
+			}
 			const firstInvalidField = document.getElementById(invalidFields[0]);
 			firstInvalidField?.scrollIntoView({ behavior: 'smooth' });
 		} else {
@@ -46,22 +55,28 @@
 				>
 			{/if}
 
-			<form on:submit|preventDefault={handleSubmit} class="space-y-6">
+			<form on:submit|preventDefault={handleSubmit} class="space-y-3">
 				<TextInput
 					id="email"
 					label="Email Address"
 					placeholder="Email Address"
 					bind:value={email}
+					bind:this={emailComp}
 					invalid={invalidFields.includes('email')}
+					keepErrorSpacing={true}
+					errorMsgs={["Email address required"]}
+					errorBools={[invalidFields.includes('email')]}
 				/>
 
 				<PasswordInput
 					id="password"
 					label="Password"
 					placeholder="Password"
-					type="password"
 					bind:value={password}
+					bind:this={passwordComp}
 					invalid={invalidFields.includes('password')}
+					errorMsgs={["Password required"]}
+					errorBools={[invalidFields.includes('password')]}
 				/>
 				<Text class="smallText text-left mt-3">
 					<a href="/forgot" class="text-blue-500 underline">Forgot password?</a>

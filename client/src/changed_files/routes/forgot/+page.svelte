@@ -5,16 +5,21 @@
 
 	let email = '';
 	let formValid = false;
-	let invalidFields: string[] = [];
+	let emailValid = false;
 	let submitted = false;
+	let invalidFields: string[] = [];
+	
+	let emailComp: TextInput;
+	let invalidComps: any[] = [];
 
-	const validateEmail = (email: string) => {
+	const validateEmail = () => {
 		const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-		return re.test(email);
+		emailValid = re.test(email);
 	};
 
 	const validateForm = () => {
-		formValid = Boolean(email) && validateEmail(email);
+		validateEmail();
+		formValid = Boolean(email) && emailValid;
 	};
 
 	const handleSubmit = () => {
@@ -33,8 +38,12 @@
 	const highlightInvalidFields = () => {
 		invalidFields = [];
 		if (!validateEmail(email)) invalidFields.push('email');
+		if (!validateEmail(email)) invalidComps.push(emailComp);
 
 		if (invalidFields.length > 0) {
+			for (let i = 0; i < invalidComps.length; i++){
+				invalidComps[i].updateError();
+			}
 			const firstInvalidField = document.getElementById(invalidFields[0]);
 			firstInvalidField?.scrollIntoView({ behavior: 'smooth' });
 		}
@@ -64,7 +73,10 @@
 						label="Email Address"
 						placeholder="Email Address"
 						bind:value={email}
+						bind:this={emailComp}
 						invalid={invalidFields.includes('email')}
+						errorMsgs={["Email address is required", "Must enter a valid email address"]}
+						errorBools={[!email && invalidFields.includes('email'), email && !emailValid && invalidFields.includes('email')]}
 						onInput={handleInputChange}
 					/>
 

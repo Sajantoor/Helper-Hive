@@ -55,15 +55,15 @@ const myFunc = () => {
 	export let onBlur = () => {};
 	
 	export let classLabel = '';
-	export let classText = 'rounded-lg';
-	export let classDiv = 'mb-4 w-full';
-	export let classField = 'mt-1 pl-3 p-2 w-full';
+	export let classText = '';
+	export let classDiv = 'w-full';
+	export let classField = 'mt-1 pl-3 p-2 w-full rounded-lg';
 	export let options: string[] = [];
 	
 	export let errorMsgs = [];
 	export let errorBools = [];
 	export let errorStyles = [];
-	export let keepErrorSpacing = true;
+	export let keepErrorSpacing = false;
 	export let keepErrorsOnBlur= false;
 	export let showErrorsOnlyWhen = true;
 	
@@ -212,9 +212,8 @@ const myFunc = () => {
 				bind:value
 				bind:this={inputElement}
 				{placeholder}
-				class="{classField} bg-placeholderGray border-none
-				{invalid ? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown' : ''}
-				{classText}"
+				class="{classField} bg-placeholderGray border-none {classText}
+				{invalid ? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown' : ''}"
 				on:input={handleSearch}
 				on:keydown={handleKeyDown}
 				on:focus={handleFocus}
@@ -242,7 +241,7 @@ const myFunc = () => {
 		</div>
 	</div>
 	{#if errorMsgs.length > 0}
-		<div class="mb-3">
+		<div>
 			{#if errorToShow}
 				<Text class="smallText text-altTextBrown {errorToShow.style}">{errorToShow.msg}</Text>
 			{:else if keepErrorSpacing}

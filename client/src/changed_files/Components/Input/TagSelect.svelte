@@ -14,6 +14,13 @@
 	export let tagLimit: number = 99;
 	export let tagValues: string[] = [];
 	export let options: string[] = [];
+	
+	export let errorMsgs = [];
+	export let errorBools = [];
+	export let errorStyles = [];
+	export let keepErrorSpacing = false;
+	export let keepErrorsOnBlur= false;
+	export let showErrorsOnlyWhen = true;
 
 	const handleInputChange = (): void => {
 		onInput(event);
@@ -28,15 +35,22 @@
 			handleInputChange();
 		}
 	};
+	
+	export function updateError(){
+		tagComp.updateError();
+	}
 
-	export function toggleInputField(thing: any = '') {
+	export function toggleInputField(mode: any = '') {
 		tagValTemp = '';
 		showInputField = !showInputField;
-		if (showInputField && thing == 'clickOnly') {
+		if (showInputField && mode.includes('click')) {
 			tagComp.forceClick();
 		} else if (showInputField) {
 			tagComp.forceFocus();
 		} else {
+			tagComp.handleBlur();
+		}
+		if (showInputField && mode.includes('blur')) {
 			tagComp.handleBlur();
 		}
 	}
@@ -52,7 +66,7 @@
 	<div class="tag-list flex flex-wrap gap-6">
 		{#each tagValues as tagVal}
 			<div
-				class="tag mt-1 mb-4 bg-tagYellow px-4 py-2 min-w-[6rem] rounded-full inline-block whitespace-nowrap text-center relative"
+				class="tag mt-1 mb-1 bg-tagYellow px-4 py-2 min-w-[6rem] rounded-full inline-block whitespace-nowrap text-center relative"
 			>
 				<Text>{tagVal}</Text>
 				<div
@@ -68,7 +82,9 @@
 		<DropDown
 			id="{id}tagInput"
 			placeholder="{placeholder}"
-			classText="rounded-full pl-3 {invalid && tagValues.length < 1 ? 'shadow-lg' : ''}"
+			classDiv="mb-1 w-full"
+			classField="mt-1 pl-3 p-2 w-full rounded-full"
+			classText="pl-3 {invalid && tagValues.length < 1 ? 'shadow-lg' : ''}"
 			bind:value={tagValTemp}
 			bind:this={tagComp}
 			{invalid}
@@ -78,7 +94,7 @@
 		<button
 			on:click|preventDefault={toggleInputField}
 			tabindex="-1"
-			class="tag ml-1 mt-1 mb-4 pb-1 pr-0.5 bg-tagYellow w-12 h-10 text-2xl font-semibold
+			class="tag ml-1 mt-1 mb-1 pb-1 pr-0.5 bg-tagYellow w-12 h-10 text-2xl font-semibold
 			items-center rounded-full flex justify-center text-center
 			transition-all duration-200 ease-in-out hover:w-full
 			{invalid && tagValues.length < 1 ? 'pointer-events-none opacity-50 shadow-lg' : ''}">&lt;</button
@@ -89,7 +105,7 @@
 			<button
 				on:click|preventDefault={toggleInputField}
 				on:focus={toggleInputField}
-				class="tag mt-1 mb-4 pb-1.5 pr-0 bg-tagYellow w-10 h-10 text-3xl
+				class="tag mt-1 mb-1 pb-1.5 pr-0 bg-tagYellow w-10 h-10 text-3xl
 			rounded-full flex justify-center items-center text-center
 			transition-all duration-200 ease-in-out hover:w-full
 			{showInputField ? 'hidden' : ''} {tagValues.length < tagLimit ? '' : 'hidden'}">+</button

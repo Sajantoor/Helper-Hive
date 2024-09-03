@@ -56,13 +56,13 @@ const myFunc = () => {
 
 	export let classLabel = '';
 	export let classText = '';
-	export let classDiv = 'mb-2 w-full';
+	export let classDiv = 'w-full';
 	export let classField = 'mt-1 pl-3 p-2 w-full';
 	
 	export let errorMsgs = [];
 	export let errorBools = [];
 	export let errorStyles = [];
-	export let keepErrorSpacing = true;
+	export let keepErrorSpacing = false;
 	export let keepErrorsOnBlur= false;
 	export let showErrorsOnlyWhen = true;
 	
@@ -143,7 +143,7 @@ const myFunc = () => {
 		/>
 	</div>
 	{#if errorMsgs.length > 0}
-		<div class="mb-3">
+		<div>
 			{#if errorToShow}
 				<Text class="smallText text-altTextBrown {errorToShow.style}">{errorToShow.msg}</Text>
 			{:else if keepErrorSpacing}

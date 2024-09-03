@@ -53,14 +53,14 @@ const myFunc = () => {
 	export let id = '';
 	export let label = '';
 	export let placeholder = '';
-	export let value = '';
+	export let value: Date;
 	export let invalid = false;
 	export let onInput = () => {};
 	export let onBlur = () => {};
 
 	export let classLabel = '';
 	export let classText = '';
-	export let classDiv = 'mb-2 w-full';
+	export let classDiv = 'w-full';
 	export let classField = 'mt-1 pl-3 p-2 w-full';
 
 	export let minDate = '01/01/1900';
@@ -69,7 +69,7 @@ const myFunc = () => {
 	export let errorMsgs = [];
 	export let errorBools = [];
 	export let errorStyles = [];
-	export let keepErrorSpacing = true;
+	export let keepErrorSpacing = false;
 	export let keepErrorsOnBlur= false;
 	export let showErrorsOnlyWhen = true;
 	
@@ -153,7 +153,7 @@ const myFunc = () => {
 	<div class="relative inline-block w-full mb-2">
 		<Flatpickr
 			{id}
-			bind:value
+			bind:value={value}
 			bind:this={inputElement}
 			{placeholder}
 			options={flatpickrOptions}
@@ -163,7 +163,7 @@ const myFunc = () => {
 		/>
 	</div>
 	{#if errorMsgs.length > 0}
-		<div class="mb-3">
+		<div>
 			{#if errorToShow}
 				<Text class="smallText text-altTextBrown {errorToShow.style}">{errorToShow.msg}</Text>
 			{:else if keepErrorSpacing}
