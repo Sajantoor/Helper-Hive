@@ -31,10 +31,13 @@
 
 	onMount(() => {
 		updateNumCardsPerSlide();
+
+		if (typeof window === 'undefined') return;
 		window.addEventListener('resize', updateNumCardsPerSlide);
 	});
 
 	onDestroy(() => {
+		if (typeof window === 'undefined') return;
 		window.removeEventListener('resize', updateNumCardsPerSlide);
 	});
 
