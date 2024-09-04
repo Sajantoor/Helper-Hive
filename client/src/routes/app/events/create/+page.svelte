@@ -15,6 +15,7 @@
 	import ClockOutline from 'svelte-material-icons/ClockTimeFourOutline.svelte';
 	import { PUBLIC_SERVER_HOST } from '$env/static/public';
 	import { goto } from '$app/navigation';
+	import { uploadFile } from '$lib/Utils/uploadFiles';
 
 	// Grab these from database:
 	let options: string[] = [
@@ -46,7 +47,7 @@
 	let tagValues: string[] = [];
 	let tagInput: TagSelect;
 
-	let shiftopenings: string = '';
+	let shiftOpenings: string = '';
 	let aboutEvent: string = '';
 	let preShift: string = '';
 
@@ -74,7 +75,7 @@
 			Boolean(endTime) &&
 			tagValues.length > 0 &&
 			Boolean(aboutEvent) &&
-			Boolean(shiftopenings) &&
+			Boolean(shiftOpenings) &&
 			Boolean(location) &&
 			Boolean(locationAddress) &&
 			Boolean(imageFile) &&
@@ -103,6 +104,8 @@
 			return;
 		}
 
+		const imageUrl = await uploadFile(imageFile!);
+
 		const body = {
 			name: title,
 			date: {
@@ -112,15 +115,14 @@
 				endTime: getDateFromTimes(endDate, endTime)
 			},
 			registration: {
-				totalSpots: shiftopenings
+				totalSpots: shiftOpenings
 			},
 			details: {
 				description: aboutEvent,
 				preShiftInfo: preShift,
 				tags: tagValues,
 				location: locationAddress,
-				photo: imageBase64,
-				// TODO: this is temporary
+				photo: imageUrl,
 				files: []
 			}
 		};
@@ -154,7 +156,7 @@
 		if (tagValues.length === 0) tagInput.toggleInputField('clickOnly');
 		if (!aboutEvent) invalidFields.push('aboutevent');
 		// if (!preshift) invalidFields.push('preshift');
-		if (!shiftopenings) invalidFields.push('shiftopenings');
+		if (!shiftOpenings) invalidFields.push('shiftopenings');
 		if (!location) invalidFields.push('locationInput');
 		if (location == 'Address not found') invalidFields.push('locationInput');
 		if (!locationAddress) invalidFields.push('locationInput');
@@ -483,7 +485,7 @@
 				classLabel="font-bold"
 				classDiv=""
 				classField="mt-1 p-2 w-1/6"
-				bind:value={shiftopenings}
+				bind:value={shiftOpenings}
 				invalid={invalidFields.includes('shiftopenings')}
 				onInput={handleInputChange}
 			/>
