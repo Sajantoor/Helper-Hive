@@ -3,7 +3,7 @@
 	import FileUpload from '$lib/Components/Upload.svelte';
 	import Location from '$lib/Components/EventPage/Location.svelte';
 	import NavBar from '$lib/Components/NavBar.svelte';
-	
+
 	import DateInput from '$lib/Components/Input/DateInput.svelte';
 	import LocationInput from '$lib/Components/Input/LocationInput.svelte';
 	import NumberInput from '$lib/Components/Input/NumberInput.svelte';
@@ -127,7 +127,7 @@
 	const highlightInvalidFields = (): void => {
 		invalidFields = [];
 		invalidComps = [];
-		
+
 		if (!title) invalidFields.push('title');
 		if (!startDate) invalidFields.push('startDate');
 		if (!endDate) invalidFields.push('endDate');
@@ -144,7 +144,7 @@
 		if (!imageFile) invalidFields.push('imageUpload');
 		// if (otherFiles.length === 0) invalidFields.push('fileUpload');
 		if (!datesValid) invalidFields.push('endDate', 'endTime');
-		
+
 		if (!title) invalidComps.push(titleComp);
 		if (!startDate) invalidComps.push(startDateComp);
 		if (!endDate) invalidComps.push(endDateComp);
@@ -160,7 +160,7 @@
 		if (!datesValid) invalidComps.push(endTimeComp);
 
 		if (invalidFields.length > 0) {
-			for (let i = 0; i < invalidComps.length; i++){
+			for (let i = 0; i < invalidComps.length; i++) {
 				invalidComps[i].updateError();
 			}
 			startDateComp.updateError();
@@ -282,11 +282,17 @@
 </script>
 
 <NavBar />
-<a href="/" class="absolute left-8 mt-6 text-xl transform scale-x-[-1] hover:text-primaryYellow">➜</a>
+<a href="/" class="absolute left-8 mt-6 text-xl transform scale-x-[-1] hover:text-primaryYellow"
+	>➜</a
+>
 <form on:submit|preventDefault={handleSubmit} class="space-y-6" novalidate>
-	<div class="mx-auto mt-8 mb-8 w-[70vw] flex flex-col grid-cols-1 mdlg:grid mdlg:grid-cols-[44%_56%] mdlg:gap-[2rem_5rem] mdlg:justify-center">
+	<div
+		class="mx-auto mt-8 mb-8 w-[70vw] flex flex-col grid-cols-1 mdlg:grid mdlg:grid-cols-[44%_56%] mdlg:gap-[2rem_5rem] mdlg:justify-center"
+	>
 		<!-- Image Upload -->
-		<div class="relative mb-8 mdlg:mb-0 aspect-[7/5] flex flex-col mdlg:aspect-[5/4] w-full order-1 mdlg:order-1 mdlg:col-span-1">
+		<div
+			class="relative mb-8 mdlg:mb-0 aspect-[7/5] flex flex-col mdlg:aspect-[5/4] w-full order-1 mdlg:order-1 mdlg:col-span-1"
+		>
 			<FileUpload
 				id="imageUpload"
 				type="image"
@@ -313,7 +319,7 @@
 				{/if}
 			</div>
 		</div>
-		
+
 		<!-- File upload, host, location display -->
 		<div class="order-3 mdlg:order-3 mdlg:col-span-1">
 			<div class="h-20 mb-8 w-full">
@@ -358,9 +364,12 @@
 						<Text class="ml-8">{hostName}</Text>
 					</div>
 					{#if hostInstagram}
-					<div class="cursor-pointer" on:click|preventDefault={() => window.open(hostInstagram, '_blank')}>
-						<Instagram class="text-primaryYellow" size={40} />
-					</div>
+						<div
+							class="cursor-pointer"
+							on:click|preventDefault={() => window.open(hostInstagram, '_blank')}
+						>
+							<Instagram class="text-primaryYellow" size={40} />
+						</div>
 					{/if}
 				</div>
 			</div>
@@ -379,7 +388,7 @@
 				bind:value={title}
 				bind:this={titleComp}
 				invalid={invalidFields.includes('title')}
-				errorMsgs={["Title is required"]}
+				errorMsgs={['Title is required']}
 				errorBools={[invalidFields.includes('title')]}
 				onInput={handleInputChange}
 			/>
@@ -393,7 +402,7 @@
 					bind:value={startDate}
 					bind:this={startDateComp}
 					invalid={invalidFields.includes('startDate')}
-					errorMsgs={["Start date is required"]}
+					errorMsgs={['Start date is required']}
 					errorBools={[invalidFields.includes('startDate') && !startDate]}
 					onInput={handleInputChange}
 					{minDate}
@@ -406,7 +415,7 @@
 					bind:value={endDate}
 					bind:this={endDateComp}
 					invalid={invalidFields.includes('endDate')}
-					errorMsgs={["End date is required"]}
+					errorMsgs={['End date is required']}
 					errorBools={[invalidFields.includes('endDate') && !endDate]}
 					onInput={handleInputChange}
 					{minDate}
@@ -423,7 +432,7 @@
 					bind:value={startTime}
 					bind:this={startTimeComp}
 					invalid={invalidFields.includes('startTime')}
-					errorMsgs={["Start time is required"]}
+					errorMsgs={['Start time is required']}
 					errorBools={[invalidFields.includes('startTime') && !startTime]}
 					onInput={handleInputChange}
 				/>
@@ -436,8 +445,11 @@
 					bind:value={endTime}
 					bind:this={endTimeComp}
 					invalid={invalidFields.includes('endTime')}
-					errorMsgs={["End time is required", "End date and time must be after start"]}
-					errorBools={[invalidFields.includes('endTime') && !endTime, invalidFields.includes('endTime') && endTime && !datesValid]}
+					errorMsgs={['End time is required', 'End date and time must be after start']}
+					errorBools={[
+						invalidFields.includes('endTime') && !endTime,
+						invalidFields.includes('endTime') && endTime && !datesValid
+					]}
 					onInput={handleInputChange}
 				/>
 			</div>
@@ -451,8 +463,11 @@
 					bind:value={location}
 					bind:this={locationInputComp}
 					invalid={invalidFields.includes('locationInput')}
-					errorMsgs={["Location is required", "Address could not be found"]}
-					errorBools={[invalidFields.includes('locationInput') && !location, invalidFields.includes('locationInput') && location=="Address not found"]}
+					errorMsgs={['Location is required', 'Address could not be found']}
+					errorBools={[
+						invalidFields.includes('locationInput') && !location,
+						invalidFields.includes('locationInput') && location == 'Address not found'
+					]}
 					onInput={handleInputChange}
 					onBlur={saveLocation}
 				/>
@@ -484,7 +499,7 @@
 				bind:value={shiftOpenings}
 				bind:this={shiftOpeningsComp}
 				invalid={invalidFields.includes('shiftOpenings')}
-				errorMsgs={["Shift openings is required"]}
+				errorMsgs={['Shift openings is required']}
 				errorBools={[invalidFields.includes('shiftOpenings')]}
 				onInput={handleInputChange}
 			/>
@@ -499,9 +514,9 @@
 				bind:this={aboutEventComp}
 				invalid={invalidFields.includes('aboutEvent')}
 				keepErrorSpacing={true}
-				errorMsgs={["Event information is required"]}
+				errorMsgs={['Event information is required']}
 				errorBools={[invalidFields.includes('aboutEvent')]}
-				errorStyles={["mt-0 mb-2"]}
+				errorStyles={['mt-0 mb-2']}
 				onInput={handleInputChange}
 				rows={6}
 			/>

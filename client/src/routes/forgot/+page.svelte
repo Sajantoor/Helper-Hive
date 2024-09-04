@@ -8,7 +8,7 @@
 	let emailValid = false;
 	let submitted = false;
 	let invalidFields: string[] = [];
-	
+
 	let emailComp: TextInput;
 	let invalidComps: any[] = [];
 
@@ -41,7 +41,7 @@
 		if (!validateEmail(email)) invalidComps.push(emailComp);
 
 		if (invalidFields.length > 0) {
-			for (let i = 0; i < invalidComps.length; i++){
+			for (let i = 0; i < invalidComps.length; i++) {
 				invalidComps[i].updateError();
 			}
 			const firstInvalidField = document.getElementById(invalidFields[0]);
@@ -75,8 +75,11 @@
 						bind:value={email}
 						bind:this={emailComp}
 						invalid={invalidFields.includes('email')}
-						errorMsgs={["Email address is required", "Must enter a valid email address"]}
-						errorBools={[!email && invalidFields.includes('email'), email && !emailValid && invalidFields.includes('email')]}
+						errorMsgs={['Email address is required', 'Must enter a valid email address']}
+						errorBools={[
+							!email && invalidFields.includes('email'),
+							email && !emailValid && invalidFields.includes('email')
+						]}
 						onInput={handleInputChange}
 					/>
 

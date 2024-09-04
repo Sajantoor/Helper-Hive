@@ -2,7 +2,7 @@
 	import Text from '$lib/Components/Text/Text.svelte';
 	import Popup from '$lib/Components/TCPopup.svelte';
 	import { onMount } from 'svelte';
-	
+
 	import PasswordInput from '$lib/Components/Input/PasswordInput.svelte';
 	import PhoneInput from '$lib/Components/Input/PhoneInput.svelte';
 	import TextInput from '$lib/Components/Input/TextInput.svelte';
@@ -21,7 +21,7 @@
 	let phoneValid = false;
 	let emailValid = false;
 	let invalidFields: string[] = [];
-	
+
 	let organizationNameComp: TextInput;
 	let emailComp: TextInput;
 	let phoneNumberComp: PhoneInput;
@@ -30,7 +30,7 @@
 	let passwordComp: PasswordInput;
 	let reenterPasswordComp: PasswordInput;
 	let invalidComps: any[] = [];
-	
+
 	let pwdStatus = 'Password must have';
 	let showPwdStatus = false;
 	let passwordValid = false;
@@ -42,13 +42,19 @@
 		if (!/[A-Z]/.test(password)) pwdStatus += ' an uppercase letter,';
 		if (!/[a-z]/.test(password)) pwdStatus += ' a lowercase letter,';
 		if (!/[0-9]/.test(password)) pwdStatus += ' a number,';
-		if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.`~<>\/?]/.test(password)) pwdStatus += ' a special character,';
+		if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.`~<>\/?]/.test(password))
+			pwdStatus += ' a special character,';
 		if (password.length < 8) pwdStatus += ' at least 8 characters,';
 
 		pwdStatus = pwdStatus.replace(/,$/, '.').replace(/,(?=[^,]+$)/, ', and');
 
-		if (password.length >= 8 && /[A-Z]/.test(password) && /[a-z]/.test(password) && /[0-9]/.test(password)
-		&& /[!@#$%^&*()_+\-=\[\]{};':"\\|,.`~<>\/?]/.test(password)) {
+		if (
+			password.length >= 8 &&
+			/[A-Z]/.test(password) &&
+			/[a-z]/.test(password) &&
+			/[0-9]/.test(password) &&
+			/[!@#$%^&*()_+\-=\[\]{};':"\\|,.`~<>\/?]/.test(password)
+		) {
 			passwordValid = true;
 		}
 	};
@@ -103,11 +109,11 @@
 		validateForm();
 	};
 
-	function handlePasswordChange(showStatus: boolean = false){
-		if (showStatus){
+	function handlePasswordChange(showStatus: boolean = false) {
+		if (showStatus) {
 			showPwdStatus = true;
 			validatePassword();
-		} 
+		}
 		passwordsMatch = password === reenterPassword;
 		reenterPasswordComp.updateError();
 		validateForm();
@@ -116,7 +122,7 @@
 	const highlightInvalidFields = () => {
 		invalidFields = [];
 		invalidComps = [];
-		
+
 		if (!organizationName) invalidFields.push('organizationName');
 		if (!emailValid) invalidFields.push('email');
 		if (!phoneValid) invalidFields.push('phoneNumber');
@@ -128,7 +134,7 @@
 		if (!passwordsMatch) invalidFields.push('reenterPassword');
 		if (!termsAgreed) invalidFields.push('termsAgreed');
 		if (!liabilityAgreed) invalidFields.push('liabilityAgreed');
-		
+
 		if (!organizationName) invalidComps.push(organizationNameComp);
 		if (!emailValid) invalidComps.push(emailComp);
 		if (!phoneValid) invalidComps.push(phoneNumberComp);
@@ -140,7 +146,7 @@
 		if (!passwordsMatch) invalidComps.push(reenterPasswordComp);
 
 		if (invalidFields.length > 0) {
-			for (let i = 0; i < invalidComps.length; i++){
+			for (let i = 0; i < invalidComps.length; i++) {
 				invalidComps[i].updateError();
 			}
 			const firstInvalidField = document.getElementById(invalidFields[0]);
@@ -192,7 +198,7 @@
 					bind:value={organizationName}
 					bind:this={organizationNameComp}
 					invalid={invalidFields.includes('organizationName')}
-					errorMsgs={["Organization name is required"]}
+					errorMsgs={['Organization name is required']}
 					errorBools={[invalidFields.includes('organizationName')]}
 					onInput={handleInputChange}
 				/>
@@ -204,8 +210,11 @@
 					bind:value={email}
 					bind:this={emailComp}
 					invalid={invalidFields.includes('email')}
-					errorMsgs={["Email address is required", "Must enter a valid email address"]}
-					errorBools={[!email && invalidFields.includes('email'), email && !emailValid && invalidFields.includes('email')]}
+					errorMsgs={['Email address is required', 'Must enter a valid email address']}
+					errorBools={[
+						!email && invalidFields.includes('email'),
+						email && !emailValid && invalidFields.includes('email')
+					]}
 					onInput={handleInputChange}
 				/>
 
@@ -217,8 +226,11 @@
 					bind:this={phoneNumberComp}
 					bind:valid={phoneValid}
 					invalid={invalidFields.includes('phoneNumber')}
-					errorMsgs={["Phone number is required", "Must enter a valid phone number"]}
-					errorBools={[!phoneNumber && invalidFields.includes('phoneNumber'), phoneNumber && !phoneValid && invalidFields.includes('phoneNumber')]}
+					errorMsgs={['Phone number is required', 'Must enter a valid phone number']}
+					errorBools={[
+						!phoneNumber && invalidFields.includes('phoneNumber'),
+						phoneNumber && !phoneValid && invalidFields.includes('phoneNumber')
+					]}
 					onInput={handleInputChange}
 				/>
 
@@ -233,7 +245,7 @@
 						bind:value={firstName}
 						bind:this={firstNameComp}
 						invalid={invalidFields.includes('firstName')}
-						errorMsgs={["First name is required"]}
+						errorMsgs={['First name is required']}
 						errorBools={[invalidFields.includes('firstName')]}
 						onInput={handleInputChange}
 					/>
@@ -244,7 +256,7 @@
 						bind:value={lastName}
 						bind:this={lastNameComp}
 						invalid={invalidFields.includes('lastName')}
-						errorMsgs={["Last name is required"]}
+						errorMsgs={['Last name is required']}
 						errorBools={[invalidFields.includes('lastName')]}
 						onInput={handleInputChange}
 					/>
@@ -262,18 +274,13 @@
 						bind:value={password}
 						bind:this={passwordComp}
 						invalid={invalidFields.includes('password')}
-						errorMsgs={[
-							"Password required",
-							pwdStatus,
-							"Looks good!"]}
+						errorMsgs={['Password required', pwdStatus, 'Looks good!']}
 						errorBools={[
 							invalidFields.includes('password') && !password,
 							password != '' && !passwordValid,
-							passwordValid]}
-						errorStyles={[
-							'',
-							'',
-							"text-green-500"]}
+							passwordValid
+						]}
+						errorStyles={['', '', 'text-green-500']}
 						keepErrorSpacing={true}
 						showErrorsOnlyWhen={showPwdStatus || password == ''}
 						onInput={() => handlePasswordChange(true)}
@@ -285,15 +292,12 @@
 						bind:value={reenterPassword}
 						bind:this={reenterPasswordComp}
 						invalid={invalidFields.includes('reenterPassword')}
-						errorMsgs={[
-							"Re-enter password required",
-							"Passwords do not match"]}
+						errorMsgs={['Re-enter password required', 'Passwords do not match']}
 						errorBools={[
 							invalidFields.includes('reenterPassword') && !reenterPassword,
-							!passwordsMatch]}
-						errorStyles={[
-							'',
-							"text-red-500"]}
+							!passwordsMatch
+						]}
+						errorStyles={['', 'text-red-500']}
 						keepErrorSpacing={true}
 						keepErrorsOnBlur={true}
 						onInput={() => handlePasswordChange()}
