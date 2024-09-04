@@ -1,12 +1,12 @@
 <script lang="ts">
 	import EventCard from '$lib/Components/EventCard.svelte';
-	import type { Event } from '$lib/Types/Events';
+	import type { EventContent } from '$lib/Types/Events';
 	import { onMount, onDestroy } from 'svelte';
 
 	import ArrowLeft from 'svelte-material-icons/ArrowLeft.svelte';
 	import ArrowRight from 'svelte-material-icons/ArrowRight.svelte';
 
-	export let events: Event[] = [];
+	export let events: EventContent[];
 	let currentSlide = 0;
 
 	let numCardsPerSlide = 4;
@@ -31,10 +31,13 @@
 
 	onMount(() => {
 		updateNumCardsPerSlide();
+
+		if (typeof window === 'undefined') return;
 		window.addEventListener('resize', updateNumCardsPerSlide);
 	});
 
 	onDestroy(() => {
+		if (typeof window === 'undefined') return;
 		window.removeEventListener('resize', updateNumCardsPerSlide);
 	});
 
@@ -70,11 +73,12 @@
 			>
 				{#each events as event, i}
 					<EventCard
-						img={event.img}
-						title={event.title}
-						date={event.date}
+						id={event._id}
+						img={event.details.photo}
+						title={event.name}
+						date={event.date.startDay}
 						organization={event.organization.name}
-						location={event.location}
+						location={event.details.location}
 						organizationLogo={event.organization.logo}
 					/>
 				{/each}

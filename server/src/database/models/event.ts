@@ -1,16 +1,41 @@
-import { BSON } from 'mongodb';
 import { Schema, model } from 'mongoose';
 
 const eventSchema = new Schema({
-    organizationId: { type: Schema.Types.ObjectId, ref: 'organization', required: true },
-    startDate: { type: Date, required: true },
-    endDate: { type: Date, required: true },
     name: { type: String, required: true },
-    description: { type: String, required: true },
-    spots: { type: Number, required: true },
-    registeredVolunteers: [{ type: Schema.Types.ObjectId, ref: 'user' }],
-    coverPhoto: { type: Buffer, required: true }, // TODO: Change this to use a string instead and use Amazon S3
-    files: [{ type: Buffer, required: false }] // TODO: Change this to use a string instead and use Amazon S3
+    date: {
+        type: new Schema({
+            startDay: { type: Date, required: true },
+            endDay: { type: Date, required: false },
+            startTime: { type: Date, required: true },
+            endTime: { type: Date, required: true }
+        }),
+        required: true,
+    },
+    details: {
+        type: new Schema({
+            description: { type: String, required: true },
+            preShiftInfo: { type: String, required: true },
+            location: { type: String, required: true },
+            photo: { type: String, required: true },
+            files: [{ type: String, required: false }],
+            tags: [{ type: String, required: false }],
+            createdAt: { type: Date, required: true, default: Date.now },
+        }),
+    },
+    registration: {
+        type: new Schema({
+            totalSpots: { type: Number, required: true },
+            registeredVolunteers: {
+                type: [{ type: Schema.Types.ObjectId, ref: 'user' }],
+                required: true,
+                default: []
+            },
+            totalRegistered: { type: Number, required: true, default: 0 }
+        }),
+        required: true
+    },
+    // Reference to the organization that is hosting the event
+    organization: { type: Schema.Types.ObjectId, ref: 'organization', required: true },
 });
 
 const Event = model("event", eventSchema);

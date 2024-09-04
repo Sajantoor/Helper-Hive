@@ -2,6 +2,7 @@
 	import Text from '$lib/Components/Text/Text.svelte';
 	import LeftArrow from 'svelte-material-icons/ChevronLeft.svelte';
 	import TextInput from '$lib/Components/Input/TextInput.svelte';
+	import { PUBLIC_SERVER_HOST } from '$env/static/public';
 
 	let email = '';
 	let formValid = false;
@@ -15,6 +16,7 @@
 	const validateEmail = () => {
 		const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 		emailValid = re.test(email);
+		return emailValid;
 	};
 
 	const validateForm = () => {
@@ -22,12 +24,31 @@
 		formValid = Boolean(email) && emailValid;
 	};
 
-	const handleSubmit = () => {
+	const handleSubmit = async () => {
 		highlightInvalidFields();
 		if (formValid) {
 			// Submission logic here
 			console.log('Sent email to ' + email);
 			submitted = true;
+		}
+
+		if (!formValid) {
+			return;
+		}
+
+		const response = await fetch(`${PUBLIC_SERVER_HOST}/api/forgot-password`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ email })
+		});
+
+		if (response.ok) {
+			submitted = true;
+		} else {
+			const data = await response.json();
+			console.error('Failed to send forgot password: ' + data);
 		}
 	};
 
@@ -37,8 +58,8 @@
 
 	const highlightInvalidFields = () => {
 		invalidFields = [];
-		if (!validateEmail(email)) invalidFields.push('email');
-		if (!validateEmail(email)) invalidComps.push(emailComp);
+		if (!validateEmail()) invalidFields.push('email');
+		if (!validateEmail()) invalidComps.push(emailComp);
 
 		if (invalidFields.length > 0) {
 			for (let i = 0; i < invalidComps.length; i++) {

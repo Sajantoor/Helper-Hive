@@ -19,7 +19,7 @@ const cookieOptions = {
     secure: __prod__,
     sameSite: "lax",
     path: "/",
-    domain: __prod__ ? `.${process.env.DOMAIN}` : "",
+    domain: __prod__ ? `.${process.env.CLIENT_URL}` : "",
     maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
 } as const;
 
@@ -38,7 +38,7 @@ export function validateAccessToken(token: string) {
 
 async function generateAuthTokens(data: TokenData): Promise<{ refreshToken: string; accessToken: string; } | null> {
     const refreshToken = jwt.sign(data, refresh_code_secret, { expiresIn: "7d" });
-    const accessToken = jwt.sign(data, access_code_secret, { expiresIn: "15m" });
+    const accessToken = jwt.sign(data, access_code_secret, { expiresIn: "2h" });
 
     const refreshTokenEntry = new RefreshToken({ token: refreshToken });
     try {

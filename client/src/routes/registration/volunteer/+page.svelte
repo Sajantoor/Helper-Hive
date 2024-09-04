@@ -2,11 +2,13 @@
 	import Text from '$lib/Components/Text/Text.svelte';
 	import Popup from '$lib/Components/TCPopup.svelte';
 	import { onMount } from 'svelte';
-	
+
 	import DateInput from '$lib/Components/Input/DateInput.svelte';
 	import PasswordInput from '$lib/Components/Input/PasswordInput.svelte';
 	import PhoneInput from '$lib/Components/Input/PhoneInput.svelte';
 	import TextInput from '$lib/Components/Input/TextInput.svelte';
+	import { goto } from '$app/navigation';
+	import { PUBLIC_SERVER_HOST } from '$env/static/public';
 
 	let firstName = '';
 	let lastName = '';
@@ -22,7 +24,7 @@
 	let phoneValid = false;
 	let emailValid = false;
 	let invalidFields: string[] = [];
-	
+
 	let firstNameComp: TextInput;
 	let lastNameComp: TextInput;
 	let emailComp: TextInput;
@@ -31,11 +33,11 @@
 	let passwordComp: PasswordInput;
 	let reenterPasswordComp: PasswordInput;
 	let invalidComps: any[] = [];
-	
+
 	let pwdStatus = 'Password must have';
 	let showPwdStatus = false;
 	let passwordValid = false;
-	
+
 	const thirteenYearsAgo = new Date();
 	thirteenYearsAgo.setFullYear(thirteenYearsAgo.getFullYear() - 13);
 	const maxDate = `${('0' + thirteenYearsAgo.getDate()).slice(-2)}/${('0' + (thirteenYearsAgo.getMonth() + 1)).slice(-2)}/${thirteenYearsAgo.getFullYear()}`;
@@ -55,6 +57,7 @@
 			passwordValid &&
 			passwordsMatch &&
 			emailValid;
+		return formValid;
 	};
 
 	const validateEmail = () => {
@@ -69,38 +72,53 @@
 		if (!/[A-Z]/.test(password)) pwdStatus += ' an uppercase letter,';
 		if (!/[a-z]/.test(password)) pwdStatus += ' a lowercase letter,';
 		if (!/[0-9]/.test(password)) pwdStatus += ' a number,';
-		if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.`~<>\/?]/.test(password)) pwdStatus += ' a special character,';
+		if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.`~<>\/?]/.test(password))
+			pwdStatus += ' a special character,';
 		if (password.length < 8) pwdStatus += ' at least 8 characters,';
 
 		pwdStatus = pwdStatus.replace(/,$/, '.').replace(/,(?=[^,]+$)/, ', and');
 
-		if (password.length >= 8 && /[A-Z]/.test(password) && /[a-z]/.test(password) && /[0-9]/.test(password)
-		&& /[!@#$%^&*()_+\-=\[\]{};':"\\|,.`~<>\/?]/.test(password)) {
+		if (
+			password.length >= 8 &&
+			/[A-Z]/.test(password) &&
+			/[a-z]/.test(password) &&
+			/[0-9]/.test(password) &&
+			/[!@#$%^&*()_+\-=\[\]{};':"\\|,.`~<>\/?]/.test(password)
+		) {
 			passwordValid = true;
 		}
 	};
 
-	const handleSubmit = () => {
+	const handleSubmit = async () => {
+		let isFormValid = validateForm();
 		highlightInvalidFields();
 
-		if (formValid) {
-			// Submission logic goes here
-			if (email === 'already@exists.com') {
-				console.log('Email already exists');
-			} else {
-				console.log({
-					phoneNumber,
-					firstName,
-					lastName,
-					email,
-					dob,
-					password,
-					reenterPassword,
-					termsAgreed,
-					liabilityAgreed
-				});
-				alert('Form successfully submitted');
-			}
+		if (!isFormValid) {
+			return;
+		}
+
+		const body = {
+			firstName,
+			lastName,
+			phoneNumber,
+			dateOfBirth: dob,
+			email,
+			password
+		};
+
+		// Submission logic goes here
+		const response = await fetch(`${PUBLIC_SERVER_HOST}/api/users/register`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(body)
+		});
+
+		if (response.ok) {
+			goto('/login');
+		} else {
+			console.error('Failed to register:', response);
 		}
 	};
 
@@ -108,11 +126,11 @@
 		validateForm();
 	};
 
-	function handlePasswordChange(showStatus: boolean = false){
-		if (showStatus){
+	function handlePasswordChange(showStatus: boolean = false) {
+		if (showStatus) {
 			showPwdStatus = true;
 			validatePassword();
-		} 
+		}
 		passwordsMatch = password === reenterPassword;
 		reenterPasswordComp.updateError();
 		validateForm();
@@ -121,7 +139,7 @@
 	const highlightInvalidFields = () => {
 		invalidFields = [];
 		invalidComps = [];
-		
+
 		if (!firstName) invalidFields.push('firstName');
 		if (!lastName) invalidFields.push('lastName');
 		if (!emailValid) invalidFields.push('email');
@@ -133,7 +151,7 @@
 		if (!passwordsMatch) invalidFields.push('reenterPassword');
 		if (!termsAgreed) invalidFields.push('termsAgreed');
 		if (!liabilityAgreed) invalidFields.push('liabilityAgreed');
-		
+
 		if (!firstName) invalidComps.push(firstNameComp);
 		if (!lastName) invalidComps.push(lastNameComp);
 		if (!emailValid) invalidComps.push(emailComp);
@@ -145,7 +163,7 @@
 		if (!passwordsMatch) invalidComps.push(reenterPasswordComp);
 
 		if (invalidFields.length > 0) {
-			for (let i = 0; i < invalidComps.length; i++){
+			for (let i = 0; i < invalidComps.length; i++) {
 				invalidComps[i].updateError();
 			}
 			const firstInvalidField = document.getElementById(invalidFields[0]);
@@ -176,7 +194,7 @@
 		>
 			<Text class="section lg:w-1/2 mb-4 whitespace-normal pt-10">Volunteer Registration</Text>
 			<Text class="smallText">
-				Wrong Place? <a href="/OrganizationRegistration" class="text-blue-500 underline"
+				Wrong Place? <a href="/registration/organization" class="text-blue-500 underline"
 					>Click here</a
 				> for Organization Registration
 			</Text>
@@ -199,7 +217,7 @@
 						bind:value={firstName}
 						bind:this={firstNameComp}
 						invalid={invalidFields.includes('firstName')}
-						errorMsgs={["First name is required"]}
+						errorMsgs={['First name is required']}
 						errorBools={[invalidFields.includes('firstName')]}
 						onInput={handleInputChange}
 					/>
@@ -210,7 +228,7 @@
 						bind:value={lastName}
 						bind:this={lastNameComp}
 						invalid={invalidFields.includes('lastName')}
-						errorMsgs={["Last name is required"]}
+						errorMsgs={['Last name is required']}
 						errorBools={[invalidFields.includes('lastName')]}
 						onInput={handleInputChange}
 					/>
@@ -223,8 +241,11 @@
 					bind:value={email}
 					bind:this={emailComp}
 					invalid={invalidFields.includes('email')}
-					errorMsgs={["Email address is required", "Must enter a valid email address"]}
-					errorBools={[!email && invalidFields.includes('email'), email && !emailValid && invalidFields.includes('email')]}
+					errorMsgs={['Email address is required', 'Must enter a valid email address']}
+					errorBools={[
+						!email && invalidFields.includes('email'),
+						email && !emailValid && invalidFields.includes('email')
+					]}
 					onInput={handleInputChange}
 				/>
 
@@ -236,8 +257,11 @@
 					bind:this={phoneNumberComp}
 					bind:valid={phoneValid}
 					invalid={invalidFields.includes('phoneNumber')}
-					errorMsgs={["Phone number is required", "Must enter a valid phone number"]}
-					errorBools={[!phoneNumber && invalidFields.includes('phoneNumber'), phoneNumber && !phoneValid && invalidFields.includes('phoneNumber')]}
+					errorMsgs={['Phone number is required', 'Must enter a valid phone number']}
+					errorBools={[
+						!phoneNumber && invalidFields.includes('phoneNumber'),
+						phoneNumber && !phoneValid && invalidFields.includes('phoneNumber')
+					]}
 					onInput={handleInputChange}
 				/>
 
@@ -248,7 +272,7 @@
 					bind:value={dob}
 					bind:this={dobComp}
 					invalid={invalidFields.includes('dob')}
-					errorMsgs={["Date of birth is required"]}
+					errorMsgs={['Date of birth is required']}
 					errorBools={[invalidFields.includes('dob')]}
 					keepErrorSpacing={true}
 					onInput={handleInputChange}
@@ -267,18 +291,13 @@
 						bind:value={password}
 						bind:this={passwordComp}
 						invalid={invalidFields.includes('password')}
-						errorMsgs={[
-							"Password required",
-							pwdStatus,
-							"Looks good!"]}
+						errorMsgs={['Password required', pwdStatus, 'Looks good!']}
 						errorBools={[
 							invalidFields.includes('password') && !password,
 							password != '' && !passwordValid,
-							passwordValid]}
-						errorStyles={[
-							'',
-							'',
-							"text-green-500"]}
+							passwordValid
+						]}
+						errorStyles={['', '', 'text-green-500']}
 						keepErrorSpacing={true}
 						showErrorsOnlyWhen={showPwdStatus || password == ''}
 						onInput={() => handlePasswordChange(true)}
@@ -290,15 +309,12 @@
 						bind:value={reenterPassword}
 						bind:this={reenterPasswordComp}
 						invalid={invalidFields.includes('reenterPassword')}
-						errorMsgs={[
-							"Re-enter password required",
-							"Passwords do not match"]}
+						errorMsgs={['Re-enter password required', 'Passwords do not match']}
 						errorBools={[
 							invalidFields.includes('reenterPassword') && !reenterPassword,
-							!passwordsMatch]}
-						errorStyles={[
-							'',
-							"text-red-500"]}
+							!passwordsMatch
+						]}
+						errorStyles={['', 'text-red-500']}
 						keepErrorSpacing={true}
 						keepErrorsOnBlur={true}
 						onInput={() => handlePasswordChange()}

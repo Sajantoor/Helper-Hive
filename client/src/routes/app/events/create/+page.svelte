@@ -2,7 +2,7 @@
 	import Text from '$lib/Components/Text/Text.svelte';
 	import FileUpload from '$lib/Components/Upload.svelte';
 	import Location from '$lib/Components/EventPage/Location.svelte';
-	import NavBar from '$lib/Components/NavBar.svelte';
+	import ArrowLeft from 'svelte-material-icons/ArrowLeft.svelte';
 
 	import DateInput from '$lib/Components/Input/DateInput.svelte';
 	import LocationInput from '$lib/Components/Input/LocationInput.svelte';
@@ -18,6 +18,8 @@
 	import CalendarMonth from 'svelte-material-icons/CalendarMonthOutline.svelte';
 	import MapMarkerOutline from 'svelte-material-icons/MapMarkerOutline.svelte';
 	import ClockOutline from 'svelte-material-icons/ClockTimeFourOutline.svelte';
+	import { PUBLIC_SERVER_HOST } from '$env/static/public';
+	import { goto } from '$app/navigation';
 
 	// Grab these from database:
 	let options: string[] = [
@@ -66,7 +68,7 @@
 
 	let imageFile: File | null = null;
 	let otherFiles: File[] = [];
-	let imageUrl: string = '';
+	let imageBase64: string = '';
 	let otherFileUrls: string[] = [];
 
 	let location: string = '';
@@ -100,27 +102,61 @@
 		validateForm();
 	};
 
-	const handleSubmit = (): void => {
+	function getDateFromTimes(date: Date, time: string): Date {
+		console.log(time);
+		let [hours, minutes] = time.split(':').map((str) => parseInt(str, 10));
+		if (time.includes('PM')) hours += 12;
+		const newDate = new Date(date);
+		newDate.setHours(hours, minutes);
+		return newDate;
+	}
+
+	const handleSubmit = async () => {
 		saveLocation();
 		validateForm();
 		highlightInvalidFields();
-		if (formValid) {
-			console.log({
-				title,
-				startDate,
-				endDate,
-				startTime,
-				endTime,
-				tagValues,
-				aboutEvent,
-				shiftOpenings,
-				preShift,
-				location,
-				locationAddress,
-				imageFile,
-				otherFiles
-			});
-			alert('Submitted form successfully');
+
+		if (!formValid) {
+			return;
+		}
+
+		const body = {
+			name: title,
+			date: {
+				startDay: startDate,
+				endDay: endDate,
+				startTime: getDateFromTimes(startDate, startTime),
+				endTime: getDateFromTimes(endDate, endTime)
+			},
+			registration: {
+				totalSpots: shiftOpenings
+			},
+			details: {
+				description: aboutEvent,
+				preShiftInfo: preShift,
+				tags: tagValues,
+				location: locationAddress,
+				photo: imageBase64,
+				// TODO: this is temporary
+				files: []
+			}
+		};
+
+		const response = await fetch(`${PUBLIC_SERVER_HOST}/api/events`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			credentials: 'include',
+			body: JSON.stringify(body)
+		});
+
+		if (response.ok) {
+			const data = await response.json();
+			console.log(data);
+			goto(`/app/events/${data._id}`);
+		} else {
+			console.error('Failed to create event');
 		}
 	};
 
@@ -181,7 +217,6 @@
 	}
 
 	// Date functions
-
 	const tomorrow = new Date();
 	tomorrow.setDate(tomorrow.getDate() + 1);
 	const minDate = `${('0' + tomorrow.getDate()).slice(-2)}/${('0' + (tomorrow.getMonth() + 1)).slice(-2)}/${tomorrow.getFullYear()}`;
@@ -233,14 +268,28 @@
 		}
 	};
 
-	// File functions
+	const createBase64Image = (file: File): Promise<string> => {
+		return new Promise((resolve, reject) => {
+			const reader = new FileReader();
+			reader.onload = () => {
+				resolve(reader.result as string);
+			};
+			reader.onerror = reject;
+			reader.readAsDataURL(file);
+		});
+	};
 
-	const handleFileDrop = (event: any, type: string): void => {
+	// File functions
+	const handleFileDrop = async (event: any, type: string) => {
 		const files = event.detail.files.detail;
 		if (files.acceptedFiles.length > 0) {
 			if (type === 'image' && !imageFile) {
 				imageFile = files.acceptedFiles[0];
-				imageUrl = URL.createObjectURL(imageFile);
+				if (!imageFile) {
+					return;
+				}
+
+				imageBase64 = await createBase64Image(imageFile);
 				const index = invalidFields.indexOf('imageUpload');
 				if (index > -1) {
 					invalidFields.splice(index, 1);
@@ -268,7 +317,7 @@
 
 	const removeImage = (): void => {
 		imageFile = null;
-		imageUrl = '';
+		imageBase64 = '';
 		handleInputChange();
 	};
 
@@ -281,10 +330,10 @@
 	};
 </script>
 
-<NavBar />
-<a href="/" class="absolute left-8 mt-6 text-xl transform scale-x-[-1] hover:text-primaryYellow"
-	>➜</a
->
+<button class="absolute" on:click={() => window.history.back()}>
+	<ArrowLeft size={20} class="ml-10 mt-10 absolute" />
+</button>
+
 <form on:submit|preventDefault={handleSubmit} class="space-y-6" novalidate>
 	<div
 		class="mx-auto mt-8 mb-8 w-[70vw] flex flex-col grid-cols-1 mdlg:grid mdlg:grid-cols-[44%_56%] mdlg:gap-[2rem_5rem] mdlg:justify-center"
@@ -300,10 +349,10 @@
 				invalid={invalidFields.includes('imageUpload')}
 				on:drop={(event) => handleFileDrop(event, 'image')}
 			/>
-			{#if imageUrl}
+			{#if imageBase64}
 				<div
 					class="absolute inset-0 bg-cover bg-center rounded-3xl"
-					style="background-image: url({imageUrl});"
+					style="background-image: url({imageBase64});"
 				>
 					<div class="absolute top-0 right-0 cursor-pointer" on:click={removeImage}>
 						<Circle class="text-white rounded-full p-1" size={30} />
@@ -399,8 +448,8 @@
 					placeholder="Select start date..."
 					classText="placeholder:italic"
 					classDiv=""
-					bind:value={startDate}
-					bind:this={startDateComp}
+					type="date"
+					bind:date={startDate}
 					invalid={invalidFields.includes('startDate')}
 					errorMsgs={['Start date is required']}
 					errorBools={[invalidFields.includes('startDate') && !startDate]}
@@ -412,8 +461,8 @@
 					placeholder="Select end date..."
 					classText="placeholder:italic"
 					classDiv=""
-					bind:value={endDate}
-					bind:this={endDateComp}
+					type="date"
+					bind:date={endDate}
 					invalid={invalidFields.includes('endDate')}
 					errorMsgs={['End date is required']}
 					errorBools={[invalidFields.includes('endDate') && !endDate]}
@@ -509,14 +558,9 @@
 				label="About your event"
 				placeholder="Include additional details about the event..."
 				classLabel="heading mt-2"
-				classText="placeholder:italic rounded-lg p-3"
+				classPlaceholder="italic rounded-lg p-3"
 				bind:value={aboutEvent}
-				bind:this={aboutEventComp}
-				invalid={invalidFields.includes('aboutEvent')}
-				keepErrorSpacing={true}
-				errorMsgs={['Event information is required']}
-				errorBools={[invalidFields.includes('aboutEvent')]}
-				errorStyles={['mt-0 mb-2']}
+				invalid={invalidFields.includes('aboutevent')}
 				onInput={handleInputChange}
 				rows={6}
 			/>
@@ -526,10 +570,9 @@
 				label="Important Pre-Shift Information"
 				placeholder="Include details about any requirements, expectations, or information to know prior to arrival for shift..."
 				classLabel="heading"
-				classText="placeholder:italic rounded-lg p-3"
+				classPlaceholder="italic rounded-lg p-3"
 				bind:value={preShift}
-				bind:this={preShiftComp}
-				invalid={invalidFields.includes('preShift')}
+				invalid={invalidFields.includes('preshift')}
 				onInput={handleInputChange}
 				rows={6}
 			/>

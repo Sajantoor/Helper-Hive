@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { PUBLIC_GOOGLE_MAPS_API_KEY, PUBLIC_SERVER_HOST } from '$env/static/public';
 	import Heading from '../Text/Heading.svelte';
 	import Text from '../Text/Text.svelte';
 
@@ -11,9 +12,11 @@
 	$: getFullAddress(location);
 
 	async function getFullAddress(input: string) {
-		const apiKey = 'API_KEY_HERE';
+		const GOOGLE_MAPS_API_KEY = PUBLIC_GOOGLE_MAPS_API_KEY;
 		try {
-			const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${input}&key=${apiKey}`);
+			const response = await fetch(
+				`https://maps.googleapis.com/maps/api/geocode/json?address=${input}&key=${GOOGLE_MAPS_API_KEY}`
+			);
 			const data = await response.json();
 			if (data.results && data.results.length > 0) {
 				locationAddress = data.results[0].formatted_address;
@@ -31,7 +34,9 @@
 	<Heading class="mb-4">Location</Heading>
 	<iframe src={mapUrl} title="" allowfullscreen></iframe>
 	<a href={mapsLink} target="_blank">
-		<button class="bg-primaryYellow text-black py-2 px-4 mt-4 w-full rounded-lg"><Text>Open in Google Maps</Text></button>
+		<button class="bg-primaryYellow text-black py-2 px-4 mt-4 w-full rounded-lg"
+			><Text>Open in Google Maps</Text></button
+		>
 	</a>
 </div>
 
