@@ -7,9 +7,9 @@
 	export let title: string = '';
 	export let location: string = '';
 	export let date: Date = new Date();
-	export let startTime: Date = new Date(); 
-	export let endTime: Date = new Date(); 
-	export let id: string = 'test';
+	export let startTime: Date = new Date();
+	export let endTime: Date = new Date();
+	export let id: string = '';
 </script>
 
 <div class="calendarEvent max-w-80 w-full h-1/4 m-5 border-white border-2">
@@ -25,9 +25,17 @@
 			<div class="inline-block flex-grow">
 				<SmallText>{location}</SmallText>
 				<SmallText>
-					{startTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}
+					{startTime.toLocaleTimeString('en-US', {
+						hour: '2-digit',
+						minute: '2-digit',
+						hour12: true
+					})}
 					-
-					{endTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}
+					{endTime.toLocaleTimeString('en-US', {
+						hour: '2-digit',
+						minute: '2-digit',
+						hour12: true
+					})}
 				</SmallText>
 				<SmallText class="font-bold">{title}</SmallText>
 			</div>

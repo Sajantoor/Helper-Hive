@@ -92,6 +92,7 @@
 		{#each calendarElements as element (element.date)}
 			<div class="grid-element">
 				<CalendarElement
+					id={element._id}
 					img={element.details.photo}
 					title={element.name}
 					location={element.details.location}
