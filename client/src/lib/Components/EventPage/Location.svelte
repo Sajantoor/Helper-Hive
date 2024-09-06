@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { PUBLIC_GOOGLE_MAPS_API_KEY, PUBLIC_SERVER_HOST } from '$env/static/public';
+	import { PUBLIC_GOOGLE_MAPS_API_KEY } from '$env/static/public';
 	import Heading from '../Text/Heading.svelte';
 	import Text from '../Text/Text.svelte';
 

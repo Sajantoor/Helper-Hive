@@ -1,169 +1,70 @@
-<!-- 
-Usage in page:
-
-let myValue = '';
-let dropOptions = []
-
-const myFunc = () => {
-	//optional function for on:input/on:change
-};
-
-...
-
-<InputField
-	id="id"
-	label="Text"
-	placeholder="Text"
-	bind:value={myValue}
-	options = dropOptions
-	
-	classLabel = 'classes to add to label'
-	classText = 'classes to add to input/placeholder'
-	classDiv = 'override div style'
-	classField = 'override input field spacing/size'
-	
-	onInput={myFunc} // event for on:input, on:change, onChangeBlur
-	onBlur={myFunc} // event for on:blur
-	invalid={ boolean check for invalid input }
-		// highlights the field when true
-		
-	errorMsgs = [] // Error messages
-	errorBools = [] // Corresponding conditions to show them
-	errorStyles = [] // Styles to add, leave '' for default
-	keepErrorSpacing = {true/false}
-		// true allocates extra space for error to show up
-		// false pushes down rest of page upon error
-	keepErrorsOnBlur = {true/false}
-		// false shows errors only while typing/invalid
-		// true keeps errors visible until resolved
-	showErrorsOnlyWhen = {conditional, like invalid}
-		// add extra conditions/variables
-		// errors will only be visible while true
-/>
--->
-
 <script lang="ts">
-	import Text from '$lib/Components/Text/Text.svelte';
-	import { onMount } from 'svelte';
+	import SmallText from '$lib/Components/Text/SmallText.svelte';
+	import { createEventDispatcher } from 'svelte';
 
-	export let id = '';
+	const dispatch = createEventDispatcher<{ input: { value: string } }>();
+
 	export let label = '';
 	export let placeholder = '';
 	export let value = '';
 	export let invalid = false;
-	export let onInput = () => {};
-	export let onBlur = () => {};
-	
-	export let classLabel = '';
-	export let classText = '';
-	export let classDiv = 'w-full';
-	export let classField = 'mt-1 pl-3 p-2 w-full rounded-lg';
 	export let options: string[] = [];
-	
-	export let errorMsgs = [];
-	export let errorBools = [];
-	export let errorStyles = [];
-	export let keepErrorSpacing = false;
-	export let keepErrorsOnBlur= false;
-	export let showErrorsOnlyWhen = true;
-	
-	let fieldActive = false;
-	let errorToShow = null;
-	$: {
-		const minLength = Math.min(errorMsgs.length, errorBools.length);
-		errorMsgs = errorMsgs.slice(0, minLength);
-		errorBools = errorBools.slice(0, minLength);
-		errorStyles = errorStyles.concat(Array(Math.max(0, minLength - errorStyles.length)).fill("text-altTextBrown"));
-	}
-	
-	let filteredOptions: string[] = [];
+
+	let filteredOptions = options.sort();
 	let searchQuery = '';
 	let isOpen = false;
 	let highlightedIndex = -1;
-	let inputElement: HTMLInputElement;
-
-	const handleInput = (event: any) => {
-		fieldActive = true;
-		updateError();
-		onInput(event);
-	};
-
-	const handleFieldBlur = (event: any) => {
-		onInput(event);
-		fieldActive = false;
-		onBlur(event);
-		updateError();
-	};
-	
-	export function updateError() {
-		setTimeout(() => {
-			errorToShow = null;
-			for (let i = 0; i < errorMsgs.length; i++) {
-				if (errorBools[i] && showErrorsOnlyWhen && (keepErrorsOnBlur || fieldActive || invalid)) {
-					errorToShow = { msg: errorMsgs[i], style: errorStyles[i] };
-				}
-			}
-		}, 1); // 1 tick delay for vars to update
-	}
-	
-	// Dropdown functions
 
 	const handleSearch = (event: any) => {
-		searchQuery = event.target.value.toLowerCase();
-		filteredOptions = options.filter((option) => option.toLowerCase().includes(searchQuery)).sort();
-		if (searchQuery == '') {
+		const target = event.target as HTMLInputElement;
+		searchQuery = target.value.toLowerCase();
+
+		if (!searchQuery || searchQuery.length < 1) {
 			highlightedIndex = -1;
-		} else {
-			highlightedIndex = 0;
 		}
+
+		filteredOptions = options
+			.filter((option) => option.toLowerCase().startsWith(searchQuery))
+			.sort();
+		highlightedIndex = 0;
 	};
 
-	const handleFocus = (event: any) => {
+	const handleClick = (event: any) => {
 		isOpen = true;
-		filteredOptions = options.sort();
 		if (event.target.value.toLowerCase() == '') {
 			highlightedIndex = -1;
 		}
 		event.target.focus();
 	};
 
-	export function handleBlur() {
-		setTimeout(() => {
-			if (
-				highlightedIndex >= 0 &&
-				highlightedIndex < filteredOptions.length &&
-				options.includes(value)
-			) {
-				value = filteredOptions[highlightedIndex];
-				onInput({ target: { value: filteredOptions[highlightedIndex] } });
-			} else {
-				value = '';
-				onInput({ target: { value: '' } });
+	const handleKeyDown = (event: KeyboardEvent) => {
+		switch (event.key) {
+			case 'Escape': {
+				isOpen = false;
+				break;
 			}
-			isOpen = false;
-			handleInput();
-		}, 200); // Delay to allow click event to register
-	}
-
-	const handleKeyDown = (event: any) => {
-		if (event.key === 'ArrowDown') {
-			highlightedIndex = (highlightedIndex + 1) % filteredOptions.length;
-			value = filteredOptions[highlightedIndex];
-			event.preventDefault();
-		} else if (event.key === 'ArrowUp') {
-			highlightedIndex = (highlightedIndex - 1 + filteredOptions.length) % filteredOptions.length;
-			value = filteredOptions[highlightedIndex];
-			event.preventDefault();
-		} else if (event.key === 'Enter' || event.key === 'Tab') {
-			if (event.key === 'Enter') {
+			case 'ArrowDown': {
+				highlightedIndex = (highlightedIndex + 1) % filteredOptions.length;
+				value = filteredOptions[highlightedIndex];
 				event.preventDefault();
+				break;
 			}
-			if (highlightedIndex >= 0 && highlightedIndex < filteredOptions.length) {
+			case 'ArrowUp': {
+				highlightedIndex = (highlightedIndex - 1 + filteredOptions.length) % filteredOptions.length;
 				value = filteredOptions[highlightedIndex];
-				onInput({ target: { value: filteredOptions[highlightedIndex] } });
+				event.preventDefault();
+				break;
 			}
-			isOpen = false;
-			handleInput();
+			case 'Enter':
+			case 'Tab': {
+				if (highlightedIndex >= 0 && highlightedIndex < filteredOptions.length) {
+					value = filteredOptions[highlightedIndex];
+					handleSelect();
+				}
+				isOpen = false;
+				event.preventDefault();
+				break;
+			}
 		}
 	};
 
@@ -174,51 +75,31 @@ const myFunc = () => {
 
 	const handleClickOption = (option: string) => {
 		value = option;
-		onInput({ target: { value: option } });
+		handleSelect();
 		isOpen = false;
-		handleInput();
 	};
 
-	export function forceClick() {
-		if (inputElement) {
-			inputElement.click();
-		}
-	}
-
-	export function forceFocus() {
-		if (inputElement) {
-			inputElement.click();
-			setTimeout(() => {
-				inputElement.focus();
-			}, 100); // Add a slight delay
-		}
-	}
-	
-	onMount(() => {
-		filteredOptions = options.sort();
-		updateError();
-	});
+	const handleSelect = () => {
+		dispatch('input', { value });
+		value = '';
+	};
 </script>
 
-<div class={classDiv} on:click|preventDefault>
-	<label for={id}>
-		<Text class="smallText {classLabel}">{label}</Text>
+<div class="mb-1 w-full" on:click|preventDefault>
+	<label for="div">
+		<SmallText>{label}</SmallText>
 	</label>
 	<div class="relative inline-block w-full">
 		<div class="relative">
 			<input
-				{id}
 				type="text"
 				bind:value
-				bind:this={inputElement}
 				{placeholder}
-				class="{classField} bg-placeholderGray border-none {classText}
+				class="mt-1 pl-3 p-2 w-full rounded-full bg-placeholderGray border-none
 				{invalid ? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown' : ''}"
 				on:input={handleSearch}
 				on:keydown={handleKeyDown}
-				on:focus={handleFocus}
-				on:blur={handleBlur}
-				on:click={handleFocus}
+				on:click={handleClick}
 			/>
 			{#if isOpen}
 				<ul
@@ -226,10 +107,8 @@ const myFunc = () => {
 				>
 					{#each filteredOptions as option, index}
 						<li
-							class="cursor-pointer select-none relative py-2 pl-3 pr-9 {highlightedIndex ===
-							index
-								? 'bg-gray-100'
-								: ''}"
+							class="cursor-pointer select-none relative py-2 pl-3 pr-9
+							{highlightedIndex === index ? 'bg-gray-100' : ''}"
 							on:mouseenter={() => handleMouseEnter(index)}
 							on:click={() => handleClickOption(option)}
 						>
@@ -240,13 +119,4 @@ const myFunc = () => {
 			{/if}
 		</div>
 	</div>
-	{#if errorMsgs.length > 0}
-		<div>
-			{#if errorToShow}
-				<Text class="smallText text-altTextBrown {errorToShow.style}">{errorToShow.msg}</Text>
-			{:else if keepErrorSpacing}
-				<Text class="smallText invisible">&nbsp;</Text>
-			{/if}
-		</div>
-	{/if}
 </div>

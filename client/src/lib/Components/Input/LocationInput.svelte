@@ -1,180 +1,65 @@
-<!-- 
-Usage in page:
-
-let myValue = '';
-
-const myFunc = () => {
-	//optional function for on:input
-};
-
-...
-
-<InputField
-	// All fields are optional
-	id="id"
-	label="Text"
-	placeholder="Text"
-	bind:value={myValue}
-	
-	classLabel = 'classes to add to label'
-	classText = 'classes to add to input/placeholder'
-	classDiv = 'override div style'
-	classField = 'override input field spacing/size'
-	
-	onInput={myFunc} // event for on:input, on:change, onChangeBlur
-	onBlur={myFunc} // event for on:blur
-	invalid={ boolean check for invalid input }
-		// highlights the field when true
-		
-	errorMsgs = [] // Error messages
-	errorBools = [] // Corresponding conditions to show them
-	errorStyles = [] // Styles to add, leave '' for default
-	keepErrorSpacing = {true/false}
-		// true allocates extra space for error to show up
-		// false pushes down rest of page upon error
-	keepErrorsOnBlur = {true/false}
-		// false shows errors only while typing/invalid
-		// true keeps errors visible until resolved
-	showErrorsOnlyWhen = {conditional, like invalid}
-		// add extra conditions/variables
-		// errors will only be visible while true
-/>
-
-See event creation for example with geocoding and dispaly
--->
-
 <script lang="ts">
-	import Text from '$lib/Components/Text/Text.svelte';
 	import { onMount } from 'svelte';
-	
-	let GOOGLE_MAPS_API_KEY = 'API_KEY_HERE';
+	import SmallText from '../Text/SmallText.svelte';
+	import { PUBLIC_GOOGLE_MAPS_API_KEY } from '$env/static/public';
 
-	export let id = '';
 	export let label = '';
 	export let placeholder = '';
 	export let value = '';
-	export let invalid = false;
-	export let onInput = () => {};
-	export let onBlur = () => {};
+	export let isValid = true;
+	let element: HTMLInputElement;
 
-	export let classLabel = '';
-	export let classText = '';
-	export let classDiv = 'w-full';
-	export let classField = 'mt-1 pl-3 p-2 w-full';
-	
-	export let errorMsgs = [];
-	export let errorBools = [];
-	export let errorStyles = [];
-	export let keepErrorSpacing = false;
-	export let keepErrorsOnBlur= false;
-	export let showErrorsOnlyWhen = true;
-	
-	let inputElement: HTMLInputElement;
-	let fieldActive = false;
-	let errorToShow = null;
-	$: {
-		const minLength = Math.min(errorMsgs.length, errorBools.length);
-		errorMsgs = errorMsgs.slice(0, minLength);
-		errorBools = errorBools.slice(0, minLength);
-		errorStyles = errorStyles.concat(Array(Math.max(0, minLength - errorStyles.length)).fill("text-altTextBrown"));
-	}
+	const handlePlaceChanged = (place: any) => {
+		let address = '';
 
-	const handleInput = (event: any) => {
-		fieldActive = true;
-		updateError();
-		if (type === 'phone') {
-			value = event.target.value;
-			const countryCode = normalizedCountries.find(
-				(country) => country.iso2 === selectedCountry
-			).dialCode;
-			value = `+${countryCode}${value}`;
-		} else if (type != 'dropdown' && type != 'time' && type != 'location') {
-			if (id.toLowerCase().includes('email')) {
-				event.target.value = value.replace(/\s/g, '');
-			}
-			value = event.target.value;
+		if (place.name) {
+			address = place.name + ': ';
 		}
-		onInput(event);
+
+		if (place.formatted_address) {
+			address += place.formatted_address;
+		} else if (place.address_components) {
+			place.address_components.forEach((component: any) => {
+				address += component.long_name + ', ';
+			});
+			// remove the last comma
+			address = address.slice(0, -2);
+		}
+
+		value = address;
 	};
-
-	const handleFieldBlur = (event: any) => {
-		onInput(event);
-		fieldActive = false;
-		onBlur(event);
-		updateError();
-	};
-	
-	export function updateError() {
-		setTimeout(() => {
-			errorToShow = null;
-			for (let i = 0; i < errorMsgs.length; i++) {
-				if (errorBools[i] && showErrorsOnlyWhen && (keepErrorsOnBlur || fieldActive || invalid)) {
-					errorToShow = { msg: errorMsgs[i], style: errorStyles[i] };
-				}
-			}
-		}, 1); // 1 tick delay for vars to update
-	}
-
-	export function forceClick() {
-		if (inputElement) {
-			inputElement.click();
-		}
-	}
-
-	export function forceFocus() {
-		if (inputElement) {
-			inputElement.click();
-			setTimeout(() => {
-				inputElement.focus();
-			}, 100);
-		}
-	}
 
 	onMount(() => {
 		const script = document.createElement('script');
-		script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places`;
+		script.src = `https://maps.googleapis.com/maps/api/js?key=${PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`;
 		script.async = true;
+		document.head.appendChild(script);
+
 		script.onload = () => {
-			const autocomplete = new google.maps.places.Autocomplete(inputElement);
+			// @ts-expect-error
+			const autocomplete = new google.maps.places.Autocomplete(element);
 			autocomplete.addListener('place_changed', () => {
 				const place = autocomplete.getPlace();
-				if (place.formatted_address) {
-					value = place.formatted_address;
-					handleInput(new Event('input'));
-				}
+				handlePlaceChanged(place);
 			});
 		};
-		document.head.appendChild(script);
-		updateError();
 	});
 </script>
 
-<div class={classDiv}>
-	<label for={id}>
-		<Text class="smallText {classLabel}">{label}</Text>
+<div class="w-full">
+	<label for="div">
+		<SmallText>{label}</SmallText>
 	</label>
 	<div class="relative inline-block w-full mb-2">
 		<input
-			{id}
 			type="text"
-			bind:this={inputElement}
-			bind:value
+			bind:this={element}
 			{placeholder}
-			class="{classField} bg-placeholderGray border-none rounded-lg {invalid
-				? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'
-				: ''} {classText}"
-			on:input={handleInput}
-			on:change={handleInput}
-			on:blur={handleFieldBlur}
+			class="mt-1 pl-3 p-2 w-full bg-placeholderGray border-none rounded-lg {!isValid &&
+				'bg-tagYellow text-altTextBrown placeholder-altTextBrown'} placeholder:italic"
 		/>
 	</div>
-	{#if errorMsgs.length > 0}
-		<div>
-			{#if errorToShow}
-				<Text class="smallText text-altTextBrown {errorToShow.style}">{errorToShow.msg}</Text>
-			{:else if keepErrorSpacing}
-				<Text class="smallText invisible">&nbsp;</Text>
-			{/if}
-		</div>
+	{#if !isValid}
+		<SmallText class=" text-altTextBrown">Invalid phone number</SmallText>
 	{/if}
 </div>

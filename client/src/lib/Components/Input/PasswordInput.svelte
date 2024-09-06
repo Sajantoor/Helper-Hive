@@ -1,171 +1,90 @@
-<!-- 
-Usage in page:
-
-let myValue = '';
-
-const myFunc = () => {
-	//optional function for on:input
-};
-
-...
-
-<InputField
-	// All fields are optional
-	id="id"
-	label="Text"
-	placeholder="Text"
-	bind:value={myValue}
-	
-	classLabel = 'classes to add to label'
-	classText = 'classes to add to input/placeholder'
-	classDiv = 'override div style'
-	classField = 'override input field spacing/size'
-	
-	onInput={myFunc} // event for on:input, on:change, onChangeBlur
-	onBlur={myFunc} // event for on:blur
-	invalid={ boolean check for invalid input }
-		// highlights the field when true
-		
-	errorMsgs = [] // Error messages
-	errorBools = [] // Corresponding conditions to show them
-	errorStyles = [] // Styles to add, leave '' for default
-	keepErrorSpacing = {true/false}
-		// true allocates extra space for error to show up
-		// false pushes down rest of page upon error
-	keepErrorsOnBlur = {true/false}
-		// false shows errors only while typing/invalid
-		// true keeps errors visible until resolved
-	showErrorsOnlyWhen = {conditional, like invalid}
-		// add extra conditions/variables
-		// errors will only be visible while true
-/>
-
-See login and reset password for clean examples
--->
-
 <script lang="ts">
-	import Text from '$lib/Components/Text/Text.svelte';
 	import EyeOutline from 'svelte-material-icons/EyeOutline.svelte';
 	import EyeOffOutline from 'svelte-material-icons/EyeOffOutline.svelte';
-	import { onMount } from 'svelte';
+	import SmallText from '../Text/SmallText.svelte';
 
-	export let id = '';
+	export let type: 'new' | 'confirm' | 'default' = 'default';
+	export let matchPassword: string | null = null;
 	export let label = '';
 	export let placeholder = '';
 	export let value = '';
-	export let invalid = false;
-	export let onInput = () => {};
-	export let onBlur = () => {};
+	export let isValid = false;
 	export let showPassword = false;
+	export let errorMessage = '';
+	export let successMessage = '';
 
-	export let classLabel = '';
-	export let classText = '';
-	export let classDiv = 'w-full';
-	export let classField = 'mt-1 pl-3 p-2 w-full';
-	
-	export let errorMsgs = [];
-	export let errorBools = [];
-	export let errorStyles = [];
-	export let keepErrorSpacing = false;
-	export let keepErrorsOnBlur= false;
-	export let showErrorsOnlyWhen = true;
+	let ref: HTMLInputElement;
 
-	let inputElement: HTMLInputElement;
-	let fieldActive = false;
-	let errorToShow = null;
-	$: {
-		const minLength = Math.min(errorMsgs.length, errorBools.length);
-		errorMsgs = errorMsgs.slice(0, minLength);
-		errorBools = errorBools.slice(0, minLength);
-		errorStyles = errorStyles.concat(Array(Math.max(0, minLength - errorStyles.length)).fill("text-altTextBrown"));
-	}
-
-	const handleInput = (event: any) => {
-		fieldActive = true;
-		updateError();
-		value = event.target.value;
-		onInput(event);
+	const togglePassword = () => {
+		showPassword = !showPassword;
+		ref.type = showPassword ? 'text' : 'password';
 	};
 
-	const handleFieldBlur = (event: any) => {
-		onInput(event);
-		fieldActive = false;
-		onBlur(event);
-		updateError();
-	};
-	
-	export function updateError() {
-		setTimeout(() => {
-			errorToShow = null;
-			for (let i = 0; i < errorMsgs.length; i++) {
-				if (errorBools[i] && showErrorsOnlyWhen && (keepErrorsOnBlur || fieldActive || invalid)) {
-					errorToShow = { msg: errorMsgs[i], style: errorStyles[i] };
-				}
+	const handleInput = () => {
+		if (type === 'new') {
+			let conditions = [
+				{ regex: /[A-Z]/, message: 'an uppercase letter' },
+				{ regex: /[a-z]/, message: 'a lowercase letter' },
+				{ regex: /[0-9]/, message: 'a number' },
+				{
+					regex: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.`~<>\/?]/,
+					message: 'a special character'
+				},
+				{ test: (val: string) => val.length >= 8, message: 'at least 8 characters' }
+			];
+
+			let unmetConditions = conditions
+				.filter(({ regex, test }) => !(regex ? regex.test(value) : test(value)))
+				.map(({ message }) => message);
+
+			if (unmetConditions.length > 0) {
+				errorMessage =
+					'Password must contain ' +
+					unmetConditions.join(', ').replace(/,([^,]*)$/, ', and$1') +
+					'.';
+			} else {
+				errorMessage = '';
 			}
-		}, 1); // 1 tick delay for vars to update
-	}
-	
-		export function forceClick() {
-		if (inputElement) {
-			inputElement.click();
 		}
-	}
 
-	export function forceFocus() {
-		if (inputElement) {
-			inputElement.click();
-			setTimeout(() => {
-				inputElement.focus();
-			}, 100);
+		if (type === 'confirm') {
+			if (value !== matchPassword) {
+				errorMessage = 'Passwords do not match';
+			} else {
+				errorMessage = '';
+			}
 		}
-	}
-	
-	onMount(() => {
-		updateError();
-	});
+
+		if (type === 'default') {
+			if (value.length === 0) {
+				errorMessage = 'Please enter your password';
+			} else {
+				errorMessage = '';
+			}
+		}
+
+		isValid = errorMessage.length === 0;
+	};
 </script>
 
-<div class={classDiv}>
-	<label for={id}>
-		<Text class="smallText {classLabel}">{label}</Text>
+<div class="w-full">
+	<label for="div">
+		<SmallText>{label}</SmallText>
 	</label>
 	<div class="relative inline-block w-full mb-2">
-		{#if showPassword}
-			<input
-				{id}
-				type="text"
-				bind:value
-				bind:this={inputElement}
-				{placeholder}
-				class="{classField} bg-placeholderGray border-none rounded-lg {invalid
-					? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'
-					: ''} {classText}"
-				on:input={handleInput}
-				on:change={handleInput}
-				on:blur={handleFieldBlur}
-			/>
-		{:else}
-			<input
-				{id}
-				type="password"
-				bind:value
-				bind:this={inputElement}
-				{placeholder}
-				class="{classField} bg-placeholderGray border-none rounded-lg {invalid
-					? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'
-					: ''} {classText}"
-				on:input={handleInput}
-				on:change={handleInput}
-				on:blur={handleFieldBlur}
-			/>
-		{/if}
+		<input
+			bind:this={ref}
+			bind:value
+			{placeholder}
+			class="mt-1 pl-3 p-2 w-full bg-placeholderGray border-none rounded-lg
+			{!isValid && 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'}"
+			on:input={handleInput}
+		/>
 		<button
 			type="button"
 			class="absolute top-1/2 right-4 transform -translate-y-[45%] border-none bg-none cursor-pointer"
 			tabindex="-1"
-			on:mousedown={() => (showPassword = true)}
-			on:mouseup={() => (showPassword = false)}
-			on:mouseleave={() => (showPassword = false)}
+			on:click={togglePassword}
 		>
 			{#if showPassword}
 				<EyeOutline class="text-altTextGray" />
@@ -174,13 +93,9 @@ See login and reset password for clean examples
 			{/if}
 		</button>
 	</div>
-	{#if errorMsgs.length > 0}
-		<div>
-			{#if errorToShow}
-				<Text class="smallText text-altTextBrown mb-2 {errorToShow.style}">{errorToShow.msg}</Text>
-			{:else if keepErrorSpacing}
-				<Text class="smallText invisible">&nbsp;</Text>
-			{/if}
-		</div>
+	{#if errorMessage}
+		<SmallText class="text-altTextBrown mb-2">{errorMessage}</SmallText>
+	{:else if successMessage}
+		<SmallText class="text-green-500 mb-2">{successMessage}</SmallText>
 	{/if}
 </div>
