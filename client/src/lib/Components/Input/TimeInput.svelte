@@ -5,7 +5,13 @@
 	export let label = '';
 	export let placeholder = '';
 	export let value = '';
-	export let isValid = true;
+	export let valid = true;
+	let touched = false;
+
+	function handleInput() {
+		touched = true;
+		valid = value ? true : false;
+	}
 </script>
 
 <div class="w-full">
@@ -16,12 +22,13 @@
 		<SveltyPicker
 			{placeholder}
 			bind:value
+			on:input={handleInput}
 			mode="time"
 			format="H:i P"
 			displayFormat="H:i P"
 			manualInput={false}
 			inputClasses="mt-1 pl-3 p-2 w-full bg-placeholderGray border-none rounded-lg placeholder:italic
-			{!isValid && 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'}"
+			{touched && !valid && 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'}"
 		/>
 	</div>
 </div>

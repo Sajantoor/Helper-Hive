@@ -6,10 +6,12 @@
 	export let label = '';
 	export let placeholder = '';
 	export let value = '';
-	export let isValid = true;
+	export let valid = true;
+	export let touched = false;
 	let element: HTMLInputElement;
 
 	const handlePlaceChanged = (place: any) => {
+		touched = true;
 		let address = '';
 
 		if (place.name) {
@@ -27,6 +29,7 @@
 		}
 
 		value = address;
+		valid = true;
 	};
 
 	onMount(() => {
@@ -38,12 +41,22 @@
 		script.onload = () => {
 			// @ts-expect-error
 			const autocomplete = new google.maps.places.Autocomplete(element);
+
 			autocomplete.addListener('place_changed', () => {
 				const place = autocomplete.getPlace();
 				handlePlaceChanged(place);
 			});
 		};
 	});
+
+	const onInput = () => {
+		touched = true;
+		value = '';
+	};
+
+	const handleBlur = () => {
+		valid = value.length > 0;
+	};
 </script>
 
 <div class="w-full">
@@ -53,13 +66,15 @@
 	<div class="relative inline-block w-full mb-2">
 		<input
 			type="text"
+			on:input={onInput}
+			on:blur={handleBlur}
 			bind:this={element}
 			{placeholder}
-			class="mt-1 pl-3 p-2 w-full bg-placeholderGray border-none rounded-lg {!isValid &&
-				'bg-tagYellow text-altTextBrown placeholder-altTextBrown'} placeholder:italic"
+			class="mt-1 pl-3 p-2 w-full bg-placeholderGray border-none rounded-lg placeholder:italic
+			{touched && !valid && 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'}"
 		/>
 	</div>
-	{#if !isValid}
-		<SmallText class=" text-altTextBrown">Invalid phone number</SmallText>
+	{#if touched && !valid}
+		<SmallText class=" text-altTextBrown">Invalid location</SmallText>
 	{/if}
 </div>

@@ -2,8 +2,9 @@
 	import SmallText from '../Text/SmallText.svelte';
 
 	export let label = '';
-	export let value: number;
-	export let isValid = true;
+	export let value: number | undefined;
+	export let valid = true;
+	let touched = false;
 	let errorMessage = '';
 
 	const handleInput = () => {
@@ -11,18 +12,21 @@
 
 		if (!value) {
 			errorMessage = 'Please enter a number';
-			return;
 		} else if (value < 1) {
 			errorMessage = 'Please enter a number greater than 0';
-			return;
 		} else if (!Number.isInteger(value)) {
 			errorMessage = 'Please enter an integer';
-			return;
-		} else if (errorMessage) {
-			isValid = false;
-		} else {
-			isValid = true;
 		}
+
+		if (errorMessage) {
+			valid = false;
+		} else {
+			valid = true;
+		}
+	};
+
+	const handleBlur = () => {
+		touched = true;
 	};
 </script>
 
@@ -35,8 +39,9 @@
 			type="number"
 			bind:value
 			class="mt-1 p-2 w-1/6 bg-placeholderGray border-none rounded-lg
-			{!isValid && 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'}"
+			{touched && !valid && 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'}"
 			on:input={handleInput}
+			on:blur={handleBlur}
 			style="appearance: textfield; -webkit-appearance: none; -moz-appearance: textfield;"
 		/>
 	</div>
