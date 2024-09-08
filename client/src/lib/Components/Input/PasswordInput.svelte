@@ -8,10 +8,12 @@
 	export let label = '';
 	export let placeholder = '';
 	export let value = '';
-	export let isValid = false;
-	export let showPassword = false;
-	export let errorMessage = '';
+	export let valid = false;
 	export let successMessage = '';
+	export let touched = false;
+
+	let showPassword = false;
+	let errorMessage = '';
 
 	let ref: HTMLInputElement;
 
@@ -63,7 +65,7 @@
 			}
 		}
 
-		isValid = errorMessage.length === 0;
+		valid = errorMessage.length === 0;
 	};
 </script>
 
@@ -73,11 +75,12 @@
 	</label>
 	<div class="relative inline-block w-full mb-2">
 		<input
+			type="password"
 			bind:this={ref}
 			bind:value
 			{placeholder}
 			class="mt-1 pl-3 p-2 w-full bg-placeholderGray border-none rounded-lg
-			{!isValid && 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'}"
+			{touched && !valid && 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'}"
 			on:input={handleInput}
 		/>
 		<button
