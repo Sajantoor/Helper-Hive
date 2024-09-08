@@ -6,7 +6,8 @@
 	export let placeholder = '';
 	export let value = '';
 	export let valid = true;
-	let touched = false;
+	export let touched = false;
+	export let errorMessage = '';
 
 	function handleInput() {
 		touched = true;
@@ -31,4 +32,8 @@
 			{touched && !valid && 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'}"
 		/>
 	</div>
+
+	{#if touched && !valid && errorMessage}
+		<SmallText class="text-altTextBrown">{errorMessage}</SmallText>
+	{/if}
 </div>

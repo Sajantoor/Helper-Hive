@@ -19,6 +19,7 @@
 	import ClockOutline from 'svelte-material-icons/ClockTimeFourOutline.svelte';
 	import { PUBLIC_SERVER_HOST } from '$env/static/public';
 	import { goto } from '$app/navigation';
+	import SmallText from '$lib/Components/Text/SmallText.svelte';
 
 	// TODO: Grab these from database:
 	let options: string[] = [
@@ -97,17 +98,22 @@
 		endDate: false,
 		startTime: false,
 		endTime: false,
-		tagValues: false,
+		tagValues: true, // default to true
 		shiftOpenings: false,
 		location: false,
 		image: false,
-		files: false
+		files: true // default to true
 	};
 
 	let fileLimit = 3;
 	let formValid = false;
+	let touched = false;
+	let startDateError = 'Invalid start date';
+	let endDateError = 'Invalid end date';
+	let startTimeError = 'Invalid start time';
+	let endTimeError = 'Invalid end time';
 
-	$: if (isValid) {
+	$: if (formData || isValid) {
 		handleValidityChange();
 	}
 
@@ -115,15 +121,59 @@
 		formValid = isFormValid();
 	}
 
+	function validateDates() {
+		if (!formData.startDate || !formData.endDate) {
+			return;
+		}
+
+		if (formData.startDate > formData.endDate) {
+			startDateError = 'Start date must be before end date';
+			endDateError = 'End date must be after start date';
+			isValid.startDate = false;
+			isValid.endDate = false;
+		} else {
+			startDateError = 'Invalid start date';
+			endDateError = 'Invalid end date';
+			isValid.startDate = true;
+			isValid.endDate = true;
+		}
+	}
+
+	function validateTimes() {
+		if (!formData.startTime || !formData.endTime) {
+			return;
+		}
+
+		// change them to dates
+		const date = new Date();
+		date.setHours(0, 0, 0, 0);
+
+		const startTime = getDateFromTimes(date, formData.startTime);
+		const endTime = getDateFromTimes(date, formData.endTime);
+
+		if (startTime > endTime) {
+			startTimeError = 'Start time must be before end time';
+			endTimeError = 'End time must be after start time';
+			isValid.startTime = false;
+			isValid.endTime = false;
+		} else {
+			isValid.startTime = true;
+			isValid.endTime = true;
+		}
+	}
+
 	function isFormValid(): boolean {
-		console.log(isValid);
-		console.log(formData);
+		validateDates();
+		validateTimes();
+
 		return Object.values(isValid).every(Boolean);
 	}
 
 	function getDateFromTimes(date: Date, time: string): Date {
 		let [hours, minutes] = time.split(':').map((str) => parseInt(str, 10));
+		if (hours === 12) hours = 0;
 		if (time.includes('PM')) hours += 12;
+
 		const newDate = new Date(date);
 		newDate.setHours(hours, minutes);
 		return newDate;
@@ -131,10 +181,11 @@
 
 	const handleSubmit = async () => {
 		if (!formValid) {
+			console.log(isValid);
+			console.log(formData);
+			touched = true;
 			return;
 		}
-
-		console.log(formData);
 
 		const body = {
 			name: formData.name,
@@ -157,6 +208,9 @@
 				files: []
 			}
 		};
+
+		console.log(body);
+		console.log(JSON.stringify(body));
 
 		const response = await fetch(`${PUBLIC_SERVER_HOST}/api/events`, {
 			method: 'POST',
@@ -224,6 +278,7 @@
 
 		imageBase64 = await createBase64Image(uploadedFiles[0]);
 		formData.image = uploadedFiles[0];
+		isValid.image = true;
 	};
 </script>
 
@@ -245,6 +300,7 @@
 					placeholder="Upload a picture..."
 					bind:valid={isValid.image}
 					on:file={handleImageUpload}
+					{touched}
 				/>
 			{:else}
 				<div
@@ -261,7 +317,7 @@
 			{/if}
 			<div>
 				{#if isValid.image}
-					<Text class="smallText mt-2 text-altTextBrown">Event picture is required</Text>
+					<SmallText class="mt-2 text-altTextBrown">Event picture is required</SmallText>
 				{/if}
 			</div>
 		</div>
@@ -274,13 +330,14 @@
 					placeholder="Click or drag and drop to upload a file..."
 					disabled={formData.files.length === fileLimit}
 					on:file={handleFileUpload}
+					{touched}
 				/>
 			</div>
 			{#each formData.files as file, index}
 				<div class="inline-block mr-3 relative">
 					<div class="flex flex-col items-center">
 						<FileDocumentOutline class="file text-primaryYellow" size={30} />
-						<Text class="smallText text-gray-400 mt-1 break-all text-center">
+						<SmallText class=" text-gray-400 mt-1 break-all text-center">
 							<a
 								target="_blank"
 								href={URL.createObjectURL(file)}
@@ -290,7 +347,7 @@
 									? `${file.name.slice(0, 9)}...${file.name.slice(-9)}`
 									: file.name}
 							</a>
-						</Text>
+						</SmallText>
 					</div>
 					<div
 						class="absolute top-[-12px] right-0 cursor-pointer"
@@ -328,8 +385,10 @@
 			<TextInput
 				required={true}
 				placeholder="Add a title to your event..."
+				errorMessage="Event name is required"
 				bind:value={formData.name}
 				bind:valid={isValid.name}
+				{touched}
 			/>
 
 			<div class="grid grid-cols-[auto_1fr_1fr] gap-4">
@@ -338,11 +397,17 @@
 					placeholder="Select start date..."
 					bind:value={formData.startDate}
 					bind:valid={isValid.startDate}
+					minDate="today"
+					errorMessage={startDateError}
+					{touched}
 				/>
 				<DateInput
 					placeholder="Select end date..."
 					bind:value={formData.endDate}
 					bind:valid={isValid.endDate}
+					minDate="today"
+					errorMessage={endDateError}
+					{touched}
 				/>
 			</div>
 
@@ -352,12 +417,16 @@
 					placeholder="Select start time..."
 					bind:value={formData.startTime}
 					bind:valid={isValid.startTime}
+					errorMessage={startTimeError}
+					{touched}
 				/>
 
 				<TimeInput
 					placeholder="Select end time..."
 					bind:value={formData.endTime}
 					bind:valid={isValid.endTime}
+					errorMessage={endTimeError}
+					{touched}
 				/>
 			</div>
 
@@ -367,6 +436,7 @@
 					placeholder="Select a location..."
 					bind:value={formData.location}
 					bind:valid={isValid.location}
+					{touched}
 				/>
 			</div>
 
@@ -377,6 +447,7 @@
 				label="Number of Shift Openings"
 				bind:value={formData.shiftOpenings}
 				bind:valid={isValid.shiftOpenings}
+				{touched}
 			/>
 
 			<TextInput
@@ -384,7 +455,9 @@
 				placeholder="Include additional details about the event..."
 				bind:value={formData.description}
 				bind:valid={isValid.description}
+				required={true}
 				rows={6}
+				{touched}
 			/>
 
 			<TextInput
@@ -392,7 +465,9 @@
 				placeholder="Include details about any requirements, expectations, or information to know prior to arrival for shift..."
 				bind:value={formData.preShift}
 				bind:valid={isValid.preShift}
+				required={true}
 				rows={6}
+				{touched}
 			/>
 		</div>
 	</div>

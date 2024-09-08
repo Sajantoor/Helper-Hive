@@ -8,7 +8,7 @@
 	export let placeholder = '';
 	export let value: Date | null = null;
 	export let valid = false;
-	let touched = false;
+	export let touched = false;
 
 	export let minDate = '01/01/1900';
 	export let maxDate = '31/12/2100';
@@ -30,6 +30,11 @@
 		value = date[0];
 		valid = value ? true : false;
 	}
+
+	function handleInput() {
+		touched = true;
+		valid = value ? true : false;
+	}
 </script>
 
 <div>
@@ -38,6 +43,7 @@
 	</label>
 	<div class="relative inline-block w-full mb-2">
 		<Flatpickr
+			on:close={handleInput}
 			on:change={handleChange}
 			bind:value
 			{placeholder}
@@ -46,7 +52,7 @@
 			{touched && !valid && 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'}"
 		/>
 	</div>
-	{#if errorMessage}
+	{#if touched && !valid && errorMessage}
 		<SmallText class="text-altTextBrown">{errorMessage}</SmallText>
 	{/if}
 </div>

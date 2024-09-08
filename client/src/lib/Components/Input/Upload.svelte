@@ -92,4 +92,10 @@
 			</SmallText>
 		</div>
 	{/if}
+
+	{#if touched && !valid}
+		<SmallText class="smallText text-altTextBrown text-right mt-1">
+			Please upload a valid file
+		</SmallText>
+	{/if}
 </div>

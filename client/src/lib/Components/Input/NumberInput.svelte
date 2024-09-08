@@ -4,7 +4,7 @@
 	export let label = '';
 	export let value: number | undefined;
 	export let valid = true;
-	let touched = false;
+	export let touched = false;
 	let errorMessage = '';
 
 	const handleInput = () => {

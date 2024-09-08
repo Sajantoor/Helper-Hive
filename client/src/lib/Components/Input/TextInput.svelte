@@ -8,7 +8,7 @@
 	export let required = false;
 	export let rows = 0;
 	export let errorMessage: string | null = null;
-	let touched = false;
+	export let touched = false;
 	let inputClass = 'mt-1 pl-3 p-2 w-full bg-placeholderGray border-none rounded-lg';
 	let invalidClass = 'bg-tagYellow text-altTextBrown placeholder-altTextBrown';
 
