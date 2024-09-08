@@ -1,13 +1,13 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
 	import SmallText from '../Text/SmallText.svelte';
 
 	export let label: string = '';
 	export let value: string = '';
-	let isValid = true;
+	export let valid = true;
+	export let touched = false;
 
 	let placeholder = 'Enter email address...';
-	let errorMessage = '';
+	let errorMessage = 'Email is required';
 
 	export const validateEmail = (email: string) => {
 		if (!email) {
@@ -26,12 +26,13 @@
 		return true;
 	};
 
-	export const validateInput = () => {
-		isValid = validateEmail(value);
-		dispatch('validate', isValid);
+	const validateInput = () => {
+		valid = validateEmail(value);
 	};
 
-	const dispatch = createEventDispatcher<{ validate: boolean }>();
+	const handleBlur = () => {
+		touched = true;
+	};
 </script>
 
 <div>
@@ -44,12 +45,13 @@
 			bind:value
 			{placeholder}
 			class="mt-1 pl-3 p-2 w-full bg-placeholderGray border-none rounded-lg
-                    {!isValid ? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown' : ''}"
+                {touched && !valid && 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'}"
 			on:change={validateInput}
+			on:blur={handleBlur}
 		/>
 	</div>
 
-	{#if errorMessage}
+	{#if touched && !valid && errorMessage}
 		<SmallText class="text-altTextBrown">{errorMessage}</SmallText>
 	{/if}
 </div>

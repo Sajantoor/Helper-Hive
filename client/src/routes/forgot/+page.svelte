@@ -1,38 +1,15 @@
 <script lang="ts">
 	import Text from '$lib/Components/Text/Text.svelte';
 	import LeftArrow from 'svelte-material-icons/ChevronLeft.svelte';
-	import TextInput from '$lib/Components/Input/TextInput.svelte';
 	import { PUBLIC_SERVER_HOST } from '$env/static/public';
+	import EmailInput from '$lib/Components/Input/EmailInput.svelte';
 
 	let email = '';
-	let formValid = false;
-	let emailValid = false;
+	let isFormValid = false;
 	let submitted = false;
-	let invalidFields: string[] = [];
-
-	let emailComp: TextInput;
-	let invalidComps: any[] = [];
-
-	const validateEmail = () => {
-		const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-		emailValid = re.test(email);
-		return emailValid;
-	};
-
-	const validateForm = () => {
-		validateEmail();
-		formValid = Boolean(email) && emailValid;
-	};
 
 	const handleSubmit = async () => {
-		highlightInvalidFields();
-		if (formValid) {
-			// Submission logic here
-			console.log('Sent email to ' + email);
-			submitted = true;
-		}
-
-		if (!formValid) {
+		if (!isFormValid) {
 			return;
 		}
 
@@ -49,24 +26,6 @@
 		} else {
 			const data = await response.json();
 			console.error('Failed to send forgot password: ' + data);
-		}
-	};
-
-	const handleInputChange = () => {
-		validateForm();
-	};
-
-	const highlightInvalidFields = () => {
-		invalidFields = [];
-		if (!validateEmail()) invalidFields.push('email');
-		if (!validateEmail()) invalidComps.push(emailComp);
-
-		if (invalidFields.length > 0) {
-			for (let i = 0; i < invalidComps.length; i++) {
-				invalidComps[i].updateError();
-			}
-			const firstInvalidField = document.getElementById(invalidFields[0]);
-			firstInvalidField?.scrollIntoView({ behavior: 'smooth' });
 		}
 	};
 
@@ -89,24 +48,11 @@
 				>
 
 				<form on:submit|preventDefault={handleSubmit} class="space-y-6">
-					<TextInput
-						id="email"
-						label="Email Address"
-						placeholder="Email Address"
-						bind:value={email}
-						bind:this={emailComp}
-						invalid={invalidFields.includes('email')}
-						errorMsgs={['Email address is required', 'Must enter a valid email address']}
-						errorBools={[
-							!email && invalidFields.includes('email'),
-							email && !emailValid && invalidFields.includes('email')
-						]}
-						onInput={handleInputChange}
-					/>
+					<EmailInput label="Email Address" bind:value={email} bind:valid={isFormValid} />
 
 					<button
 						type="submit"
-						class={`w-full ${formValid ? 'bg-primaryYellow text-black' : 'bg-tagYellow text-altTextBrown'} py-2 px-4 rounded-lg mx-auto text`}
+						class={`w-full ${isFormValid ? 'bg-primaryYellow text-black' : 'bg-tagYellow text-altTextBrown'} py-2 px-4 rounded-lg mx-auto text`}
 					>
 						<Text>Submit</Text>
 					</button>
@@ -124,13 +70,14 @@
 						class="bg-primaryYellow text-black py-2 px-4 rounded-lg flex items-center"
 						on:click={resetForm}
 					>
-						<LeftArrow class="h-6 w-6 mr-2" /> Try again
+						<LeftArrow class="h-6 w-6 mr-2" />
+						<Text>Try again</Text>
 					</button>
 					<a
 						href="/login"
 						class="bg-primaryYellow text-black py-2 px-4 rounded-lg flex items-center"
 					>
-						Back to Login
+						<Text>Back to Login</Text>
 					</a>
 				</div>
 			{/if}
