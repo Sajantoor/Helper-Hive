@@ -104,7 +104,8 @@
 	};
 
 	const openPopup = (id: string) => {
-		// TODO: Open popup
+		const popup = document.getElementById(id);
+		popup?.classList.remove('hidden');
 	};
 </script>
 
