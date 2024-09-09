@@ -1,19 +1,20 @@
 <script lang="ts">
 	import CalendarElement from '$lib/Components/CalendarEvent.svelte';
 	import { onMount } from 'svelte';
-	import type { CalendarElementData } from '$lib/Types/Events';
+	import type { EventContent } from '$lib/Types/Events';
 	import Text from './Text/Text.svelte';
 
+	export let events: EventContent[] = []; // Events passed as a prop
+
 	let currentDate = new Date();
-	export let events: CalendarElementData[] = []; // Events passed as a prop
-	let calendarElements: CalendarElementData[] = [];
+	let calendarElements: EventContent[] = [];
 	let currentPage = 0;
 
 	let displayedMonths = '';
 
 	const daysPerPage = 10;
 
-	const paginateCalendarElements = (page: number): CalendarElementData[] => {
+	const paginateCalendarElements = (page: number): EventContent[] => {
 		const start = page * daysPerPage;
 		const end = start + daysPerPage;
 		const elements = events.slice(start, end);
@@ -22,14 +23,14 @@
 		return elements;
 	};
 
-	const updateDisplayedMonths = (elements: CalendarElementData[], page: number) => {
+	const updateDisplayedMonths = (elements: EventContent[], page: number) => {
 		const uniqueMonths = Array.from(
 			new Set(
 				elements.map((e) => {
 					const month = e.date.startDay.toLocaleString('default', { month: 'short' });
 					const year =
 						e.date.startDay.getFullYear() !== currentDate.getFullYear()
-							? ` ${e.startDay.getFullYear()}`
+							? ` ${e.date.startDay.getFullYear()}`
 							: '';
 					return `${month}${year}`;
 				})
@@ -63,6 +64,8 @@
 	};
 
 	onMount(() => {
+		// filter anything that is not in the future
+		events = events.filter((e) => e.date.startDay >= currentDate);
 		calendarElements = paginateCalendarElements(currentPage);
 	});
 </script>
