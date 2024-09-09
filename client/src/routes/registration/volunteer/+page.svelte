@@ -3,6 +3,8 @@
 	import InputField from '$lib/Components/InputField.svelte';
 	import Popup from '$lib/Components/TCPopup.svelte';
 	import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
+	import { PUBLIC_SERVER_HOST } from '$env/static/public';
 
 	let firstName = '';
 	let lastName = '';
@@ -35,6 +37,7 @@
 			liabilityAgreed &&
 			passwordsMatch &&
 			validateEmail(email);
+		return formValid;
 	};
 
 	const validateEmail = (email: string) => {
@@ -42,27 +45,36 @@
 		return re.test(email);
 	};
 
-	const handleSubmit = () => {
+	const handleSubmit = async () => {
+		let isFormValid = validateForm();
 		highlightInvalidFields();
 
-		if (formValid) {
-			// Submission logic goes here
-			if (email === 'already@exists.com') {
-				console.log('Email already exists');
-			} else {
-				console.log({
-					phoneNumber,
-					firstName,
-					lastName,
-					email,
-					dob,
-					password,
-					reenterPassword,
-					termsAgreed,
-					liabilityAgreed
-				});
-				alert('Form successfully submitted');
-			}
+		if (!isFormValid) {
+			return;
+		}
+
+		const body = {
+			firstName,
+			lastName,
+			phoneNumber,
+			dateOfBirth: dob,
+			email,
+			password
+		};
+
+		// Submission logic goes here
+		const response = await fetch(`${PUBLIC_SERVER_HOST}/api/users/register`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(body)
+		});
+
+		if (response.ok) {
+			goto('/login');
+		} else {
+			console.error('Failed to register:', response);
 		}
 	};
 
@@ -117,7 +129,7 @@
 		>
 			<Text class="section lg:w-1/2 mb-4 whitespace-normal pt-10">Volunteer Registration</Text>
 			<Text class="smallText">
-				Wrong Place? <a href="/OrganizationRegistration" class="text-blue-500 underline"
+				Wrong Place? <a href="/registration/organization" class="text-blue-500 underline"
 					>Click here</a
 				> for Organization Registration
 			</Text>

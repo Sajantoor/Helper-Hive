@@ -5,6 +5,7 @@
 	import Text from '../Text/Text.svelte';
 	import Heading from '../Text/Heading.svelte';
 
+	export let id: string = '';
 	export let eventTitle: string = '';
 	export let eventImage: string = '';
 	export let eventDescription: string = '';
@@ -18,13 +19,24 @@
 	export let hostInstagram: string = '';
 	export let preShiftInfo: string = '';
 	export let spotsAvailable: number = 0;
+	export let registered = false;
 	export let files: string[] = [];
 </script>
 
 <div class="event-page">
 	<img class="eventImg rounded-3xl" src={eventImage} alt={eventTitle} />
 
-	<EventDetails {eventTitle} {tags} {startDate} {endDate} {hours} {location} {spotsAvailable} />
+	<EventDetails
+		{registered}
+		{id}
+		{eventTitle}
+		{tags}
+		{startDate}
+		{endDate}
+		{hours}
+		{location}
+		{spotsAvailable}
+	/>
 
 	<div>
 		<HostInfo {hostImage} {hostName} {hostInstagram} {files} />

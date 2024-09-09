@@ -10,21 +10,23 @@ interface EmergencyContact {
 }
 
 interface UserBody {
-    name: string;
+    firstName: string;
+    lastName: string;
     email: string;
     phoneNumber: string;
     password: string;
     dateOfBirth: Date;
-    emergencyContact: EmergencyContact
+    // emergencyContact: EmergencyContact
     registeredEvents?: string[];
 }
 
 interface UserResponse {
-    name: string;
+    firstName: string;
+    lastName: string;
     email: string;
     phoneNumber: string;
     dateOfBirth: Date;
-    emergencyContact: EmergencyContact;
+    // emergencyContact: EmergencyContact;
     registeredEvents?: string[];
 }
 
@@ -60,7 +62,7 @@ export async function registerUser(req: Request, res: Response) {
         return res.status(400).json({ message: "Invalid user body" });
     }
 
-    if (!userBody.name || !userBody.email || !userBody.phoneNumber || !userBody.password || !userBody.dateOfBirth || !userBody.emergencyContact) {
+    if (!userBody.firstName || !userBody.lastName || !userBody.email || !userBody.phoneNumber || !userBody.password || !userBody.dateOfBirth) {
         return res.status(400).json({ message: 'Missing required fields' });
     }
 

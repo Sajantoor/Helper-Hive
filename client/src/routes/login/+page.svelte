@@ -1,13 +1,15 @@
 <script lang="ts">
 	import Text from '$lib/Components/Text/Text.svelte';
 	import InputField from '$lib/Components/InputField.svelte';
+	import { goto } from '$app/navigation';
+	import { PUBLIC_SERVER_HOST } from '$env/static/public';
 
 	let email = '';
 	let password = '';
 	let passwordError = false;
 	let invalidFields: string[] = [];
 
-	const handleSubmit = () => {
+	function validateFields(): boolean {
 		invalidFields = [];
 		if (!email) invalidFields.push('email');
 		if (!password) invalidFields.push('password');
@@ -15,20 +17,31 @@
 		if (invalidFields.length > 0) {
 			const firstInvalidField = document.getElementById(invalidFields[0]);
 			firstInvalidField?.scrollIntoView({ behavior: 'smooth' });
-		} else {
-			// Submission logic goes here
-			if (password === 'incorrect') {
-				passwordError = true;
-			} else {
-				passwordError = false;
-				console.log({
-					email,
-					password
-				});
-				alert('Login successfully submitted');
-			}
+			return false;
 		}
-	};
+
+		return true;
+	}
+
+	async function handleSubmit() {
+		if (!validateFields()) return;
+
+		const data = { email, password };
+		const response = await fetch(`${PUBLIC_SERVER_HOST}/api/login`, {
+			method: 'POST',
+			credentials: 'include',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(data)
+		});
+
+		if (response.ok) {
+			goto('/app/');
+		} else {
+			passwordError = true;
+		}
+	}
 </script>
 
 <div class="flex flex-col mdlg:flex-row justify-center items-center min-h-screen">
@@ -75,7 +88,7 @@
 			</form>
 
 			<Text class="mt-4 text-center"
-				>Not a member? <a href="/VolunteerRegistration" class="text-blue-500 underline"
+				>Not a member? <a href="/registration/volunteer" class="text-blue-500 underline"
 					>Register here</a
 				></Text
 			>
