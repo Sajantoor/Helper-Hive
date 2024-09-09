@@ -12,9 +12,11 @@
 
 	let emailValid = false;
 	let passwordValid = false;
+	let isFormValid = false;
 
 	function validateFields(): boolean {
-		return emailValid && passwordValid;
+		isFormValid = emailValid && passwordValid;
+		return isFormValid;
 	}
 
 	async function handleSubmit() {
@@ -34,7 +36,13 @@
 			goto('/app/');
 		} else {
 			passwordError = true;
+			emailValid = false;
+			passwordValid = false;
 		}
+	}
+
+	$: if (emailValid || passwordValid) {
+		validateFields();
 	}
 </script>
 
@@ -45,13 +53,6 @@
 		<!-- Middle section -->
 		<div class="w-full mdlg:w-3/5 mdlg:max-w-[60%] bg-white p-8 rounded-lg space-y-6 relative">
 			<Text class="section text-center">Welcome back!</Text>
-			{#if passwordError}
-				<SmallText
-					class=" text-red-500 text-center absolute top-[4rem] left-1/2 transform -translate-x-1/2"
-				>
-					Password does not match
-				</SmallText>
-			{/if}
 
 			<form on:submit|preventDefault={handleSubmit} class="space-y-3">
 				<EmailInput label="Email Address" bind:value={email} bind:valid={emailValid} />
@@ -69,11 +70,15 @@
 
 				<button
 					type="submit"
-					class="w-full bg-primaryYellow text-black py-2 px-4 rounded-lg mx-auto text"
+					class={`w-full py-2 px-4 rounded-lg mx-auto ${isFormValid ? 'bg-primaryYellow text-black' : 'bg-tagYellow text-altTextBrown'}`}
 				>
 					<Text>Login</Text>
 				</button>
 			</form>
+
+			{#if passwordError}
+				<SmallText class=" text-red-500 text-center">Incorrect username or password</SmallText>
+			{/if}
 
 			<Text class="mt-4 text-center"
 				>Not a member? <a href="/registration/volunteer" class="text-blue-500 underline"

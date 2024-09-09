@@ -18,6 +18,8 @@
 			tagValues = [...tagValues, value];
 			options = options.filter((option) => option !== value);
 		}
+
+		showInputField = false;
 	};
 
 	const removeTag = (tag: string): void => {

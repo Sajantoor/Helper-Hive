@@ -41,9 +41,11 @@
 		on:drop={handleDrop}
 		on:dragenter={() => {
 			hovering = true;
+		}}
+		on:dragleave={() => {
+			hovering = false;
 			touched = true;
 		}}
-		on:dragleave={() => (hovering = false)}
 		containerStyles="background: transparent; border-radius: 1.5rem; border-color: silver; width: 100%; height: 100%;"
 	>
 		<div

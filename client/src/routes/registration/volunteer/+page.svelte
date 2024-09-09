@@ -10,12 +10,20 @@
 	import { PUBLIC_SERVER_HOST } from '$env/static/public';
 	import SmallText from '$lib/Components/Text/SmallText.svelte';
 
-	let formData = {
+	let formData: {
+		firstName: string;
+		lastName: string;
+		email: string;
+		phoneNumber: string;
+		dob: Date | null;
+		password: string;
+		confirmPassword: string;
+	} = {
 		firstName: '',
 		lastName: '',
 		email: '',
 		phoneNumber: '',
-		dob: new Date(),
+		dob: null,
 		password: '',
 		confirmPassword: ''
 	};
@@ -32,7 +40,6 @@
 		liabilityAgreed: false
 	};
 
-	let formValid = false;
 	let isFormValid = false;
 	let touched = false;
 	let dobErrorMessage = 'Please enter a valid date of birth';
@@ -70,24 +77,28 @@
 		}
 	};
 
-	$: if (isFormValid || formData) {
+	$: if (isValid || formData) {
 		isFormValid = validateForm();
 	}
 
 	const validateAge = () => {
 		const dob = formData.dob;
+		if (!dob) {
+			dobErrorMessage = 'Please enter a valid date of birth';
+			return;
+		}
+
 		const today = new Date();
 		const validRegistrationAge = new Date(today.setFullYear(today.getFullYear() - ageLimit));
 		isValid.dob = dob <= validRegistrationAge;
 
 		if (!isValid.dob) {
 			dobErrorMessage = `You must be at least ${ageLimit} years old to register`;
-		} else {
-			dobErrorMessage = 'Please enter a valid date of birth';
 		}
 	};
 
 	const validateForm = (): boolean => {
+		console.log(isValid);
 		validateAge();
 		return Object.values(isValid).every(Boolean);
 	};
@@ -242,7 +253,7 @@
 
 				<button
 					type="submit"
-					class={`w-full ${formValid ? 'bg-primaryYellow text-black' : 'bg-tagYellow text-altTextBrown'} py-2 px-4 rounded-lg mx-auto text`}
+					class={`w-full ${isFormValid ? 'bg-primaryYellow text-black' : 'bg-tagYellow text-altTextBrown'} py-2 px-4 rounded-lg mx-auto text`}
 					style="margin-top: 2.5rem;"
 				>
 					<Text>Sign Up</Text>

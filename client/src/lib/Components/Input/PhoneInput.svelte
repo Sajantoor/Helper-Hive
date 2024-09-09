@@ -19,6 +19,13 @@
 	function handleChange() {
 		valid = validState;
 	}
+
+	function handleCountryChange() {
+		touched = false;
+		valid = false;
+		validState = false;
+		value = '';
+	}
 </script>
 
 <div class="w-full">
@@ -32,6 +39,7 @@
 					{touched && !valid ? 'bg-tagYellow text-altTextBrown' : ''}"
 				aria-label="Country"
 				name="Country"
+				on:change={handleCountryChange}
 				bind:value={selectedCountry}
 				tabindex="-1"
 			>

@@ -23,6 +23,8 @@
 	};
 
 	const handleInput = () => {
+		touched = true;
+
 		if (type === 'new') {
 			let conditions = [
 				{ regex: /[A-Z]/, message: 'an uppercase letter' },
@@ -50,7 +52,9 @@
 		}
 
 		if (type === 'confirm') {
-			if (value !== matchPassword) {
+			if (!matchPassword) {
+				errorMessage = 'Please enter your password';
+			} else if (value !== matchPassword) {
 				errorMessage = 'Passwords do not match';
 			} else {
 				errorMessage = '';
@@ -67,6 +71,15 @@
 
 		valid = errorMessage.length === 0;
 	};
+
+	const handleBlur = () => {
+		touched = true;
+		handleInput();
+	};
+
+	$: if (touched || (touched && matchPassword)) {
+		handleInput();
+	}
 </script>
 
 <div class="w-full">
@@ -82,6 +95,7 @@
 			class="mt-1 pl-3 p-2 w-full bg-placeholderGray border-none rounded-lg
 			{touched && !valid && 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'}"
 			on:input={handleInput}
+			on:blur={handleBlur}
 		/>
 		<button
 			type="button"

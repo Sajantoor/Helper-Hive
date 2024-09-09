@@ -27,6 +27,7 @@
 
 	const handleBlur = () => {
 		touched = true;
+		handleInput();
 	};
 </script>
 
@@ -45,7 +46,7 @@
 			style="appearance: textfield; -webkit-appearance: none; -moz-appearance: textfield;"
 		/>
 	</div>
-	{#if errorMessage}
+	{#if touched && !valid && errorMessage}
 		<SmallText class="text-altTextBrown">{errorMessage}</SmallText>
 	{/if}
 </div>

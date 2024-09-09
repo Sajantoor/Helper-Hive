@@ -163,6 +163,7 @@
 						label="Password"
 						placeholder="Password"
 						bind:value={formData.password}
+						bind:valid={isValid.password}
 						{touched}
 					/>
 					<PasswordInput
@@ -170,6 +171,7 @@
 						label="Re-enter Password"
 						placeholder="Re-enter Password"
 						bind:value={formData.confirmPassword}
+						bind:valid={isValid.confirmPassword}
 						matchPassword={formData.password}
 						{touched}
 					/>
