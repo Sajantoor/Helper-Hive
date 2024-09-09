@@ -1,7 +1,6 @@
 <script lang="ts">
 	import Text from '$lib/Components/Text/Text.svelte';
 	import Popup from '$lib/Components/TCPopup.svelte';
-	import { onMount } from 'svelte';
 
 	import DateInput from '$lib/Components/Input/DateInput.svelte';
 	import PasswordInput from '$lib/Components/Input/PasswordInput.svelte';
@@ -9,101 +8,50 @@
 	import TextInput from '$lib/Components/Input/TextInput.svelte';
 	import { goto } from '$app/navigation';
 	import { PUBLIC_SERVER_HOST } from '$env/static/public';
+	import SmallText from '$lib/Components/Text/SmallText.svelte';
 
-	let firstName = '';
-	let lastName = '';
-	let email = '';
-	let phoneNumber = '';
-	let dob: Date;
-	let password = '';
-	let reenterPassword = '';
-	let termsAgreed = false;
-	let liabilityAgreed = false;
-	let passwordsMatch = true;
+	let formData = {
+		firstName: '',
+		lastName: '',
+		email: '',
+		phoneNumber: '',
+		dob: new Date(),
+		password: '',
+		confirmPassword: ''
+	};
+
+	let isValid = {
+		firstName: false,
+		lastName: false,
+		email: false,
+		phoneNumber: false,
+		dob: false,
+		password: false,
+		confirmPassword: false,
+		termsAgreed: false,
+		liabilityAgreed: false
+	};
+
 	let formValid = false;
-	let phoneValid = false;
-	let emailValid = false;
-	let invalidFields: string[] = [];
+	let isFormValid = false;
+	let touched = false;
 
-	let firstNameComp: TextInput;
-	let lastNameComp: TextInput;
-	let emailComp: TextInput;
-	let phoneNumberComp: PhoneInput;
-	let dobComp: DateInput;
-	let passwordComp: PasswordInput;
-	let reenterPasswordComp: PasswordInput;
-	let invalidComps: any[] = [];
-
-	let pwdStatus = 'Password must have';
-	let showPwdStatus = false;
-	let passwordValid = false;
-
-	const thirteenYearsAgo = new Date();
-	thirteenYearsAgo.setFullYear(thirteenYearsAgo.getFullYear() - 13);
-	const maxDate = `${('0' + thirteenYearsAgo.getDate()).slice(-2)}/${('0' + (thirteenYearsAgo.getMonth() + 1)).slice(-2)}/${thirteenYearsAgo.getFullYear()}`;
-
-	const validateForm = () => {
-		validateEmail();
-		formValid =
-			Boolean(firstName) &&
-			Boolean(lastName) &&
-			Boolean(email) &&
-			phoneValid &&
-			Boolean(dob) &&
-			Boolean(password) &&
-			Boolean(reenterPassword) &&
-			termsAgreed &&
-			liabilityAgreed &&
-			passwordValid &&
-			passwordsMatch &&
-			emailValid;
-		return formValid;
-	};
-
-	const validateEmail = () => {
-		const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-		emailValid = re.test(email);
-	};
-
-	const validatePassword = () => {
-		passwordValid = false;
-		pwdStatus = 'Password must contain';
-
-		if (!/[A-Z]/.test(password)) pwdStatus += ' an uppercase letter,';
-		if (!/[a-z]/.test(password)) pwdStatus += ' a lowercase letter,';
-		if (!/[0-9]/.test(password)) pwdStatus += ' a number,';
-		if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.`~<>\/?]/.test(password))
-			pwdStatus += ' a special character,';
-		if (password.length < 8) pwdStatus += ' at least 8 characters,';
-
-		pwdStatus = pwdStatus.replace(/,$/, '.').replace(/,(?=[^,]+$)/, ', and');
-
-		if (
-			password.length >= 8 &&
-			/[A-Z]/.test(password) &&
-			/[a-z]/.test(password) &&
-			/[0-9]/.test(password) &&
-			/[!@#$%^&*()_+\-=\[\]{};':"\\|,.`~<>\/?]/.test(password)
-		) {
-			passwordValid = true;
-		}
-	};
+	const validateForm = () => {};
 
 	const handleSubmit = async () => {
-		let isFormValid = validateForm();
-		highlightInvalidFields();
+		touched = true;
 
 		if (!isFormValid) {
 			return;
 		}
 
 		const body = {
-			firstName,
-			lastName,
-			phoneNumber,
-			dateOfBirth: dob,
-			email,
-			password
+			firstName: formData.firstName,
+			lastName: formData.lastName,
+			phoneNumber: formData.phoneNumber,
+			dateOfBirth: formData.dob,
+			email: formData.dob,
+			password: formData.password
 		};
 
 		// Submission logic goes here
@@ -126,64 +74,9 @@
 		validateForm();
 	};
 
-	function handlePasswordChange(showStatus: boolean = false) {
-		if (showStatus) {
-			showPwdStatus = true;
-			validatePassword();
-		}
-		passwordsMatch = password === reenterPassword;
-		reenterPasswordComp.updateError();
-		validateForm();
-	}
-
-	const highlightInvalidFields = () => {
-		invalidFields = [];
-		invalidComps = [];
-
-		if (!firstName) invalidFields.push('firstName');
-		if (!lastName) invalidFields.push('lastName');
-		if (!emailValid) invalidFields.push('email');
-		if (!phoneValid) invalidFields.push('phoneNumber');
-		if (!dob) invalidFields.push('dob');
-		if (!password) invalidFields.push('password');
-		if (!reenterPassword) invalidFields.push('reenterPassword');
-		if (!passwordValid) invalidFields.push('password');
-		if (!passwordsMatch) invalidFields.push('reenterPassword');
-		if (!termsAgreed) invalidFields.push('termsAgreed');
-		if (!liabilityAgreed) invalidFields.push('liabilityAgreed');
-
-		if (!firstName) invalidComps.push(firstNameComp);
-		if (!lastName) invalidComps.push(lastNameComp);
-		if (!emailValid) invalidComps.push(emailComp);
-		if (!phoneValid) invalidComps.push(phoneNumberComp);
-		if (!dob) invalidComps.push(dobComp);
-		if (!password) invalidComps.push(passwordComp);
-		if (!reenterPassword) invalidComps.push(reenterPasswordComp);
-		if (!passwordValid) invalidComps.push(passwordComp);
-		if (!passwordsMatch) invalidComps.push(reenterPasswordComp);
-
-		if (invalidFields.length > 0) {
-			for (let i = 0; i < invalidComps.length; i++) {
-				invalidComps[i].updateError();
-			}
-			const firstInvalidField = document.getElementById(invalidFields[0]);
-			firstInvalidField.scrollIntoView({ behavior: 'smooth' });
-		}
+	const openPopup = (id: string) => {
+		// TODO: Open popup
 	};
-
-	const openPopup = (popupId: string) => {
-		const popup = document.getElementById(popupId);
-		popup?.classList.remove('hidden');
-	};
-
-	const closePopup = (popupId: string) => {
-		const popup = document.getElementById(popupId);
-		popup?.classList.add('hidden');
-	};
-
-	onMount(() => {
-		validateForm();
-	});
 </script>
 
 <div class="flex flex-col lg:flex-row justify-center items-center min-h-screen">
@@ -193,11 +86,11 @@
 			class="flex flex-col justify-start lg:items-start items-center w-full lg:w-3/10 lg:max-w-[30%] lg:text-left text-center"
 		>
 			<Text class="section lg:w-1/2 mb-4 whitespace-normal pt-10">Volunteer Registration</Text>
-			<Text class="smallText">
+			<SmallText>
 				Wrong Place? <a href="/registration/organization" class="text-blue-500 underline"
 					>Click here</a
 				> for Organization Registration
-			</Text>
+			</SmallText>
 		</div>
 
 		<!-- Middle section -->
@@ -211,72 +104,46 @@
 
 				<div class="grid grid-cols-2 gap-4">
 					<TextInput
-						id="firstName"
 						label="First Name"
 						placeholder="First Name"
-						bind:value={firstName}
-						bind:this={firstNameComp}
-						invalid={invalidFields.includes('firstName')}
-						errorMsgs={['First name is required']}
-						errorBools={[invalidFields.includes('firstName')]}
-						onInput={handleInputChange}
+						errorMessage="First name is required"
+						bind:value={formData.firstName}
+						bind:valid={isValid.firstName}
+						{touched}
 					/>
 					<TextInput
-						id="lastName"
 						label="Last Name"
 						placeholder="Last Name"
-						bind:value={lastName}
-						bind:this={lastNameComp}
-						invalid={invalidFields.includes('lastName')}
-						errorMsgs={['Last name is required']}
-						errorBools={[invalidFields.includes('lastName')]}
-						onInput={handleInputChange}
+						errorMessage="Last name is required"
+						bind:value={formData.lastName}
+						bind:valid={isValid.lastName}
+						{touched}
 					/>
 				</div>
 
 				<TextInput
-					id="email"
 					label="Email Address"
 					placeholder="Email Address"
-					bind:value={email}
-					bind:this={emailComp}
-					invalid={invalidFields.includes('email')}
-					errorMsgs={['Email address is required', 'Must enter a valid email address']}
-					errorBools={[
-						!email && invalidFields.includes('email'),
-						email && !emailValid && invalidFields.includes('email')
-					]}
-					onInput={handleInputChange}
+					bind:value={formData.email}
+					bind:valid={isValid.email}
+					{touched}
 				/>
 
 				<PhoneInput
-					id="phoneNumber"
 					label="Phone Number"
 					placeholder="Phone Number"
-					bind:value={phoneNumber}
-					bind:this={phoneNumberComp}
-					bind:valid={phoneValid}
-					invalid={invalidFields.includes('phoneNumber')}
-					errorMsgs={['Phone number is required', 'Must enter a valid phone number']}
-					errorBools={[
-						!phoneNumber && invalidFields.includes('phoneNumber'),
-						phoneNumber && !phoneValid && invalidFields.includes('phoneNumber')
-					]}
-					onInput={handleInputChange}
+					bind:value={formData.phoneNumber}
+					bind:valid={isValid.phoneNumber}
+					{touched}
 				/>
 
 				<DateInput
-					id="dob"
 					label="Date of Birth"
 					placeholder="DD/MM/YYYY"
-					bind:value={dob}
-					bind:this={dobComp}
-					invalid={invalidFields.includes('dob')}
-					errorMsgs={['Date of birth is required']}
-					errorBools={[invalidFields.includes('dob')]}
-					keepErrorSpacing={true}
-					onInput={handleInputChange}
-					{maxDate}
+					bind:value={formData.dob}
+					bind:valid={isValid.dob}
+					maxDate="today"
+					{touched}
 				/>
 
 				<!-- Create Password Section -->
@@ -285,39 +152,21 @@
 				</div>
 				<div class="relative">
 					<PasswordInput
-						id="password"
+						type="new"
 						label="Password"
 						placeholder="Password"
-						bind:value={password}
-						bind:this={passwordComp}
-						invalid={invalidFields.includes('password')}
-						errorMsgs={['Password required', pwdStatus, 'Looks good!']}
-						errorBools={[
-							invalidFields.includes('password') && !password,
-							password != '' && !passwordValid,
-							passwordValid
-						]}
-						errorStyles={['', '', 'text-green-500']}
-						keepErrorSpacing={true}
-						showErrorsOnlyWhen={showPwdStatus || password == ''}
-						onInput={() => handlePasswordChange(true)}
+						bind:value={formData.password}
+						bind:valid={isValid.password}
+						{touched}
 					/>
 					<PasswordInput
-						id="reenterPassword"
+						type="confirm"
 						label="Re-enter Password"
 						placeholder="Re-enter Password"
-						bind:value={reenterPassword}
-						bind:this={reenterPasswordComp}
-						invalid={invalidFields.includes('reenterPassword')}
-						errorMsgs={['Re-enter password required', 'Passwords do not match']}
-						errorBools={[
-							invalidFields.includes('reenterPassword') && !reenterPassword,
-							!passwordsMatch
-						]}
-						errorStyles={['', 'text-red-500']}
-						keepErrorSpacing={true}
-						keepErrorsOnBlur={true}
-						onInput={() => handlePasswordChange()}
+						bind:value={formData.confirmPassword}
+						bind:valid={isValid.confirmPassword}
+						matchPassword={formData.password}
+						{touched}
 					/>
 				</div>
 
@@ -328,59 +177,46 @@
 				<div class="flex items-center mb-4 lg:justify-center">
 					<input
 						type="checkbox"
-						id="termsAgreed"
-						bind:checked={termsAgreed}
-						class="lg:ml-0 ml-2 mr-5 transform scale-[2.0] accent-primaryYellow {invalidFields.includes(
-							'termsAgreed'
-						)
-							? 'accent-primaryYellow'
-							: ''}"
-						on:change={handleInputChange}
+						bind:checked={isValid.termsAgreed}
+						class="lg:ml-0 ml-2 mr-5 transform scale-[2.0] accent-primaryYellow
+						{touched && !isValid.termsAgreed && 'accent-primaryYellow'}"
 					/>
 					<label
 						for="termsAgreed"
-						class="lg:w-3/4 {invalidFields.includes('termsAgreed')
-							? 'text-altTextBrown font-bold'
-							: ''}"
+						class="lg:w-3/4 {touched && !isValid.termsAgreed && 'text-altTextBrown font-bold'}"
 					>
 						<Text
-							>Click here to indicate that you have read and agree to Helper Hive's
-							<button>
-								<a
-									href="#"
-									tabindex="-1"
-									class="text-blue-500 underline"
-									on:click|preventDefault={() => openPopup('termsPopup')}
-								>
-									<Text>Terms & Conditions</Text>
-								</a>
-							</button>
-						</Text>
+							>Click here to indicate that you have read and agree to Helper Hive's <a
+								href="#"
+								tabindex="-1"
+								class="text-blue-500 underline"
+								on:click|preventDefault={() => openPopup('termsPopup')}>Terms & Conditions</a
+							></Text
+						>
 					</label>
 				</div>
 				<div class="flex items-center mb-4 lg:justify-center">
 					<input
 						type="checkbox"
 						id="liabilityAgreed"
-						bind:checked={liabilityAgreed}
-						class="lg:ml-0 ml-2 mr-5 transform scale-[2.0] accent-primaryYellow {invalidFields.includes(
-							'liabilityAgreed'
-						)
-							? 'accent-primaryYellow'
-							: ''}"
-						on:change={handleInputChange}
+						bind:checked={isValid.liabilityAgreed}
+						class="lg:ml-0 ml-2 mr-5 transform scale-[2.0] accent-primaryYellow
+						{touched && !isValid.liabilityAgreed && 'accent-primaryYellow'}"
 					/>
 					<label
 						for="liabilityAgreed"
-						class="lg:w-3/4 {invalidFields.includes('liabilityAgreed')
-							? 'text-altTextBrown font-bold'
-							: ''}"
+						class="lg:w-3/4 {touched && !isValid.liabilityAgreed && 'text-altTextBrown font-bold'}"
 					>
-						<Text
-							>Click here to indicate that you have read and agree to Helper Hive's
-							<button on:click|preventDefault={() => openPopup('liabilityPopup')}>
-								<a href="#" tabindex="-1" class="text-blue-500 underline">Liability Agreement </a>
-							</button>
+						<Text>
+							Click here to indicate that you have read and agree to Helper Hive's
+							<a
+								href="#"
+								tabindex="-1"
+								class="text-blue-500 underline"
+								on:click|preventDefault={() => openPopup('liabilityPopup')}
+							>
+								Liability Agreement
+							</a>
 						</Text>
 					</label>
 				</div>
@@ -394,9 +230,9 @@
 				</button>
 			</form>
 
-			<Text class="smallText mt-4 text-center"
-				>Already a member? <a href="/login" class="text-blue-500 underline">Login here</a></Text
-			>
+			<SmallText class="mt-4 text-center">
+				Already a member? <a href="/login" class="text-blue-500 underline">Login here</a>
+			</SmallText>
 		</div>
 
 		<!-- Right section (empty) -->

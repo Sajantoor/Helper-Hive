@@ -25,6 +25,10 @@
 	};
 
 	function handleChange(event: CustomEvent<HookProps>) {
+		if (event.detail[0].length === 0) {
+			return;
+		}
+
 		touched = true;
 		const [date] = event.detail;
 		value = date[0];
@@ -32,7 +36,6 @@
 	}
 
 	function handleInput() {
-		touched = true;
 		valid = value ? true : false;
 	}
 </script>

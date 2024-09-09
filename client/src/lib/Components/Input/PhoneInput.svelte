@@ -6,7 +6,8 @@
 	export let label = '';
 	export let placeholder = 'Enter phone number...';
 	export let value = '';
-	export let isValid = true;
+	export let touched = false;
+	export let valid = true;
 	// the current validation state, we don't want to show this
 	// until the user has actually inputted something, else it will
 	// show it's invalid while the user is typing
@@ -16,7 +17,7 @@
 
 	// update the validation state when the input is changed
 	function handleChange() {
-		isValid = validState;
+		valid = validState;
 	}
 </script>
 
@@ -28,7 +29,7 @@
 		<div class="flex">
 			<select
 				class="h-9 pl-3 rounded-l-lg bg-placeholderGray text-placeholderGrayText cursor-pointer
-					{!isValid ? 'bg-tagYellow text-altTextBrown' : ''}"
+					{touched && !valid ? 'bg-tagYellow text-altTextBrown' : ''}"
 				aria-label="Country"
 				name="Country"
 				bind:value={selectedCountry}
@@ -51,14 +52,15 @@
 				bind:valid={validState}
 				required={true}
 				class="h-9 pl-3 pr-3 rounded-r-lg grow bg-placeholderGray 
-				{!isValid ? 'bg-tagYellow placeholder-altTextBrown text-altTextBrown' : ''}"
+				{touched && !valid && 'bg-tagYellow placeholder-altTextBrown text-altTextBrown'}"
 				on:change={handleChange}
+				on:blur={() => (touched = true)}
 				options={{ autoPlaceholder: false }}
 				{placeholder}
 			/>
 		</div>
 	</div>
-	{#if !isValid}
+	{#if touched && !valid}
 		<SmallText class=" text-altTextBrown">Invalid phone number</SmallText>
 	{/if}
 </div>

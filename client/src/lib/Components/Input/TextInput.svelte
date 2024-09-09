@@ -5,7 +5,7 @@
 	export let placeholder = '';
 	export let value = '';
 	export let valid = false;
-	export let required = false;
+	export let required = true;
 	export let rows = 0;
 	export let errorMessage: string | null = null;
 	export let touched = false;
@@ -30,6 +30,7 @@
 				{rows}
 				class="{inputClass} {touched && !valid && invalidClass}"
 				on:change={handleInput}
+				on:blur={handleInput}
 			/>
 		{:else}
 			<input
@@ -38,6 +39,7 @@
 				{placeholder}
 				class="{inputClass} {touched && !valid && invalidClass}"
 				on:change={handleInput}
+				on:blur={handleInput}
 			/>
 		{/if}
 	</div>

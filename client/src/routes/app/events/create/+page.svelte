@@ -383,7 +383,6 @@
 		<!-- Input fields -->
 		<div class="flex flex-col gap-2 order-2 mdlg:order-2 mdlg:col-span-1 mdlg:row-span-2">
 			<TextInput
-				required={true}
 				placeholder="Add a title to your event..."
 				errorMessage="Event name is required"
 				bind:value={formData.name}
@@ -455,7 +454,6 @@
 				placeholder="Include additional details about the event..."
 				bind:value={formData.description}
 				bind:valid={isValid.description}
-				required={true}
 				rows={6}
 				{touched}
 			/>
@@ -465,7 +463,6 @@
 				placeholder="Include details about any requirements, expectations, or information to know prior to arrival for shift..."
 				bind:value={formData.preShift}
 				bind:valid={isValid.preShift}
-				required={true}
 				rows={6}
 				{touched}
 			/>
