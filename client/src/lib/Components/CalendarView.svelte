@@ -1,69 +1,72 @@
 <script lang="ts">
 	import CalendarElement from '$lib/Components/CalendarEvent.svelte';
 	import { onMount } from 'svelte';
-	import type { CalendarElementData } from '$lib/Types/Events';
+	import type { EventContent } from '$lib/Types/Events';
 	import Text from './Text/Text.svelte';
 
+	export let events: EventContent[] = []; // Events passed as a prop
+
 	let currentDate = new Date();
-	let calendarElements: CalendarElementData[] = [];
+	let calendarElements: EventContent[] = [];
 	let currentPage = 0;
 
 	let displayedMonths = '';
 
 	const daysPerPage = 10;
 
-	const generateCalendarElements = (page: number): CalendarElementData[] => {
-		const elements: CalendarElementData[] = [];
-		for (let i = 0; i < daysPerPage; i++) {
-			const date = new Date();
-			date.setDate(currentDate.getDate() + page * daysPerPage + i);
-			elements.push({
-				img: 'https://assets.simpleviewinc.com/simpleview/image/upload/crm/vancouverbc/Science-World-03-large_7A18828C-0A13-47CD-92DB4404AE5A222C_fb32edf9-a996-4f5f-a2aaa1980fe8d6b7.jpg',
-				title: `Science World Children's Day`,
-				date: date,
-				location: 'Vancouver, BC 1455 Quebec St'
-			});
-		}
+	const paginateCalendarElements = (page: number): EventContent[] => {
+		const start = page * daysPerPage;
+		const end = start + daysPerPage;
+		const elements = events.slice(start, end);
+
 		updateDisplayedMonths(elements, page);
 		return elements;
 	};
 
-	const updateDisplayedMonths = (elements: CalendarElementData[], page: number) => {
-		const uniqueMonths = new Set(
-			elements.map((e) => {
-				const month = e.date.toLocaleString('default', { month: 'short' });
-				const year =
-					e.date.getFullYear() !== currentDate.getFullYear() ? ` ${e.date.getFullYear()}` : '';
-				return `${month}${year}`;
-			})
+	const updateDisplayedMonths = (elements: EventContent[], page: number) => {
+		const uniqueMonths = Array.from(
+			new Set(
+				elements.map((e) => {
+					const month = e.date.startDay.toLocaleString('default', { month: 'short' });
+					const year =
+						e.date.startDay.getFullYear() !== currentDate.getFullYear()
+							? ` ${e.date.startDay.getFullYear()}`
+							: '';
+					return `${month}${year}`;
+				})
+			)
 		);
 
-		if (page === 0) {
-			displayedMonths = `Now - ${Array.from(uniqueMonths).join(' - ')}`;
+		if (uniqueMonths.length === 1) {
+			displayedMonths = uniqueMonths[0];
 		} else {
-			displayedMonths = Array.from(uniqueMonths).join(' - ');
+			displayedMonths = `${uniqueMonths[0]} - ${uniqueMonths[uniqueMonths.length - 1]}`;
 		}
 	};
 
 	const nextPage = () => {
-		currentPage++;
-		calendarElements = generateCalendarElements(currentPage);
+		if ((currentPage + 1) * daysPerPage < events.length) {
+			currentPage++;
+			calendarElements = paginateCalendarElements(currentPage);
+		}
 	};
 
-	const firstpage = () => {
+	const firstPage = () => {
 		currentPage = 0;
-		calendarElements = generateCalendarElements(currentPage);
+		calendarElements = paginateCalendarElements(currentPage);
 	};
 
 	const previousPage = () => {
 		if (currentPage > 0) {
 			currentPage--;
-			calendarElements = generateCalendarElements(currentPage);
+			calendarElements = paginateCalendarElements(currentPage);
 		}
 	};
 
 	onMount(() => {
-		calendarElements = generateCalendarElements(currentPage);
+		// filter anything that is not in the future
+		events = events.filter((e) => e.date.startDay >= currentDate);
+		calendarElements = paginateCalendarElements(currentPage);
 	});
 </script>
 
@@ -72,9 +75,13 @@
 		<Text class="calendar-title text-2xl font-bold">Calendar</Text>
 		<div class="navigation flex mt-2">
 			<button on:click={previousPage} disabled={currentPage === 0}>{'<'}</button>
-			<button on:click={nextPage} class="ml-2">{'>'}</button>
+			<button
+				on:click={nextPage}
+				class="ml-2"
+				disabled={(currentPage + 1) * daysPerPage >= events.length}>{'>'}</button
+			>
 			<div class="today_button ml-6 p-2 border rounded">
-				<button on:click={firstpage}>
+				<button on:click={firstPage}>
 					<Text>Today</Text>
 				</button>
 			</div>
@@ -88,10 +95,13 @@
 		{#each calendarElements as element (element.date)}
 			<div class="grid-element">
 				<CalendarElement
-					img={element.img}
-					title={element.title}
-					location={element.location}
-					date={element.date}
+					id={element._id}
+					img={element.details.photo}
+					title={element.name}
+					location={element.details.location}
+					date={element.date.startDay}
+					startTime={element.date.startTime}
+					endTime={element.date.endTime}
 				/>
 			</div>
 		{/each}
