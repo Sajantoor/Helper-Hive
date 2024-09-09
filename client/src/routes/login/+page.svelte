@@ -1,26 +1,22 @@
 <script lang="ts">
 	import Text from '$lib/Components/Text/Text.svelte';
-	import InputField from '$lib/Components/InputField.svelte';
+	import PasswordInput from '$lib/Components/Input/PasswordInput.svelte';
 	import { goto } from '$app/navigation';
 	import { PUBLIC_SERVER_HOST } from '$env/static/public';
+	import EmailInput from '$lib/Components/Input/EmailInput.svelte';
+	import SmallText from '$lib/Components/Text/SmallText.svelte';
 
 	let email = '';
 	let password = '';
 	let passwordError = false;
-	let invalidFields: string[] = [];
+
+	let emailValid = false;
+	let passwordValid = false;
+	let isFormValid = false;
 
 	function validateFields(): boolean {
-		invalidFields = [];
-		if (!email) invalidFields.push('email');
-		if (!password) invalidFields.push('password');
-
-		if (invalidFields.length > 0) {
-			const firstInvalidField = document.getElementById(invalidFields[0]);
-			firstInvalidField?.scrollIntoView({ behavior: 'smooth' });
-			return false;
-		}
-
-		return true;
+		isFormValid = emailValid && passwordValid;
+		return isFormValid;
 	}
 
 	async function handleSubmit() {
@@ -40,7 +36,13 @@
 			goto('/app/');
 		} else {
 			passwordError = true;
+			emailValid = false;
+			passwordValid = false;
 		}
+	}
+
+	$: if (emailValid || passwordValid) {
+		validateFields();
 	}
 </script>
 
@@ -51,41 +53,32 @@
 		<!-- Middle section -->
 		<div class="w-full mdlg:w-3/5 mdlg:max-w-[60%] bg-white p-8 rounded-lg space-y-6 relative">
 			<Text class="section text-center">Welcome back!</Text>
-			{#if passwordError}
-				<Text
-					class="smallText text-red-500 text-center absolute top-[4rem] left-1/2 transform -translate-x-1/2"
-					>Password does not match</Text
-				>
-			{/if}
 
-			<form on:submit|preventDefault={handleSubmit} class="space-y-6">
-				<InputField
-					id="email"
-					label="Email Address"
-					placeholder="Email Address"
-					bind:value={email}
-					invalid={invalidFields.includes('email')}
-				/>
+			<form on:submit|preventDefault={handleSubmit} class="space-y-3">
+				<EmailInput label="Email Address" bind:value={email} bind:valid={emailValid} />
 
-				<InputField
-					id="password"
+				<PasswordInput
 					label="Password"
-					placeholder="Password"
-					type="password"
+					placeholder="Enter your password..."
 					bind:value={password}
-					invalid={invalidFields.includes('password')}
+					bind:valid={passwordValid}
 				/>
-				<Text class="smallText text-left mt-3">
+
+				<SmallText class="text-left mt-3">
 					<a href="/forgot" class="text-blue-500 underline">Forgot password?</a>
-				</Text>
+				</SmallText>
 
 				<button
 					type="submit"
-					class="w-full bg-primaryYellow text-black py-2 px-4 rounded-lg mx-auto text"
+					class={`w-full py-2 px-4 rounded-lg mx-auto ${isFormValid ? 'bg-primaryYellow text-black' : 'bg-tagYellow text-altTextBrown'}`}
 				>
 					<Text>Login</Text>
 				</button>
 			</form>
+
+			{#if passwordError}
+				<SmallText class=" text-red-500 text-center">Incorrect username or password</SmallText>
+			{/if}
 
 			<Text class="mt-4 text-center"
 				>Not a member? <a href="/registration/volunteer" class="text-blue-500 underline"

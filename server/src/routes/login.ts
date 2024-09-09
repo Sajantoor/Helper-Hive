@@ -45,7 +45,7 @@ export async function login(req: Request, res: Response) {
     res.status(200).json({ message: "Login successful" });
 }
 
-export async function logout(res: Response) {
+export async function logout(req: Request, res: Response) {
     clearCookies(res);
     res.status(200).json({ message: "Logout successful" });
 }
@@ -163,6 +163,7 @@ export async function profile(req: Request, res: Response) {
         id: string;
         email: string;
         name: string;
+        role: "volunteer" | "organization";
         profilePicture?: string | null;
     }
 
@@ -177,6 +178,7 @@ export async function profile(req: Request, res: Response) {
             id: profile.id,
             email: profile.email,
             name: profile.firstName + " " + profile.lastName,
+            role: "volunteer",
             profilePicture: profile.profilePicture
         }
     } else if (user.userRole === "organization") {
@@ -190,6 +192,7 @@ export async function profile(req: Request, res: Response) {
             id: profile.id,
             email: profile.email,
             name: profile.name,
+            role: "organization",
             profilePicture: profile.logo
         }
     } else {
