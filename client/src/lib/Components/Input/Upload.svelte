@@ -11,6 +11,7 @@
 	export let valid: boolean = true;
 	export let disabled = false;
 	export let touched = false;
+	export let errorMessage = 'Please upload a valid file';
 
 	const dispatch = createEventDispatcher<{ file: { files: File[] } }>();
 
@@ -48,15 +49,21 @@
 		<div
 			class="{touched && !valid
 				? 'bg-tagYellow border-dashed border-2 border-altTextBrown/75'
-				: 'bg-transparent'} absolute inset-0 rounded-3xl"
+				: 'bg-transparent'}absolute inset-0 rounded-3xl"
 		></div>
 		<div class="flex items-center justify-between relative h-full">
-			<Text
-				class="italic p-4 {touched && !valid ? 'text-altTextBrown' : 'text-placeholderGrayText'}"
-				>{placeholder}</Text
-			>
+			{#if disabled}
+				<Text class="italic p-4 text-red-400">Upload disabled</Text>
+			{:else}
+				<Text
+					class="italic p-4 {touched && !valid ? 'text-altTextBrown' : 'text-placeholderGrayText'}"
+					>{placeholder}</Text
+				>
+			{/if}
 			<UploadIcon
-				class="ml-2 w-8 h-8 {touched && !valid ? 'text-altTextBrown' : ' text-primaryYellow'}"
+				class="ml-2 w-8 h-8 text-primaryYellow 
+				{touched && !valid && 'text-altTextBrown'} 
+				{disabled && 'text-red-400'}"
 			/>
 		</div>
 
@@ -93,9 +100,9 @@
 		</div>
 	{/if}
 
-	{#if touched && !valid}
+	{#if (touched && !valid) || disabled}
 		<SmallText class="smallText text-altTextBrown text-right mt-1">
-			Please upload a valid file
+			{errorMessage}
 		</SmallText>
 	{/if}
 </div>
