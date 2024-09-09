@@ -142,16 +142,13 @@
 	}
 
 	function validateTimes() {
-		if (!formData.startTime || !formData.endTime) {
+		if (!formData.startTime || !formData.endTime || !formData.startDate || !formData.endDate) {
 			return;
 		}
 
 		// change them to dates
-		const date = new Date();
-		date.setHours(0, 0, 0, 0);
-
-		const startTime = getDateFromTimes(date, formData.startTime);
-		const endTime = getDateFromTimes(date, formData.endTime);
+		const startTime = getDateFromTimes(formData.startDate, formData.startTime);
+		const endTime = getDateFromTimes(formData.endDate, formData.endTime);
 
 		if (startTime > endTime) {
 			startTimeError = 'Start time must be before end time';
@@ -167,7 +164,6 @@
 	function isFormValid(): boolean {
 		validateDates();
 		validateTimes();
-
 		return Object.values(isValid).every(Boolean);
 	}
 
