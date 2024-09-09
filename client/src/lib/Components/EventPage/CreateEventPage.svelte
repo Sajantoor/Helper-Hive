@@ -62,6 +62,7 @@
 		image: File | undefined;
 		imageUrl?: string;
 		files: File[];
+		filesUrl?: string[];
 	}
 
 	export let formData: EventFormData = {
@@ -76,7 +77,8 @@
 		shiftOpenings: undefined,
 		location: undefined,
 		image: undefined,
-		files: []
+		files: [],
+		filesUrl: []
 	};
 
 	interface Validity {
@@ -185,8 +187,17 @@
 			return;
 		}
 
+		// only upload image if it has changed
 		if (!formData.imageUrl) {
 			formData.imageUrl = await uploadFile(formData.image!);
+		}
+
+		// only reupload files if they have changed
+		if (
+			(formData.files.length > 0 && !formData.filesUrl) ||
+			(formData.filesUrl && formData.filesUrl.length !== formData.files.length)
+		) {
+			formData.filesUrl = await Promise.all(formData.files.map((file) => uploadFile(file)));
 		}
 
 		const body = {
@@ -206,8 +217,7 @@
 				tags: formData.tagValues,
 				location: formData.location,
 				photo: formData.imageUrl,
-				// TODO: this is temporary
-				files: []
+				files: formData.filesUrl
 			}
 		};
 
@@ -249,6 +259,11 @@
 	const removeFile = (index: number) => {
 		formData.files.splice(index, 1);
 		formData.files = formData.files;
+
+		if (formData.filesUrl && formData.filesUrl.length > index) {
+			formData.filesUrl.splice(index, 1);
+			formData.filesUrl = formData.filesUrl;
+		}
 	};
 
 	const handleFileUpload = (event: CustomEvent<{ files: File[] }>) => {

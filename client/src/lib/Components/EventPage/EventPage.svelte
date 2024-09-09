@@ -22,7 +22,7 @@
 		<Text class="text-altTextGray mb-4">Contact the host</Text>
 		<Text class="text-altTextGray">Report this event</Text>
 
-		{#if location}
+		{#if eventData.details.location}
 			<Location location={eventData.details.location} />
 		{/if}
 	</div>

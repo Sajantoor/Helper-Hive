@@ -20,20 +20,15 @@
 
 	export let hours: string = getTime(event.date.startTime, event.date.endTime);
 
-	const regex = /^(.*?),\s*(\w+)\s*(.*)$/;
-	const match = location.match(regex);
-
 	const isSameDay = startDate.toDateString() === endDate.toDateString();
 	let displayDate = isSameDay
 		? formatDate(startDate)
 		: `${formatDate(startDate)} - ${formatDate(endDate)}`;
 
-	let city: string, province: string, address: string;
-
-	if (match) {
-		city = match[1];
-		province = match[2];
-		address = match[3];
+	let locationTitle: string, locationDescription: string;
+	if (location) {
+		locationTitle = location.split(':')[0].trim();
+		locationDescription = location.split(':')[1].trim();
 	}
 
 	function formatDate(date: Date) {
@@ -120,8 +115,8 @@
 	<div class="item">
 		<MapMarkerOutline class="text-primaryYellow" size={40} />
 		<div class="ml-5">
-			<Text class="font-semibold">{city}, {province}</Text>
-			<Text>{address}</Text>
+			<Text class="font-semibold">{locationTitle}</Text>
+			<Text>{locationDescription}</Text>
 		</div>
 	</div>
 

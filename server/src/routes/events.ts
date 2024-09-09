@@ -6,12 +6,11 @@ import { ErrorResponse } from "../../../common/types/errorResponse";
 
 const eventBodySchema = z.object({
     name: z.string(),
-    organization: z.string(),
     date: z.object({
-        startDate: z.date(),
-        endDate: z.date(),
-        startTime: z.date(),
-        endTime: z.date(),
+        startDay: z.coerce.date(),
+        endDay: z.coerce.date(),
+        startTime: z.coerce.date(),
+        endTime: z.coerce.date(),
     }),
     details: z.object({
         description: z.string(),
@@ -32,6 +31,11 @@ export async function getEvents(req: Request, res: Response) {
     const events = await Events.find().populate({
         path: 'organization',
         select: 'name logo',
+    });
+
+    // sort events by date
+    events.sort((a: IEvents, b: IEvents) => {
+        return a.date.startDay.getTime() - b.date.startDay.getTime();
     });
 
     return res.status(200).json(events);
@@ -86,6 +90,8 @@ export async function createEvent(req: Request, res: Response) {
         return res.status(400).json(errorResponse);
     }
 
+    (eventBody.data as any).organization = res.locals.user.userId;
+
     try {
         const newEvent = new Events(eventBody.data);
         const savedEvent = await newEvent.save();
@@ -107,11 +113,6 @@ export async function updateEvent(req: Request, res: Response) {
 
     if (!eventBody.success) {
         const errorResponse = { message: "Invalid event body", error: eventBody.error.errors };
-        return res.status(400).json(errorResponse);
-    }
-
-    if (eventBody.data.organization) {
-        const errorResponse: ErrorResponse = { message: "Organization cannot be updated" };
         return res.status(400).json(errorResponse);
     }
 
