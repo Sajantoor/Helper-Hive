@@ -35,8 +35,8 @@
 	let formValid = false;
 	let isFormValid = false;
 	let touched = false;
-
-	const validateForm = () => {};
+	let dobErrorMessage = 'Please enter a valid date of birth';
+	const ageLimit = 16;
 
 	const handleSubmit = async () => {
 		touched = true;
@@ -70,8 +70,26 @@
 		}
 	};
 
-	const handleInputChange = () => {
-		validateForm();
+	$: if (isFormValid || formData) {
+		isFormValid = validateForm();
+	}
+
+	const validateAge = () => {
+		const dob = formData.dob;
+		const today = new Date();
+		const validRegistrationAge = new Date(today.setFullYear(today.getFullYear() - ageLimit));
+		isValid.dob = dob <= validRegistrationAge;
+
+		if (!isValid.dob) {
+			dobErrorMessage = `You must be at least ${ageLimit} years old to register`;
+		} else {
+			dobErrorMessage = 'Please enter a valid date of birth';
+		}
+	};
+
+	const validateForm = (): boolean => {
+		validateAge();
+		return Object.values(isValid).every(Boolean);
 	};
 
 	const openPopup = (id: string) => {
@@ -140,6 +158,7 @@
 				<DateInput
 					label="Date of Birth"
 					placeholder="DD/MM/YYYY"
+					errorMessage={dobErrorMessage}
 					bind:value={formData.dob}
 					bind:valid={isValid.dob}
 					maxDate="today"

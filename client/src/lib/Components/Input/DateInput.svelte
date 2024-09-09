@@ -13,7 +13,7 @@
 	export let minDate = '01/01/1900';
 	export let maxDate = '31/12/2100';
 
-	export let errorMessage = '';
+	export let errorMessage = 'Enter a valid date';
 
 	// Datetime functions
 	const flatpickrOptions: flatpickr.Options.Options = {
