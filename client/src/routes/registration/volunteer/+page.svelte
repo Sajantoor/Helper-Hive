@@ -32,7 +32,6 @@
 		liabilityAgreed: false
 	};
 
-	let formValid = false;
 	let isFormValid = false;
 	let touched = false;
 	let dobErrorMessage = 'Please enter a valid date of birth';
@@ -93,7 +92,8 @@
 	};
 
 	const openPopup = (id: string) => {
-		// TODO: Open popup
+		const popup = document.getElementById(id);
+		popup?.classList.remove('hidden');
 	};
 </script>
 
@@ -242,7 +242,7 @@
 
 				<button
 					type="submit"
-					class={`w-full ${formValid ? 'bg-primaryYellow text-black' : 'bg-tagYellow text-altTextBrown'} py-2 px-4 rounded-lg mx-auto text`}
+					class={`w-full ${isFormValid ? 'bg-primaryYellow text-black' : 'bg-tagYellow text-altTextBrown'} py-2 px-4 rounded-lg mx-auto text`}
 					style="margin-top: 2.5rem;"
 				>
 					<Text>Sign Up</Text>

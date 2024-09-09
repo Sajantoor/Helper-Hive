@@ -36,7 +36,7 @@
 		liabilityAgreed: false
 	};
 
-	let formValid = false;
+	let isFormValid = false;
 
 	const validateForm = () => {
 		return Object.values(isValid).every(Boolean);
@@ -45,7 +45,7 @@
 	const handleSubmit = async () => {
 		touched = true;
 
-		if (!formValid) {
+		if (!isFormValid) {
 			return;
 		}
 
@@ -77,12 +77,13 @@
 		goto('/login');
 	};
 
-	const openPopup = (string: string) => {
-		// TOOD:
+	const openPopup = (id: string) => {
+		const popup = document.getElementById(id);
+		popup?.classList.remove('hidden');
 	};
 
 	$: if (formData || isValid) {
-		formValid = validateForm();
+		isFormValid = validateForm();
 	}
 </script>
 
@@ -228,7 +229,7 @@
 
 				<button
 					type="submit"
-					class={`w-full ${formValid ? 'bg-primaryYellow text-black' : 'bg-tagYellow text-altTextBrown'} py-2 px-4 rounded-lg mx-auto text`}
+					class={`w-full ${isFormValid ? 'bg-primaryYellow text-black' : 'bg-tagYellow text-altTextBrown'} py-2 px-4 rounded-lg mx-auto text`}
 					style="margin-top: 2.5rem;"
 				>
 					<Text>Sign Up</Text>
