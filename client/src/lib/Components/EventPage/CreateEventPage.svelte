@@ -242,6 +242,7 @@
 	const removeImage = (): void => {
 		formData.image = undefined;
 		imageBase64 = '';
+		isValid.image = false;
 	};
 
 	const removeFile = (index: number) => {
@@ -301,8 +302,8 @@
 					placeholder="Upload a picture..."
 					bind:valid={isValid.image}
 					on:file={handleImageUpload}
-					{touched}
 					errorMessage="Event picture is required"
+					{touched}
 				/>
 			{:else}
 				<div
@@ -317,11 +318,6 @@
 					</div>
 				</div>
 			{/if}
-			<div>
-				{#if isValid.image}
-					<SmallText class="mt-2 text-altTextBrown">Event picture is required</SmallText>
-				{/if}
-			</div>
 		</div>
 
 		<!-- File upload, host, location display -->
