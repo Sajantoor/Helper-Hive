@@ -3,16 +3,19 @@
 	import SmallText from '../Text/SmallText.svelte';
 	let iconSize = 40;
 
-	export let files: string[];
+	export let files: {
+		url: string;
+		name: string;
+	}[];
 </script>
 
 <div class="mb-8 mt-8">
 	{#each files as file}
 		<div class="inline-block mr-5 file">
-			<div>
+			<a href={file.url}>
 				<FileDocumentOutline class="file text-primaryYellow" size={iconSize} />
-				<SmallText class="text-gray-400 ml-1 mt-1">{file}</SmallText>
-			</div>
+				<SmallText class="text-gray-400 ml-1 mt-1">{file.name}</SmallText>
+			</a>
 		</div>
 	{/each}
 </div>

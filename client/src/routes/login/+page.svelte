@@ -36,8 +36,6 @@
 			goto('/app/');
 		} else {
 			passwordError = true;
-			emailValid = false;
-			passwordValid = false;
 		}
 	}
 

@@ -18,7 +18,10 @@ const eventBodySchema = z.object({
         tags: z.array(z.string()).optional().default([]),
         location: z.string(),
         photo: z.string(),
-        files: z.array(z.string()).optional().default([]),
+        files: z.array(z.object({
+            url: z.string(),
+            name: z.string()
+        }).optional()).default([]),
     }),
     registration: z.object({
         totalSpots: z.number().int(),

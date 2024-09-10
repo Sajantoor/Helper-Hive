@@ -13,7 +13,10 @@ export type EventContent = {
         location: string;
         tags: string[];
         photo: string;
-        files: string[];
+        files: {
+            url: string;
+            name: string;
+        }[];
     };
     registration: {
         totalSpots: number;

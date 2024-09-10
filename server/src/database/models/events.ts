@@ -42,7 +42,10 @@ const eventsSchema = new Schema<IEvents>({
             preShiftInfo: { type: String, required: true },
             location: { type: String, required: true },
             photo: { type: String, required: true },
-            files: [{ type: String, required: false }],
+            files: [{
+                url: { type: String, required: false },
+                name: { type: String, required: false }
+            }],
             tags: [{ type: String, required: false }],
             createdAt: { type: Date, required: true, default: Date.now },
         }),

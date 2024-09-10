@@ -4,10 +4,10 @@
 	import Location from './Location.svelte';
 	import Text from '../Text/Text.svelte';
 	import Heading from '../Text/Heading.svelte';
-	import type { EventContent } from '$lib/Types/Events';
+	import type { EventResponse } from '$common/types/eventResponse';
 	import Files from './Files.svelte';
 
-	export let eventData: EventContent;
+	export let eventData: EventResponse;
 </script>
 
 <div class="event-page">

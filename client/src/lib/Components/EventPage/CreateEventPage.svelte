@@ -62,7 +62,7 @@
 		image: File | undefined;
 		imageUrl?: string;
 		files: File[];
-		filesUrl?: string[];
+		uploadedFiles?: UploadedFiles[];
 	}
 
 	export let formData: EventFormData = {
@@ -78,8 +78,13 @@
 		location: undefined,
 		image: undefined,
 		files: [],
-		filesUrl: []
+		uploadedFiles: []
 	};
+
+	interface UploadedFiles {
+		name: string;
+		url: string;
+	}
 
 	interface Validity {
 		name: boolean;
@@ -194,10 +199,17 @@
 
 		// only reupload files if they have changed
 		if (
-			(formData.files.length > 0 && !formData.filesUrl) ||
-			(formData.filesUrl && formData.filesUrl.length !== formData.files.length)
+			(formData.files.length > 0 && !formData.uploadedFiles) ||
+			(formData.uploadedFiles && formData.uploadedFiles.length !== formData.files.length)
 		) {
-			formData.filesUrl = await Promise.all(formData.files.map((file) => uploadFile(file)));
+			formData.uploadedFiles = await Promise.all(
+				formData.files.map(async (file) => {
+					return {
+						name: file.name,
+						url: await uploadFile(file)
+					};
+				})
+			);
 		}
 
 		const body = {
@@ -217,7 +229,7 @@
 				tags: formData.tagValues,
 				location: formData.location,
 				photo: formData.imageUrl,
-				files: formData.filesUrl
+				files: formData.uploadedFiles
 			}
 		};
 
@@ -260,9 +272,9 @@
 		formData.files.splice(index, 1);
 		formData.files = formData.files;
 
-		if (formData.filesUrl && formData.filesUrl.length > index) {
-			formData.filesUrl.splice(index, 1);
-			formData.filesUrl = formData.filesUrl;
+		if (formData.uploadedFiles && formData.uploadedFiles.length > index) {
+			formData.uploadedFiles.splice(index, 1);
+			formData.uploadedFiles = formData.uploadedFiles;
 		}
 	};
 
