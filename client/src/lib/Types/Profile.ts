@@ -3,5 +3,5 @@ export interface Profile {
     email: string;
     name: string;
     role: "volunteer" | "organization";
-    profilePicture?: string | null;
+    profilePicture?: string;
 }

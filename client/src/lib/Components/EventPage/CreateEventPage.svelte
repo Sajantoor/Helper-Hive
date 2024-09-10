@@ -13,7 +13,6 @@
 	import FileDocumentOutline from 'svelte-material-icons/FileDocumentOutline.svelte';
 	import CloseCircle from 'svelte-material-icons/CloseCircle.svelte';
 	import Circle from 'svelte-material-icons/Circle.svelte';
-	import Instagram from 'svelte-material-icons/Instagram.svelte';
 	import CalendarMonth from 'svelte-material-icons/CalendarMonthOutline.svelte';
 	import MapMarkerOutline from 'svelte-material-icons/MapMarkerOutline.svelte';
 	import ClockOutline from 'svelte-material-icons/ClockTimeFourOutline.svelte';
@@ -21,6 +20,10 @@
 	import { goto } from '$app/navigation';
 	import SmallText from '$lib/Components/Text/SmallText.svelte';
 	import { uploadFile } from '$lib/utils/uploadFiles';
+	import HostInfo from './HostInfo.svelte';
+	import { profileStore } from '$lib/stores/profileStore';
+	import type { Organization } from '$common/types/eventResponse';
+	import { onDestroy } from 'svelte';
 
 	// TODO: Grab these from database:
 	let options: string[] = [
@@ -38,13 +41,17 @@
 		'Family'
 	];
 
-	// TODO: Update this later...
-	export let organizationInfo = {
-		name: 'The City of Vancouver',
-		image:
-			'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT46Pp3V6MJmwjab7ghq7TSOu5COQongTQ83Q&s',
-		instagram: 'https://google.com'
-	};
+	let organizationInfo: Organization;
+
+	const unsubscribe = profileStore.subscribe((value) => {
+		if (!value) return;
+
+		organizationInfo = {
+			_id: value.id,
+			name: value.name,
+			logo: value.profilePicture
+		};
+	});
 
 	let imageBase64: string | null = null;
 
@@ -310,6 +317,10 @@
 		formData.image = uploadedFiles[0];
 		isValid.image = true;
 	};
+
+	onDestroy(() => {
+		unsubscribe();
+	});
 </script>
 
 <button class="absolute" on:click={() => window.history.back()}>
@@ -386,25 +397,7 @@
 			{/each}
 
 			<div>
-				<Text class="heading mt-8 mb-4">Hosted by</Text>
-				<div class="flex justify-between items-center mb-8">
-					<div class="flex items-center">
-						<img
-							class="rounded-full h-14 w-14"
-							src={organizationInfo.image}
-							alt={organizationInfo.name}
-						/>
-						<Text class="ml-8">{organizationInfo.name}</Text>
-					</div>
-					{#if organizationInfo.instagram}
-						<div
-							class="cursor-pointer"
-							on:click|preventDefault={() => window.open(organizationInfo.instagram, '_blank')}
-						>
-							<Instagram class="text-primaryYellow" size={40} />
-						</div>
-					{/if}
-				</div>
+				<HostInfo organization={organizationInfo} />
 			</div>
 			<div class="w-full max-w-1/2">
 				<Location bind:location={formData.location} />

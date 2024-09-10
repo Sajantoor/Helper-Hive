@@ -23,9 +23,12 @@ export type EventResponse = {
         totalRegistered: number;
         isRegistered?: boolean;
     }
-    organization: {
-        _id: string,
-        name: string,
-        logo: string;
-    }
+    organization: Organization;
+}
+
+export type Organization = {
+    _id: string;
+    name: string;
+    logo?: string;
+    instagram?: string;
 }
