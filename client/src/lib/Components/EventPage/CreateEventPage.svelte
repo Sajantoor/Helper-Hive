@@ -23,7 +23,7 @@
 	import HostInfo from './HostInfo.svelte';
 	import { profileStore } from '$lib/stores/profileStore';
 	import type { Organization } from '$common/types/eventResponse';
-	import { onDestroy } from 'svelte';
+	import BackButton from '../BackButton.svelte';
 
 	// TODO: Grab these from database:
 	let options: string[] = [
@@ -43,15 +43,13 @@
 
 	let organizationInfo: Organization;
 
-	const unsubscribe = profileStore.subscribe((value) => {
-		if (!value) return;
-
+	if ($profileStore) {
 		organizationInfo = {
-			_id: value.id,
-			name: value.name,
-			logo: value.profilePicture
+			_id: $profileStore.id,
+			name: $profileStore.name,
+			logo: $profileStore.profilePicture
 		};
-	});
+	}
 
 	let imageBase64: string | null = null;
 
@@ -317,15 +315,9 @@
 		formData.image = uploadedFiles[0];
 		isValid.image = true;
 	};
-
-	onDestroy(() => {
-		unsubscribe();
-	});
 </script>
 
-<button class="absolute" on:click={() => window.history.back()}>
-	<ArrowLeft size={20} class="ml-10 mt-10 absolute" />
-</button>
+<BackButton />
 
 <form on:submit|preventDefault={handleSubmit} class="space-y-6" novalidate>
 	<div
