@@ -1,45 +1,33 @@
 <script lang="ts">
 	import Instagram from 'svelte-material-icons/Instagram.svelte';
-	import FileDocumentOutline from 'svelte-material-icons/FileDocumentOutline.svelte';
 	import Text from '../Text/Text.svelte';
-	import SmallText from '../Text/SmallText.svelte';
 	import Heading from '../Text/Heading.svelte';
 
 	let iconSize = 40;
 
-	export let hostImage: string = '';
-	export let hostName: string = '';
-	export let hostInstagram: string = '';
-	export let files: string[] = [];
+	export let organization: {
+		name: string;
+		logo: string;
+		instagram?: string;
+	};
 </script>
 
-<div class="hosted-by-container">
+<div>
 	<Heading class="mb-4">Hosted by</Heading>
 	<div class="host-info">
 		<div class="flex items-center">
-			<img class="host-logo rounded-full h-6" src={hostImage} alt={hostName} />
-
-			<Text class="ml-8">{hostName}</Text>
+			<img class="host-logo rounded-full h-6" src={organization.logo} alt={organization.name} />
+			<Text class="ml-8">{organization.name}</Text>
 		</div>
-		{#if hostInstagram}
-		<div class="cursor-pointer" on:click|preventDefault={() => window.open(hostInstagram, '_blank')}>
-			<Instagram class="text-primaryYellow" size={iconSize} />
-		</div>
+		{#if organization.instagram}
+			<div
+				class="cursor-pointer"
+				on:click|preventDefault={() => window.open(organization.instagram, '_blank')}
+			>
+				<Instagram class="text-primaryYellow" size={iconSize} />
+			</div>
 		{/if}
 	</div>
-	<div class="mb-8 mt-8">
-		{#each files as file}
-			<div class="inline-block mr-5">
-				<div>
-					<FileDocumentOutline class="file text-primaryYellow" size={iconSize} />
-					<SmallText class="text-gray-400 ml-1 mt-1">{file}</SmallText>
-				</div>
-			</div>
-		{/each}
-	</div>
-
-	<Text class="text-altTextGray mb-4">Contact the host</Text>
-	<Text class="text-altTextGray">Report this event</Text>
 </div>
 
 <style lang="postcss">
@@ -52,11 +40,5 @@
 	.host-logo {
 		width: 3.5rem;
 		height: 3.5rem;
-	}
-
-	/* TODO: For some reason this isn't working */
-	.file {
-		margin: auto;
-		display: block;
 	}
 </style>

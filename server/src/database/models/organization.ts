@@ -1,6 +1,20 @@
 import { Schema, model } from 'mongoose';
 
-const organizationSchema = new Schema({
+export interface IOrganization {
+    name: string;
+    logo?: string;
+    email: string;
+    phoneNumber: string;
+    contactPerson: {
+        firstName: string;
+        lastName: string;
+    };
+    emailConfirmed: boolean;
+    verified: boolean;
+    password: string;
+}
+
+const organizationSchema = new Schema<IOrganization>({
     name: { type: String, required: true },
     logo: { type: String },
     email: { type: String, required: true, unique: true, match: /.+\@.+\..+/ },

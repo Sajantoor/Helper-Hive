@@ -1,4 +1,4 @@
-export type EventContent = {
+export type EventResponse = {
     _id: string;
     name: string;
     date: {
@@ -23,11 +23,9 @@ export type EventContent = {
         totalRegistered: number;
         isRegistered?: boolean;
     }
-    organization: Organization;
-}
-
-export type Organization = {
-    _id: string,
-    name: string,
-    logo: string;
+    organization: {
+        _id: string,
+        name: string,
+        logo: string;
+    }
 }

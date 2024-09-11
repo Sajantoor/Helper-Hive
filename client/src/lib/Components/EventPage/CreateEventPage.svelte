@@ -20,6 +20,7 @@
 	import { PUBLIC_SERVER_HOST } from '$env/static/public';
 	import { goto } from '$app/navigation';
 	import SmallText from '$lib/Components/Text/SmallText.svelte';
+	import { uploadFile } from '$lib/utils/uploadFiles';
 
 	// TODO: Grab these from database:
 	let options: string[] = [
@@ -59,7 +60,9 @@
 		shiftOpenings: number | undefined;
 		location: string | undefined;
 		image: File | undefined;
+		imageUrl?: string;
 		files: File[];
+		uploadedFiles?: UploadedFiles[];
 	}
 
 	export let formData: EventFormData = {
@@ -74,8 +77,14 @@
 		shiftOpenings: undefined,
 		location: undefined,
 		image: undefined,
-		files: []
+		files: [],
+		uploadedFiles: []
 	};
+
+	interface UploadedFiles {
+		name: string;
+		url: string;
+	}
 
 	interface Validity {
 		name: boolean;
@@ -179,10 +188,28 @@
 
 	const handleSubmit = async () => {
 		if (!formValid) {
-			console.log(isValid);
-			console.log(formData);
 			touched = true;
 			return;
+		}
+
+		// only upload image if it has changed
+		if (!formData.imageUrl) {
+			formData.imageUrl = await uploadFile(formData.image!);
+		}
+
+		// only reupload files if they have changed
+		if (
+			(formData.files.length > 0 && !formData.uploadedFiles) ||
+			(formData.uploadedFiles && formData.uploadedFiles.length !== formData.files.length)
+		) {
+			formData.uploadedFiles = await Promise.all(
+				formData.files.map(async (file) => {
+					return {
+						name: file.name,
+						url: await uploadFile(file)
+					};
+				})
+			);
 		}
 
 		const body = {
@@ -201,14 +228,10 @@
 				preShiftInfo: formData.preShift,
 				tags: formData.tagValues,
 				location: formData.location,
-				photo: formData.image,
-				// TODO: this is temporary
-				files: []
+				photo: formData.imageUrl,
+				files: formData.uploadedFiles
 			}
 		};
-
-		console.log(body);
-		console.log(JSON.stringify(body));
 
 		const response = await fetch(`${PUBLIC_SERVER_HOST}/api/events`, {
 			method: 'POST',
@@ -221,7 +244,6 @@
 
 		if (response.ok) {
 			const data = await response.json();
-			console.log(data);
 			goto(`/app/events/${data._id}`);
 		} else {
 			console.error('Failed to create event');
@@ -241,6 +263,7 @@
 
 	const removeImage = (): void => {
 		formData.image = undefined;
+		formData.imageUrl = undefined;
 		imageBase64 = '';
 		isValid.image = false;
 	};
@@ -248,6 +271,11 @@
 	const removeFile = (index: number) => {
 		formData.files.splice(index, 1);
 		formData.files = formData.files;
+
+		if (formData.uploadedFiles && formData.uploadedFiles.length > index) {
+			formData.uploadedFiles.splice(index, 1);
+			formData.uploadedFiles = formData.uploadedFiles;
+		}
 	};
 
 	const handleFileUpload = (event: CustomEvent<{ files: File[] }>) => {

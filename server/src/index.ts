@@ -8,6 +8,7 @@ import { getUser, registerUser, updateUser, deleteUser } from "./routes/user";
 import { authorize, authorizeOrganization, authorizeUser, renewToken } from "./middlewares/authentication";
 import { confirmAccount, forgotPassword, login, logout, profile, resetPassword } from "./routes/login";
 import { getUserFutureEvents, getUserPastEvents, getOrganizationEvents, registerForEvent, deregisterForEvent } from "./routes/registration";
+import { getS3SecureURL } from "./routes/s3";
 
 const app = express();
 app.use(cors({
@@ -47,6 +48,7 @@ app.post(`${USERS_API}/register`, registerUser);
 app.post(`${API_PREFIX}/logout`, authorize, logout);
 app.post(`${API_PREFIX}/token`, authorize, renewToken);
 app.get(`${API_PREFIX}/profile`, authorize, profile);
+app.get(`${API_PREFIX}/upload`, getS3SecureURL);
 
 app.get(`${EVENTS_API}`, authorize, getEvents);
 app.get(`${EVENTS_API}/:id`, authorize, getEvent);

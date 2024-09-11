@@ -1,13 +1,7 @@
 import { Request, Response } from "express";
 import User from "../database/models/user";
-import Event from "../database/models/event";
+import Event from "../database/models/events";
 import mongoose from "mongoose";
-
-
-interface RegisterForEventBody {
-    userId: string;
-    eventId: string;
-}
 
 // GET all the events a user is currently registered for (in the future)
 export async function getUserFutureEvents(req: Request, res: Response) {
@@ -98,8 +92,6 @@ export async function registerForEvent(req: Request, res: Response) {
         return res.status(400).json({ message: "User ID and Event ID are required" });
     }
 
-    // TODO: Check if already registered for this event
-
     try {
         const userObjectId = new mongoose.Types.ObjectId(userId);
         const eventObjectId = new mongoose.Types.ObjectId(eventId);
@@ -114,13 +106,13 @@ export async function registerForEvent(req: Request, res: Response) {
             return res.status(404).json({ message: "Event not found" });
         }
 
-        // Update user's registered events
-        if (!user.registeredEvents) {
-            user.registeredEvents = [];
+        if (user.registeredEvents.includes(eventObjectId)) {
+            return res.status(400).json({ message: "User is already registered for this event" });
         }
+
         user.registeredEvents.push(eventObjectId);
 
-        event.registration.registeredVolunteers.push(userObjectId);
+        event.registration.registeredVolunteers.push(userObjectId.toString());
         event.registration.totalRegistered += 1;
 
         await user.save();
@@ -139,7 +131,6 @@ export async function deregisterForEvent(req: Request, res: Response) {
     if (!userId || !eventId) {
         return res.status(400).json({ message: "User ID and Event ID are required" });
     }
-    // TODO: Check if not registerd for this event
 
     try {
         const userObjectId = new mongoose.Types.ObjectId(userId);
@@ -162,7 +153,7 @@ export async function deregisterForEvent(req: Request, res: Response) {
             return res.status(400).json({ message: "User is not registered for this event" });
         }
 
-        const volunteerIndex = event.registration.registeredVolunteers.indexOf(userObjectId);
+        const volunteerIndex = event.registration.registeredVolunteers.indexOf(userObjectId.toString());
         if (volunteerIndex > -1) {
             event.registration.registeredVolunteers.splice(volunteerIndex, 1);
         } else {
@@ -170,6 +161,7 @@ export async function deregisterForEvent(req: Request, res: Response) {
         }
 
         event.registration.totalRegistered -= 1;
+
         await user.save();
         await event.save();
         return res.status(200).json({ message: "Registration removed successfully" });

@@ -1,20 +1,26 @@
 import { Request, Response } from "express";
 import Organization from "../database/models/organization";
 import { hashPassword } from "../middlewares/authentication";
+import { z } from 'zod';
 
 interface ContactPerson {
     firstName: string;
     lastName: string;
 }
 
-interface OrganizationBody {
-    name: string;
-    profilePicture?: string;
-    email: string;
-    phoneNumber: string;
-    contactPerson: ContactPerson;
-    password: string;
-}
+const organizationSchema = z.object({
+    name: z.string(),
+    // logo: z.string().url(),
+    email: z.string().email(),
+    phoneNumber: z.string(),
+    contactPerson: z.object({
+        firstName: z.string(),
+        lastName: z.string(),
+    }),
+    password: z.string(),
+});
+
+const updateOrganizationSchema = organizationSchema.partial();
 
 interface OrganizationResponse {
     name: string;
@@ -66,20 +72,16 @@ export async function getOrganization(req: Request, res: Response) {
 
 // Create a new organization
 export async function registerOrganization(req: Request, res: Response) {
-    const organizationBody = req.body as OrganizationBody;
+    const organizationBody = organizationSchema.safeParse(req.body);
 
-    if (!organizationBody) {
-        return res.status(400).json({ message: "Invalid organization body" });
+    if (!organizationBody.success) {
+        return res.status(400).json({ message: "Invalid organization body", error: organizationBody.error.errors });
     }
 
-    if (!organizationBody.name || !organizationBody.email || !organizationBody.phoneNumber || !organizationBody.contactPerson || !organizationBody.password) {
-        return res.status(400).json({ message: 'Missing required fields' });
-    }
-
-    organizationBody.password = await hashPassword(organizationBody.password);
+    organizationBody.data.password = await hashPassword(organizationBody.data.password);
 
     try {
-        const newOrganization = new Organization(organizationBody);
+        const newOrganization = new Organization(organizationBody.data);
         const savedOrganization = await newOrganization.save();
         const organizationResponse = filterOrganizationResponse(savedOrganization);
         return res.status(201).json(organizationResponse);
@@ -91,14 +93,18 @@ export async function registerOrganization(req: Request, res: Response) {
 // Update an existing organization
 export async function updateOrganization(req: Request, res: Response) {
     const organizationId = res.locals.user.userId;
-    const organizationBody = req.body as OrganizationBody;
-
-    if (!organizationId || !organizationBody) {
-        return res.status(400).json({ message: "Invalid organization id or body" });
+    if (!organizationId) {
+        return res.status(400).json({ message: "Invalid organization id" });
     }
 
-    if (organizationBody.password) {
-        organizationBody.password = await hashPassword(organizationBody.password);
+    const organizationBody = updateOrganizationSchema.safeParse(req.body);
+
+    if (!organizationBody.success) {
+        return res.status(400).json({ message: "Invalid organization body", error: organizationBody.error.errors });
+    }
+
+    if (organizationBody.data.password) {
+        return res.status(400).json({ message: "Password cannot be updated using this endpoint" });
     }
 
     try {
@@ -107,7 +113,7 @@ export async function updateOrganization(req: Request, res: Response) {
             return res.status(404).json({ message: "Organization not found" });
         }
 
-        const updatedOrganization = await Organization.findByIdAndUpdate(organizationId, organizationBody, { new: true });
+        const updatedOrganization = await Organization.findByIdAndUpdate(organizationId, organizationBody.data, { new: true });
         const organizationResponse = filterOrganizationResponse(updatedOrganization);
         return res.status(200).json(organizationResponse);
     } catch (error) {

@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import User from "../database/models/user";
 import { generateAccessToken, hashPassword } from "../middlewares/authentication";
 import { sendConfirmRegistrationEmail } from "../utils/email";
+import z from "zod";
 
 interface EmergencyContact {
     name: string;
@@ -9,16 +10,16 @@ interface EmergencyContact {
     relationship: string;
 }
 
-interface UserBody {
-    firstName: string;
-    lastName: string;
-    email: string;
-    phoneNumber: string;
-    password: string;
-    dateOfBirth: Date;
-    // emergencyContact: EmergencyContact
-    registeredEvents?: string[];
-}
+const userSchema = z.object({
+    firstName: z.string(),
+    lastName: z.string(),
+    email: z.string().email(),
+    phoneNumber: z.string(),
+    password: z.string(),
+    dateOfBirth: z.coerce.date(),
+});
+
+const updateUserSchema = userSchema.partial();
 
 interface UserResponse {
     firstName: string;
@@ -57,21 +58,17 @@ export async function getUser(req: Request, res: Response) {
 }
 
 export async function registerUser(req: Request, res: Response) {
-    const userBody = req.body as UserBody;
-    if (!userBody) {
-        return res.status(400).json({ message: "Invalid user body" });
+    const userBody = userSchema.safeParse(req.body);
+    if (!userBody.success) {
+        return res.status(400).json({ message: "Invalid user body", error: userBody.error });
     }
 
-    if (!userBody.firstName || !userBody.lastName || !userBody.email || !userBody.phoneNumber || !userBody.password || !userBody.dateOfBirth) {
-        return res.status(400).json({ message: 'Missing required fields' });
-    }
-
-    userBody.password = await hashPassword(userBody.password);
+    userBody.data.password = await hashPassword(userBody.data.password);
 
     let savedUser, userResponse;
 
     try {
-        const newUser = new User(userBody);
+        const newUser = new User(userBody.data);
         savedUser = await newUser.save();
         userResponse = filterUserResponse(savedUser);
     } catch (error) {
@@ -90,18 +87,22 @@ export async function registerUser(req: Request, res: Response) {
 
 export async function updateUser(req: Request, res: Response) {
     const userId = res.locals.user.userId;
-    const userBody = req.body as UserBody;
+    const userBody = updateUserSchema.safeParse(req.body);
 
-    if (!userId || !userBody) {
+    if (!userId) {
         return res.status(400).json({ message: "Invalid user id or body" });
     }
 
-    if (userBody.password) {
-        userBody.password = await hashPassword(userBody.password);
+    if (!userBody.success) {
+        return res.status(400).json({ message: "Invalid user body", error: userBody.error.errors });
+    }
+
+    if (userBody.data.password) {
+        return res.status(400).json({ message: "Password cannot be updated using this endpoint" });
     }
 
     try {
-        const user = await User.findByIdAndUpdate(userId, userBody, { new: true });
+        const user = await User.findByIdAndUpdate(userId, userBody.data, { new: true });
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }

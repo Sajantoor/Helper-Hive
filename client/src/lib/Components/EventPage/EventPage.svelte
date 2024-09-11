@@ -4,59 +4,41 @@
 	import Location from './Location.svelte';
 	import Text from '../Text/Text.svelte';
 	import Heading from '../Text/Heading.svelte';
+	import type { EventResponse } from '$common/types/eventResponse';
+	import Files from './Files.svelte';
 
-	export let id: string = '';
-	export let eventTitle: string = '';
-	export let eventImage: string = '';
-	export let eventDescription: string = '';
-	export let tags: string[] = [];
-	export let startDate: Date = new Date();
-	export let endDate: Date = new Date();
-	export let hours: string = '';
-	export let location: string = '';
-	export let hostImage: string = '';
-	export let hostName: string = '';
-	export let hostInstagram: string = '';
-	export let preShiftInfo: string = '';
-	export let spotsAvailable: number = 0;
-	export let registered = false;
-	export let files: string[] = [];
+	export let eventData: EventResponse;
 </script>
 
 <div class="event-page">
-	<img class="eventImg rounded-3xl" src={eventImage} alt={eventTitle} />
+	<img class="eventImg rounded-3xl" src={eventData.details.photo} alt={eventData.name} />
 
-	<EventDetails
-		{registered}
-		{id}
-		{eventTitle}
-		{tags}
-		{startDate}
-		{endDate}
-		{hours}
-		{location}
-		{spotsAvailable}
-	/>
+	<EventDetails event={eventData} />
 
 	<div>
-		<HostInfo {hostImage} {hostName} {hostInstagram} {files} />
-		{#if location}
-			<Location {location} />
+		<HostInfo organization={eventData.organization} />
+		<Files files={eventData.details.files} />
+
+		<Text class="text-altTextGray mb-4">Contact the host</Text>
+		<Text class="text-altTextGray">Report this event</Text>
+
+		{#if eventData.details.location}
+			<Location location={eventData.details.location} />
 		{/if}
 	</div>
 
 	<div>
-		{#if eventDescription}
+		{#if eventData.details.description}
 			<div>
 				<Heading class="mb-4">About this event</Heading>
-				<Text class="leading-relaxed mb-4">{eventDescription}</Text>
+				<Text class="leading-relaxed mb-4">{eventData.details.description}</Text>
 			</div>
 		{/if}
 
-		{#if preShiftInfo}
+		{#if eventData.details.preShiftInfo}
 			<div class="pre-shift-info">
 				<Heading class="mb-4">Pre-Shift Important Information</Heading>
-				<Text>{preShiftInfo}</Text>
+				<Text>{eventData.details.preShiftInfo}</Text>
 			</div>
 		{/if}
 	</div>

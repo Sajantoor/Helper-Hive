@@ -65,7 +65,9 @@
 
 	onMount(() => {
 		// filter anything that is not in the future
-		events = events.filter((e) => e.date.startDay >= currentDate);
+		let yesterday = new Date();
+		yesterday.setDate(yesterday.getDate() - 1);
+		events = events.filter((e) => e.date.startDay >= yesterday);
 		calendarElements = paginateCalendarElements(currentPage);
 	});
 </script>

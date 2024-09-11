@@ -1,5 +1,5 @@
+import type { EventResponse } from '$common/types/eventResponse.js';
 import { PUBLIC_SERVER_HOST } from '$env/static/public';
-import type { EventContent } from '$lib/Types/Events';
 
 export async function load({ cookies, params }) {
     const slug = params.slug;
@@ -17,7 +17,7 @@ export async function load({ cookies, params }) {
         throw new Error('Failed to load events');
     }
 
-    const event = await response.json() as EventContent;
+    const event = await response.json() as EventResponse;
     event.date.startDay = new Date(event.date.startDay);
     event.date.endDay = new Date(event.date.endDay);
     event.date.startTime = new Date(event.date.startTime);
