@@ -9,6 +9,6 @@
 	isOrganization={profile?.role === 'organization'}
 	name={profile?.name}
 	email={profile?.email}
-	profilePic={profile?.profilePicture}
+	avatar={profile?.avatar}
 />
 <slot />

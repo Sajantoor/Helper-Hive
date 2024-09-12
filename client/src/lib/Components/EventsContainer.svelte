@@ -1,8 +1,8 @@
 <script lang="ts">
 	import EventCard from '$lib/Components/EventCard.svelte';
-	import type { EventContent } from '$lib/Types/Events';
+	import type { EventResponse } from '$common/types/eventResponse';
 
-	export let events: EventContent[] = [];
+	export let events: EventResponse[] = [];
 	let showAll = false;
 </script>
 
@@ -16,7 +16,7 @@
 				date={event.date.startDay}
 				organization={event.organization.name}
 				location={event.details.location}
-				organizationLogo={event.organization.logo}
+				organizationAvatar={event.organization.avatar}
 			/>
 		{/each}
 	</div>

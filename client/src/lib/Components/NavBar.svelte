@@ -6,7 +6,7 @@
 	import { goto } from '$app/navigation';
 	import { PUBLIC_SERVER_HOST } from '$env/static/public';
 
-	export let profilePic: string | null | undefined =
+	export let avatar: string | null | undefined =
 		'https://cdn-icons-png.freepik.com/512/4032/4032866.png';
 	export let isOrganization = false;
 	export let name = '';
@@ -69,13 +69,13 @@
 	</div>
 	<div class="profile-pic relative">
 		<button on:click={toggleDropdown} class="focus:outline-none">
-			<img src={profilePic} alt="Profile" class="h-8 w-8 mr-8 rounded-full object-cover" />
+			<img src={avatar} alt="Profile" class="h-8 w-8 mr-8 rounded-full object-cover" />
 		</button>
 
 		{#if isDropdownOpen}
 			<div class="dropdown-menu absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg z-10">
 				<div class="p-4 flex items-center">
-					<img src={profilePic} alt="Profile" class="h-12 w-12 rounded-full" />
+					<img src={avatar} alt="Profile" class="h-12 w-12 rounded-full" />
 					<div class="ml-3">
 						<Text class="text-gray-900 font-semibold">{name}</Text>
 						<SmallText class="text-gray-600 text-sm truncate w-full">{email}</SmallText>

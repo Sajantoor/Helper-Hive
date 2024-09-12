@@ -20,7 +20,7 @@
 	import { PUBLIC_SERVER_HOST } from '$env/static/public';
 	import { goto } from '$app/navigation';
 	import SmallText from '$lib/Components/Text/SmallText.svelte';
-	import { uploadFile } from '$lib/utils/uploadFiles';
+	import { uploadFile } from '$lib/Utils/uploadFiles';
 
 	// TODO: Grab these from database:
 	let options: string[] = [

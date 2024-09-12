@@ -4,19 +4,19 @@
 	import Heading from '$lib/Components/Text/Heading.svelte';
 	import Text from '$lib/Components/Text/Text.svelte';
 	import Pencil from 'svelte-material-icons/Pencil.svelte';
-	import type { EventContent } from '$lib/Types/Events';
+	import type { EventResponse } from '$common/types/eventResponse';
 	import EventsContainer from '$lib/Components/EventsContainer.svelte';
 
 	export let data;
 
-	let profilePicSrc = data.profile.profilePicture;
+	let avatarSrc = data.profile.avatar;
 	let name = data.profile.name;
 	let isCurrentUser = true;
 	let bio = '';
 	let completedHours = 0;
 
-	let upcomingEvents: EventContent[] = data.futureEvents;
-	let pastEvents: EventContent[] = data.pastEvents;
+	let upcomingEvents: EventResponse[] = data.futureEvents;
+	let pastEvents: EventResponse[] = data.pastEvents;
 
 	let hours = data.pastEvents;
 
@@ -44,11 +44,7 @@
 		</div>
 	{/if}
 
-	<img
-		src={profilePicSrc}
-		alt="Profile"
-		class="h-40 w-40 mr-10 rounded-full object-cover float-left"
-	/>
+	<img src={avatarSrc} alt="Profile" class="h-40 w-40 mr-10 rounded-full object-cover float-left" />
 	<Section class="block">{name}</Section>
 
 	{#if bio}

@@ -5,9 +5,9 @@
 	import CalendarMonth from 'svelte-material-icons/CalendarMonthOutline.svelte';
 	import MapMarkerOutline from 'svelte-material-icons/MapMarkerOutline.svelte';
 	import { PUBLIC_SERVER_HOST } from '$env/static/public';
-	import type { EventContent } from '$lib/Types/Events';
+	import type { EventResponse } from '$common/types/eventResponse';
 
-	export let event: EventContent;
+	export let event: EventResponse;
 	const id = event._id;
 	const eventTitle = event.name;
 	const tags = event.details.tags;

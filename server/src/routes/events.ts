@@ -33,7 +33,7 @@ const updateEventBodySchema = eventBodySchema.partial();
 export async function getEvents(req: Request, res: Response) {
     const events = await Events.find().populate({
         path: 'organization',
-        select: 'name logo',
+        select: 'name avatar',
     });
 
     // sort events by date

@@ -5,9 +5,10 @@
 
 	let iconSize = 40;
 
+	// TODO: This is temporary, we should remove this later...
 	export let organization: {
 		name: string;
-		logo: string;
+		avatar: string;
 		instagram?: string;
 	};
 </script>
@@ -16,7 +17,7 @@
 	<Heading class="mb-4">Hosted by</Heading>
 	<div class="host-info">
 		<div class="flex items-center">
-			<img class="host-logo rounded-full h-6" src={organization.logo} alt={organization.name} />
+			<img class="host-logo rounded-full h-6" src={organization.avatar} alt={organization.name} />
 			<Text class="ml-8">{organization.name}</Text>
 		</div>
 		{#if organization.instagram}

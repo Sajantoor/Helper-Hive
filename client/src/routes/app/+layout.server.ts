@@ -1,5 +1,5 @@
 import { PUBLIC_SERVER_HOST } from '$env/static/public';
-import type { Profile } from '$lib/Types/Profile';
+import type { ProfileResponse } from '$common/types/ProfileResponse';
 import type { LayoutServerLoad } from './$types';
 
 export const load: LayoutServerLoad = async ({ cookies }) => {
@@ -20,7 +20,7 @@ export const load: LayoutServerLoad = async ({ cookies }) => {
         credentials: 'include',
     });
 
-    const data = await response.json() as Profile;
+    const data = await response.json() as ProfileResponse;
 
     return {
         profile: data,
