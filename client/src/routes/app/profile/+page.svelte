@@ -34,7 +34,7 @@
 	$: hoursToShow = showAllHours ? hours : hours.slice(0, 2);
 </script>
 
-<div class="ml-10 mt-2 p-8 mr-10 pb-28">
+<div class="ml-10 mt-2 p-8 mr-10 mb-5 pb-28">
 	{#if isCurrentUser}
 		<div class="editProfile float-right">
 			<button class="editProfile flex border-2 rounded-full p-2 pl-4 pr-4">
@@ -44,7 +44,11 @@
 		</div>
 	{/if}
 
-	<img src={avatarSrc} alt="Profile" class="h-40 w-40 mr-10 rounded-full object-cover float-left" />
+	<img
+		src={avatarSrc}
+		alt="Profile"
+		class="h-40 w-40 mr-10 mb-10 rounded-full object-cover float-left"
+	/>
 	<Section class="block">{name}</Section>
 
 	{#if bio}
