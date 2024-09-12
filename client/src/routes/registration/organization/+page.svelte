@@ -9,11 +9,13 @@
 	import PhoneInput from '$lib/Components/Input/PhoneInput.svelte';
 	import TextInput from '$lib/Components/Input/TextInput.svelte';
 	import EmailInput from '$lib/Components/Input/EmailInput.svelte';
+	import { generateAndUploadRandomAvatar } from '$lib/Utils/generateRandomAvatar';
 
 	let touched = false;
 
 	let formData = {
 		organizationName: '',
+		avatar: '',
 		email: '',
 		phoneNumber: '',
 		firstName: '',
@@ -49,9 +51,13 @@
 			return;
 		}
 
+		if (!formData.avatar) {
+			formData.avatar = await generateAndUploadRandomAvatar(formData.email);
+		}
+
 		const body = {
 			name: formData.organizationName,
-			logo: '',
+			logo: formData.avatar,
 			email: formData.email,
 			phoneNumber: formData.phoneNumber,
 			contactPerson: {
