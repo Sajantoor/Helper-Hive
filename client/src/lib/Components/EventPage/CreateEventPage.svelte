@@ -9,7 +9,6 @@
 	import TimeInput from '$lib/Components/Input/TimeInput.svelte';
 	import Location from '$lib/Components/EventPage/Location.svelte';
 
-	import ArrowLeft from 'svelte-material-icons/ArrowLeft.svelte';
 	import FileDocumentOutline from 'svelte-material-icons/FileDocumentOutline.svelte';
 	import CloseCircle from 'svelte-material-icons/CloseCircle.svelte';
 	import Circle from 'svelte-material-icons/Circle.svelte';

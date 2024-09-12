@@ -57,7 +57,7 @@
 			lastName: formData.lastName,
 			phoneNumber: formData.phoneNumber,
 			dateOfBirth: formData.dob,
-			email: formData.dob,
+			email: formData.email,
 			password: formData.password
 		};
 
@@ -98,7 +98,6 @@
 	};
 
 	const validateForm = (): boolean => {
-		console.log(isValid);
 		validateAge();
 		return Object.values(isValid).every(Boolean);
 	};

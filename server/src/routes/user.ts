@@ -11,11 +11,12 @@ interface EmergencyContact {
 }
 
 const userSchema = z.object({
-    name: z.string(),
+    firstName: z.string(),
+    lastName: z.string(),
     email: z.string().email(),
-    phoneNumber: z.string().regex(/^\d{10,15}$/),
+    phoneNumber: z.string(),
     password: z.string(),
-    dateOfBirth: z.date(),
+    dateOfBirth: z.coerce.date(),
 });
 
 const updateUserSchema = userSchema.partial();
@@ -67,7 +68,7 @@ export async function registerUser(req: Request, res: Response) {
     let savedUser, userResponse;
 
     try {
-        const newUser = new User(userBody);
+        const newUser = new User(userBody.data);
         savedUser = await newUser.save();
         userResponse = filterUserResponse(savedUser);
     } catch (error) {

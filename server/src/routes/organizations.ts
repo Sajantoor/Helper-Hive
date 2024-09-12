@@ -10,9 +10,9 @@ interface ContactPerson {
 
 const organizationSchema = z.object({
     name: z.string(),
-    logo: z.string().url(),
+    // logo: z.string().url(),
     email: z.string().email(),
-    phoneNumber: z.string().regex(/^\+\d{11,15}$/), // Phone number with international format
+    phoneNumber: z.string(),
     contactPerson: z.object({
         firstName: z.string(),
         lastName: z.string(),
