@@ -83,7 +83,11 @@
 				</div>
 				<div class="border-t border-gray-200"></div>
 				<div class="py-2">
-					<a href="/app/profile" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+					<a
+						href="/app/profile"
+						on:click={() => (isDropdownOpen = false)}
+						class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+					>
 						<Text>View Profile</Text>
 					</a>
 				</div>
