@@ -57,7 +57,7 @@
 
 		const body = {
 			name: formData.organizationName,
-			logo: formData.avatar,
+			avatar: formData.avatar,
 			email: formData.email,
 			phoneNumber: formData.phoneNumber,
 			contactPerson: {
