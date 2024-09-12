@@ -1,5 +1,6 @@
 import { PUBLIC_SERVER_HOST } from '$env/static/public';
 import type { EventContent } from '$lib/Types/Events';
+import { handleErrors } from '$lib/Utils/handleErrors';
 
 export async function load({ cookies }) {
     const fetchOptions: RequestInit = {
@@ -14,8 +15,7 @@ export async function load({ cookies }) {
     const profileResponse = await fetch(`${PUBLIC_SERVER_HOST}/api/profile`, fetchOptions);
 
     if (!profileResponse.ok) {
-        console.error(await profileResponse.json());
-        throw new Error("Error: " + profileResponse.status);
+        await handleErrors(profileResponse);
     }
 
     const profile = await profileResponse.json() as {
@@ -28,8 +28,9 @@ export async function load({ cookies }) {
     const futureEventsResponse = await fetch(`${PUBLIC_SERVER_HOST}/api/registrations/future`, fetchOptions);
 
     if (!futureEventsResponse.ok) {
-        throw new Error('Failed to load future events');
+        await handleErrors(futureEventsResponse);
     }
+
     const futureEvents = await futureEventsResponse.json() as EventContent[];
 
     for (const event of futureEvents) {
@@ -40,6 +41,11 @@ export async function load({ cookies }) {
     }
 
     const pastEventsResponse = await fetch(`${PUBLIC_SERVER_HOST}/api/registrations/past`, fetchOptions);
+
+    if (!pastEventsResponse.ok) {
+        await handleErrors(pastEventsResponse);
+    }
+
     const pastEvents = await pastEventsResponse.json() as EventContent[];
 
     for (const event of pastEvents) {

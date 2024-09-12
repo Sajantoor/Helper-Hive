@@ -29,7 +29,7 @@
 	<Text class="text-2xl font-bold ml-[5%] mt-[1%] mb-[1%]">Featured Events</Text>
 
 	<EventScroller {events} />
-	<CalendarView  {events}/>
+	<CalendarView {events} />
 </div>
 
 <style lang="postcss">
