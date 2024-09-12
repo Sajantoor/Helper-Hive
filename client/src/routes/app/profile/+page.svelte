@@ -20,20 +20,13 @@
 
 	let hours = data.pastEvents;
 
-	let showAllUpcoming = false;
-	let showAllPast = false;
 	let showAllHours = false;
 
-	const toggleShowAllUpcoming = () => (showAllUpcoming = !showAllUpcoming);
-	const toggleShowAllPast = () => (showAllPast = !showAllPast);
-	const toggleShowAllHours = () => (showAllHours = !showAllHours);
-
 	// Computed variables
-	$: upcomingEventsToShow = showAllUpcoming ? upcomingEvents : upcomingEvents.slice(0, 8);
-	$: pastEventsToShow = showAllPast ? pastEvents : pastEvents.slice(0, 8);
 	$: hoursToShow = showAllHours ? hours : hours.slice(0, 2);
 </script>
 
+<!-- Profile section -->
 <div class="ml-10 mt-2 p-8 mr-10 mb-5 pb-28">
 	{#if isCurrentUser}
 		<div class="editProfile float-right">
@@ -73,15 +66,8 @@
 		shift.
 	</Text>
 	<div class="mt-4">
-		<EventsContainer events={upcomingEventsToShow} />
+		<EventsContainer events={upcomingEvents} />
 	</div>
-	<button
-		class="moreButton mt-4"
-		on:click={toggleShowAllUpcoming}
-		disabled={upcomingEvents.length <= 8 && !showAllUpcoming}
-	>
-		{showAllUpcoming && upcomingEvents.length > 2 ? 'Show Less' : 'More'}
-	</button>
 </div>
 
 <!-- Hours Section -->
@@ -138,15 +124,8 @@
 <div class="ml-10 mt-2 p-8 mr-10">
 	<Heading>Your Past Events</Heading>
 	<div class="mt-4">
-		<EventsContainer events={pastEventsToShow} />
+		<EventsContainer events={pastEvents} />
 	</div>
-	<button
-		class="moreButton mt-4"
-		on:click={toggleShowAllPast}
-		disabled={pastEvents.length <= 8 && !showAllPast}
-	>
-		{showAllPast ? 'Show Less' : 'More'}
-	</button>
 </div>
 
 <style lang="postcss">
@@ -154,18 +133,6 @@
 		width: 90%;
 		margin: 0 auto;
 		border-bottom: 1px solid #999999;
-	}
-	.moreButton {
-		background-color: #fabd22;
-		border: none;
-		padding: 10px 30px;
-		border-radius: 20px;
-		color: black;
-		font-weight: bold;
-		cursor: pointer;
-	}
-	button:disabled {
-		cursor: not-allowed;
 	}
 	.table-auto {
 		margin-top: 1%;
@@ -191,7 +158,6 @@
 		padding: 10px 20px;
 		border-radius: 20px;
 		color: black;
-
 		display: inline-block;
 	}
 
