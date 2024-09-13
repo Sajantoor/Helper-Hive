@@ -16,7 +16,7 @@
 
 	function saveProfile() {
 		console.log('Profile saved:', { name, currentPassword, newPassword, confirmPassword });
-		closeOverlay();
+		close();
 	}
 
 	/* 
