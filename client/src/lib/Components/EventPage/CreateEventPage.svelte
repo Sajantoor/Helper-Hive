@@ -18,11 +18,12 @@
 	import { PUBLIC_SERVER_HOST } from '$env/static/public';
 	import { goto } from '$app/navigation';
 	import SmallText from '$lib/Components/Text/SmallText.svelte';
-	import { uploadFile } from '$lib/utils/uploadFiles';
+	import { uploadFile } from '$lib/Utils/uploadFiles';
 	import HostInfo from './HostInfo.svelte';
 	import { profileStore } from '$lib/stores/profileStore';
 	import type { Organization } from '$common/types/eventResponse';
 	import BackButton from '../BackButton.svelte';
+	import type { EventFormData } from '$lib/Types/FormData';
 
 	// TODO: Grab these from database:
 	let options: string[] = [
@@ -50,25 +51,6 @@
 		};
 	}
 
-	let imageBase64: string | null = null;
-
-	interface EventFormData {
-		name: string | undefined;
-		description: string | undefined;
-		preShift: string | undefined;
-		startDate: Date | null;
-		endDate: Date | null;
-		startTime: string | undefined;
-		endTime: string | undefined;
-		tagValues: string[];
-		shiftOpenings: number | undefined;
-		location: string | undefined;
-		image: File | undefined;
-		imageUrl?: string;
-		files: File[];
-		uploadedFiles?: UploadedFiles[];
-	}
-
 	export let formData: EventFormData = {
 		name: undefined,
 		description: undefined,
@@ -85,10 +67,9 @@
 		uploadedFiles: []
 	};
 
-	interface UploadedFiles {
-		name: string;
-		url: string;
-	}
+	export let isEditing = false;
+
+	let imageBase64: string | null = formData.imageUrl || null;
 
 	interface Validity {
 		name: boolean;
@@ -483,12 +464,33 @@
 			/>
 		</div>
 	</div>
-	<div class="pt-28 pb-10 w-full flex justify-center">
-		<button
-			type="submit"
-			class={`mdlg:w-1/5 w-4/6 ${formValid ? 'bg-primaryYellow text-black' : 'bg-tagYellow text-altTextBrown'} py-2 px-4 mt-[2.5rem] rounded-lg mx-auto text`}
-		>
-			<Text>Publish Event</Text>
-		</button>
+	<div class="pt-28 {isEditing ? 'pb-1' : 'pb-10'} w-full flex justify-center">
+		{#if !isEditing}
+			<button
+				type="submit"
+				class={`mdlg:w-1/5 w-4/6 ${formValid ? 'bg-primaryYellow text-black' : 'bg-tagYellow text-altTextBrown'} py-2 px-4 mt-[2.5rem] rounded-lg mx-auto text`}
+			>
+				<Text>Publish Event</Text>
+			</button>
+		{:else}
+			<button
+				type="submit"
+				class={`mdlg:w-1/5 w-4/6 ${formValid ? 'bg-primaryYellow text-black' : 'bg-tagYellow text-altTextBrown'} py-2 px-4 mt-[2.5rem] rounded-lg mx-auto text`}
+			>
+				<Text>Save Changes</Text>
+			</button>
+		{/if}
 	</div>
+
+	{#if isEditing}
+		<!-- delete event -->
+		<div class="w-full flex pb-10 justicenter">
+			<button
+				type="button"
+				class="mdlg:w-1/5 w-4/6 bg-red-500 text-white py-2 px-4 mt-4 rounded-lg mx-auto text"
+			>
+				<Text>Delete Event</Text>
+			</button>
+		</div>
+	{/if}
 </form>
