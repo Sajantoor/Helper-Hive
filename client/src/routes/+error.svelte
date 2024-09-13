@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
+	import BackButton from '$lib/Components/BackButton.svelte';
 	import Section from '$lib/Components/Text/Section.svelte';
 	import Text from '$lib/Components/Text/Text.svelte';
 </script>
 
-<!-- TODO: Replace with back button from another commit -->
-<button on:click={() => goto('/')}>Go home</button>
+<BackButton />
 
 <div class="flex flex-col md:flex-row justify-center items-center min-h-screen">
 	<div class="w-full md:w-3/5 md:max-w-[60%] bg-white p-8 rounded-lg space-y-6 relative">

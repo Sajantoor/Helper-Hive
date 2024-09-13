@@ -14,7 +14,6 @@ export async function load({ cookies }) {
     };
 
     const profileResponse = await fetch(`${PUBLIC_SERVER_HOST}/api/profile`, fetchOptions);
-
     if (!profileResponse.ok) {
         await handleErrors(profileResponse);
     }
@@ -22,10 +21,10 @@ export async function load({ cookies }) {
     const profile = await profileResponse.json() as ProfileResponse;
 
     const futureEventsResponse = await fetch(`${PUBLIC_SERVER_HOST}/api/registrations/future`, fetchOptions);
-
     if (!futureEventsResponse.ok) {
         await handleErrors(futureEventsResponse);
     }
+
     const futureEvents = await futureEventsResponse.json() as EventResponse[];
 
     for (const event of futureEvents) {
@@ -36,11 +35,11 @@ export async function load({ cookies }) {
     }
 
     const pastEventsResponse = await fetch(`${PUBLIC_SERVER_HOST}/api/registrations/past`, fetchOptions);
-    const pastEvents = await pastEventsResponse.json() as EventResponse[];
-
     if (!pastEventsResponse.ok) {
         await handleErrors(pastEventsResponse);
     }
+
+    const pastEvents = await pastEventsResponse.json() as EventResponse[];
 
     for (const event of pastEvents) {
         event.date.startDay = new Date(event.date.startDay);

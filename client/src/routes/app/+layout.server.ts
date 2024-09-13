@@ -21,11 +21,11 @@ export const load: LayoutServerLoad = async ({ cookies }) => {
         credentials: 'include',
     });
 
-    const data = await response.json() as ProfileResponse;
-
     if (!response.ok) {
-        handleErrors(response);
+        await handleErrors(response);
     }
+
+    const data = await response.json() as ProfileResponse;
 
     return {
         profile: data,
