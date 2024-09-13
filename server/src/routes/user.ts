@@ -17,6 +17,7 @@ const userSchema = z.object({
     phoneNumber: z.string(),
     password: z.string(),
     dateOfBirth: z.coerce.date(),
+    avatar: z.string().url(),
 });
 
 const updateUserSchema = userSchema.partial();

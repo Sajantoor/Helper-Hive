@@ -5,6 +5,7 @@ import { UserRole } from "../utils/types";
 import { clearCookies, generateAccessToken, hashPassword, setAuthCookies, TokenData, validateAccessToken } from "../middlewares/authentication";
 import bcrypt from "bcrypt";
 import { sendPasswordResetEmail } from "../utils/email";
+import { ProfileResponse } from "../../../common/types/ProfileResponse";
 
 type LoginRequest = {
     email: string;
@@ -159,13 +160,7 @@ export async function confirmAccount(req: Request, res: Response) {
 
 export async function profile(req: Request, res: Response) {
     const user = res.locals.user;
-    let response: {
-        id: string;
-        email: string;
-        name: string;
-        role: "volunteer" | "organization";
-        profilePicture?: string | null;
-    }
+    let response: ProfileResponse;
 
     if (user.userRole === "volunteer") {
         const profile = await User.findById(user.userId);
@@ -179,7 +174,7 @@ export async function profile(req: Request, res: Response) {
             email: profile.email,
             name: profile.firstName + " " + profile.lastName,
             role: "volunteer",
-            profilePicture: profile.profilePicture
+            avatar: profile.avatar
         }
     } else if (user.userRole === "organization") {
         const profile = await Organization.findById(user.userId);
@@ -193,7 +188,7 @@ export async function profile(req: Request, res: Response) {
             email: profile.email,
             name: profile.name,
             role: "organization",
-            profilePicture: profile.logo
+            avatar: profile.avatar
         }
     } else {
         return res.status(500).json({ message: "Internal server error" });

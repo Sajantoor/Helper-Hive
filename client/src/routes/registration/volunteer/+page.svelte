@@ -9,6 +9,7 @@
 	import { goto } from '$app/navigation';
 	import { PUBLIC_SERVER_HOST } from '$env/static/public';
 	import SmallText from '$lib/Components/Text/SmallText.svelte';
+	import { generateAndUploadRandomAvatar } from '$lib/Utils/generateRandomAvatar';
 
 	let formData: {
 		firstName: string;
@@ -18,6 +19,7 @@
 		dob: Date | null;
 		password: string;
 		confirmPassword: string;
+		avatar: string;
 	} = {
 		firstName: '',
 		lastName: '',
@@ -25,7 +27,8 @@
 		phoneNumber: '',
 		dob: null,
 		password: '',
-		confirmPassword: ''
+		confirmPassword: '',
+		avatar: ''
 	};
 
 	let isValid = {
@@ -52,13 +55,18 @@
 			return;
 		}
 
+		if (!formData.avatar) {
+			formData.avatar = await generateAndUploadRandomAvatar(formData.email);
+		}
+
 		const body = {
 			firstName: formData.firstName,
 			lastName: formData.lastName,
 			phoneNumber: formData.phoneNumber,
 			dateOfBirth: formData.dob,
 			email: formData.email,
-			password: formData.password
+			password: formData.password,
+			avatar: formData.avatar
 		};
 
 		// Submission logic goes here
