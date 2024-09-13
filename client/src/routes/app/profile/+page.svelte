@@ -1,11 +1,11 @@
 <script lang="ts">
-	import NavBar from '$lib/Components/NavBar.svelte';
 	import Section from '$lib/Components/Text/Section.svelte';
 	import Heading from '$lib/Components/Text/Heading.svelte';
 	import Text from '$lib/Components/Text/Text.svelte';
 	import Pencil from 'svelte-material-icons/Pencil.svelte';
 	import type { EventContent } from '$lib/Types/Events';
 	import EventsContainer from '$lib/Components/EventsContainer.svelte';
+	import { profileStore } from '$lib/stores/profileStore.js';
 
 	export let data;
 
@@ -23,6 +23,8 @@
 	let showAllUpcoming = false;
 	let showAllPast = false;
 	let showAllHours = false;
+
+	let isOrganization = $profileStore?.role === 'organization';
 
 	const toggleShowAllUpcoming = () => (showAllUpcoming = !showAllUpcoming);
 	const toggleShowAllPast = () => (showAllPast = !showAllPast);
@@ -68,10 +70,17 @@
 <!-- Upcoming Events Section -->
 <div class="ml-10 mt-2 p-8 mr-10">
 	<Heading class="mt-4">Your Upcoming Events</Heading>
-	<Text class="mt-4">
-		Reminder to view the Important Pre-Shift Information listed on each event page prior to your
-		shift.
-	</Text>
+	{#if isOrganization}
+		<Text class="mt-4">
+			Please ensure that all important pre-shift information is posted on the event page before the
+			scheduled shift to help volunteers arrive fully prepared.
+		</Text>
+	{:else}
+		<Text class="mt-4">
+			Reminder to view the important Pre-Shift Information listed on each event page prior to your
+			shift.
+		</Text>
+	{/if}
 	<div class="mt-4">
 		<EventsContainer events={upcomingEventsToShow} />
 	</div>
