@@ -29,5 +29,6 @@ export type EventResponse = {
 export interface OrganizationEventData {
     _id: string;
     name: string;
-    avatar: string;
+    avatar: string
+    instagram?: string;
 }

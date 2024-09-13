@@ -1,0 +1,1 @@
+export const FALLBACK_PROFILE_PICTURE = "https://cdn-icons-png.freepik.com/512/4032/4032866.png";

@@ -53,7 +53,7 @@ async function generateAuthTokens(data: TokenData): Promise<{ refreshToken: stri
 export async function setAuthCookies(res: Response, data: TokenData) {
     const tokens = await generateAuthTokens(data);
     if (!tokens) {
-        return res.status(500).json({ error: "Internal server error" });
+        return res.status(500).json({ message: "Internal server error" });
     }
 
     res.cookie("id", tokens.accessToken, cookieOptions);
@@ -81,7 +81,7 @@ export async function authorize(req: Request, res: Response, next: NextFunction)
     }
 
     if (!data.accountConfirmed) {
-        return res.status(403).json({ error: "Account not confirmed" });
+        return res.status(403).json({ message: "Account not confirmed" });
     }
 
     res.locals.user = data;
@@ -130,7 +130,7 @@ export async function renewToken(req: Request, res: Response, next: NextFunction
 
     const tokens = await generateAuthTokens(data);
     if (!tokens) {
-        return res.status(500).json({ error: "Internal server error" });
+        return res.status(500).json({ message: "Internal server error" });
     }
 
     res.cookie("id", tokens.accessToken, cookieOptions);
@@ -138,11 +138,11 @@ export async function renewToken(req: Request, res: Response, next: NextFunction
 }
 
 function unauthorizedError(res: Response): void {
-    res.status(401).json({ error: "Unauthorized" });
+    res.status(401).json({ message: "You must be logged in to view this content." });
 }
 
 function forbiddenError(res: Response): void {
-    res.status(403).json({ error: "Forbidden" });
+    res.status(403).json({ message: "You do not have permissions to view or edit this content." });
 }
 
 export async function hashPassword(password: string) {

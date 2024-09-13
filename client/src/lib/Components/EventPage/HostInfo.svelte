@@ -2,15 +2,11 @@
 	import Instagram from 'svelte-material-icons/Instagram.svelte';
 	import Text from '../Text/Text.svelte';
 	import Heading from '../Text/Heading.svelte';
+	import type { OrganizationEventData } from '$common/types/eventResponse';
 
 	let iconSize = 40;
 
-	// TODO: This is temporary, we should remove this later...
-	export let organization: {
-		name: string;
-		avatar: string;
-		instagram?: string;
-	};
+	export let organization: OrganizationEventData;
 </script>
 
 <div>

@@ -1,5 +1,6 @@
 import type { EventResponse } from '$common/types/eventResponse.js';
 import { PUBLIC_SERVER_HOST } from '$env/static/public';
+import { handleErrors } from '$lib/Utils/handleErrors.js';
 
 export async function load({ cookies }) {
     const response = await fetch(`${PUBLIC_SERVER_HOST}/api/events`, {
@@ -12,8 +13,7 @@ export async function load({ cookies }) {
     });
 
     if (!response.ok) {
-        console.log(response.status);
-        throw new Error('Failed to load events');
+        await handleErrors(response);
     }
 
     const events = await response.json() as EventResponse[];
