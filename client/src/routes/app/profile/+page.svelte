@@ -6,7 +6,7 @@
 	import Pencil from 'svelte-material-icons/Pencil.svelte';
 	import type { EventContent } from '$lib/Types/Events';
 	import EventsContainer from '$lib/Components/EventsContainer.svelte';
-
+	import EditProfile from './EditProfile.svelte';
 	export let data;
 
 	let profilePicSrc = data.profile.profilePicture;
@@ -23,7 +23,7 @@
 	let showAllUpcoming = false;
 	let showAllPast = false;
 	let showAllHours = false;
-
+	let showEditOverlay = false;
 	const toggleShowAllUpcoming = () => (showAllUpcoming = !showAllUpcoming);
 	const toggleShowAllPast = () => (showAllPast = !showAllPast);
 	const toggleShowAllHours = () => (showAllHours = !showAllHours);
@@ -32,16 +32,25 @@
 	$: upcomingEventsToShow = showAllUpcoming ? upcomingEvents : upcomingEvents.slice(0, 8);
 	$: pastEventsToShow = showAllPast ? pastEvents : pastEvents.slice(0, 8);
 	$: hoursToShow = showAllHours ? hours : hours.slice(0, 2);
+
+	function toggleOverlay(){
+		showEditOverlay =!showEditOverlay
+	}
 </script>
 
 <div class="ml-10 mt-2 p-8 mr-10 pb-28">
 	{#if isCurrentUser}
 		<div class="editProfile float-right">
-			<button class="editProfile flex border-2 rounded-full p-2 pl-4 pr-4">
+			<button on:click = {toggleOverlay} class="editProfile flex border-2 rounded-full p-2 pl-4 pr-4">
 				<Pencil size={25} />
 				<Text class="ml-2">Edit Profile</Text>
 			</button>
 		</div>
+		{#if showEditOverlay}
+		<EditProfile on:closeOverlay={toggleOverlay}/>
+
+
+		{/if}
 	{/if}
 
 	<img
