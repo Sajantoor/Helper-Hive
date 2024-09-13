@@ -47,7 +47,7 @@
 			</button>
 		</div>
 		{#if showEditOverlay}
-		<EditProfile on:closeOverlay={toggleOverlay}/>
+		<EditProfile on:closeOverlay={toggleOverlay} profilePicSrc={profilePicSrc}/>
 
 
 		{/if}
