@@ -59,7 +59,7 @@ export async function getEvent(req: Request, res: Response) {
         // return the event's attendees 
         event = await Events.findById(eventId).populate({
             path: 'organization',
-            select: 'name logo',
+            select: 'name avatar',
         });
     } catch (error) {
         const errorResponse: ErrorResponse = { message: "Invalid event id" };
