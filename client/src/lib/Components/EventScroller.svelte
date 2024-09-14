@@ -1,13 +1,13 @@
 <script lang="ts">
 	import EventCard from '$lib/Components/EventCard.svelte';
-	import type { EventContent } from '$lib/Types/Events';
+	import type { EventResponse } from '$common/types/eventResponse';
 	import { onMount, onDestroy } from 'svelte';
 
 	import ArrowLeft from 'svelte-material-icons/ArrowLeft.svelte';
 	import ArrowRight from 'svelte-material-icons/ArrowRight.svelte';
 	import Text from './Text/Text.svelte';
 
-	export let events: EventContent[];
+	export let events: EventResponse[];
 	let currentSlide = 0;
 
 	let numCardsPerSlide = 4;
@@ -83,7 +83,7 @@
 							date={event.date.startDay}
 							organization={event.organization.name}
 							location={event.details.location}
-							organizationLogo={event.organization.logo}
+							organizationAvatar={event.organization.avatar}
 						/>
 					{/each}
 				</div>

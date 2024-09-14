@@ -21,7 +21,7 @@
 	import { uploadFile } from '$lib/Utils/uploadFiles';
 	import HostInfo from './HostInfo.svelte';
 	import { profileStore } from '$lib/stores/profileStore';
-	import type { Organization } from '$common/types/eventResponse';
+	import type { OrganizationEventData } from '$common/types/eventResponse';
 	import BackButton from '../BackButton.svelte';
 	import type { EventFormData } from '$lib/Types/FormData';
 	import { onMount } from 'svelte';
@@ -42,13 +42,13 @@
 		'Family'
 	];
 
-	let organizationInfo: Organization;
+	let organizationInfo: OrganizationEventData;
 
 	if ($profileStore) {
 		organizationInfo = {
 			_id: $profileStore.id,
 			name: $profileStore.name,
-			logo: $profileStore.profilePicture
+			avatar: $profileStore.avatar,
 		};
 	}
 

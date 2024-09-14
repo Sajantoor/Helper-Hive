@@ -23,12 +23,12 @@ export type EventResponse = {
         totalRegistered: number;
         isRegistered?: boolean;
     }
-    organization: Organization;
+    organization: OrganizationEventData;
 }
 
-export type Organization = {
+export interface OrganizationEventData {
     _id: string;
     name: string;
-    logo?: string;
+    avatar: string
     instagram?: string;
 }

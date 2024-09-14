@@ -5,9 +5,9 @@
 	import logoSrc from '$lib/assets/Logo.png';
 	import { goto } from '$app/navigation';
 	import { PUBLIC_SERVER_HOST } from '$env/static/public';
-	import { FALLBACK_PROFILE_PICTURE } from '$lib/utils/constants';
+	import { FALLBACK_PROFILE_PICTURE } from '$lib/Utils/constants';
 
-	export let profilePic: string | null | undefined = FALLBACK_PROFILE_PICTURE;
+	export let avatar: string = FALLBACK_PROFILE_PICTURE;
 	export let isOrganization = false;
 	export let name = '';
 	export let email = '';
@@ -69,13 +69,13 @@
 	</div>
 	<div class="profile-pic relative">
 		<button on:click={toggleDropdown} class="focus:outline-none">
-			<img src={profilePic} alt="Profile" class="h-8 w-8 mr-8 rounded-full object-cover" />
+			<img src={avatar} alt="Profile" class="h-8 w-8 mr-8 rounded-full object-cover" />
 		</button>
 
 		{#if isDropdownOpen}
 			<div class="dropdown-menu absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg z-10">
 				<div class="p-4 flex items-center">
-					<img src={profilePic} alt="Profile" class="h-12 w-12 rounded-full" />
+					<img src={avatar} alt="Profile" class="h-12 w-12 rounded-full" />
 					<div class="ml-3">
 						<Text class="text-gray-900 font-semibold">{name}</Text>
 						<SmallText class="text-gray-600 text-sm truncate w-full">{email}</SmallText>
@@ -83,7 +83,11 @@
 				</div>
 				<div class="border-t border-gray-200"></div>
 				<div class="py-2">
-					<a href="/app/profile" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+					<a
+						href="/app/profile"
+						on:click={() => (isDropdownOpen = false)}
+						class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+					>
 						<Text>View Profile</Text>
 					</a>
 				</div>

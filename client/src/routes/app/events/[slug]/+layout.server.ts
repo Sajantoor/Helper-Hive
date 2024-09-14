@@ -1,6 +1,7 @@
 import type { EventResponse } from '$common/types/eventResponse.js';
 import { PUBLIC_SERVER_HOST } from '$env/static/public';
 import type { LayoutServerLoad } from './$types';
+import { handleErrors } from '$lib/Utils/handleErrors.js';
 
 export const load: LayoutServerLoad = async ({ cookies, params }) => {
     const slug = params.slug;
@@ -14,8 +15,7 @@ export const load: LayoutServerLoad = async ({ cookies, params }) => {
     });
 
     if (!response.ok) {
-        console.log(response.status);
-        throw new Error('Failed to load events');
+        await handleErrors(response);
     }
 
     const event = await response.json() as EventResponse;

@@ -33,7 +33,7 @@ const updateEventBodySchema = eventBodySchema.partial();
 export async function getEvents(req: Request, res: Response) {
     const events = await Events.find().populate({
         path: 'organization',
-        select: 'name logo',
+        select: 'name avatar',
     });
 
     // sort events by date
@@ -59,7 +59,7 @@ export async function getEvent(req: Request, res: Response) {
         // return the event's attendees 
         event = await Events.findById(eventId).populate({
             path: 'organization',
-            select: 'name logo',
+            select: 'name avatar',
         });
     } catch (error) {
         const errorResponse: ErrorResponse = { message: "Invalid event id" };

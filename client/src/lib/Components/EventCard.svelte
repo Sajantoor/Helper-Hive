@@ -11,7 +11,7 @@
 	export let location: string = '';
 	export let date: Date;
 	export let organization: string = '';
-	export let organizationLogo: string = '';
+	export let organizationAvatar: string = '';
 
 	const iconSize = 22;
 </script>
@@ -36,7 +36,7 @@
 				<SmallText>{date.toDateString()}</SmallText>
 			</div>
 			<div class="flex gap-2 mb-3">
-				<img src={organizationLogo} alt={organization} class="rounded-full h-6" />
+				<img src={organizationAvatar} alt={organization} class="rounded-full h-6" />
 				<SmallText>{organization}</SmallText>
 			</div>
 		</div>

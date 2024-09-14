@@ -10,7 +10,6 @@ interface ContactPerson {
 
 const organizationSchema = z.object({
     name: z.string(),
-    // logo: z.string().url(),
     email: z.string().email(),
     phoneNumber: z.string(),
     contactPerson: z.object({
@@ -18,16 +17,17 @@ const organizationSchema = z.object({
         lastName: z.string(),
     }),
     password: z.string(),
+    avatar: z.string().url(),
 });
 
 const updateOrganizationSchema = organizationSchema.partial();
 
 interface OrganizationResponse {
     name: string;
-    profilePicture?: string;
     email: string;
     phoneNumber: string;
     contactPerson: ContactPerson;
+    avatar: string;
 }
 
 // TODO: Fix any type later

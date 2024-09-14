@@ -36,12 +36,16 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@dicebear/collection": "^9.2.1",
+		"@dicebear/converter": "^9.2.1",
+		"@dicebear/core": "^9.2.1",
+		"helper-hive-client": "file:",
 		"leaflet": "^1.9.4",
 		"npm": "^10.8.2",
-		"svelte-material-icons": "^3.0.5",
+		"svelte-file-dropzone": "^2.0.7",
 		"svelte-flatpickr": "^3.3.4",
-		"svelty-picker": "^5.2.9",
+		"svelte-material-icons": "^3.0.5",
 		"svelte-tel-input": "^3.5.1",
-		"svelte-file-dropzone": "^2.0.7"
+		"svelty-picker": "^5.2.9"
 	}
 }
