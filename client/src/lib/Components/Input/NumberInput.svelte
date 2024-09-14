@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import SmallText from '../Text/SmallText.svelte';
 
 	export let label = '';
@@ -29,6 +30,12 @@
 		touched = true;
 		handleInput();
 	};
+
+	onMount(() => {
+		if (value) {
+			handleBlur();
+		}
+	});
 </script>
 
 <div>

@@ -1,11 +1,12 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import SmallText from '../Text/SmallText.svelte';
 
 	export let label = '';
 	export let placeholder = '';
 	export let value = '';
-	export let valid = false;
 	export let required = true;
+	export let valid = false || !required;
 	export let rows = 0;
 	export let errorMessage: string | null = null;
 	export let touched = false;
@@ -16,6 +17,12 @@
 		touched = true;
 		valid = value.length > 0 || !required;
 	}
+
+	onMount(() => {
+		if (value) {
+			handleInput();
+		}
+	});
 </script>
 
 <div class="w-full">
