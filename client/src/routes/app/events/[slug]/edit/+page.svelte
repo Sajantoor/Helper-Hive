@@ -45,7 +45,8 @@
 		image: undefined,
 		imageUrl: data.details.photo,
 		files: [],
-		uploadedFiles: uploadedFiles
+		uploadedFiles: uploadedFiles,
+		id: data._id
 	};
 </script>
 

@@ -16,7 +16,7 @@
 	import MapMarkerOutline from 'svelte-material-icons/MapMarkerOutline.svelte';
 	import ClockOutline from 'svelte-material-icons/ClockTimeFourOutline.svelte';
 	import { PUBLIC_SERVER_HOST } from '$env/static/public';
-	import { goto } from '$app/navigation';
+	import { goto, invalidateAll } from '$app/navigation';
 	import SmallText from '$lib/Components/Text/SmallText.svelte';
 	import { uploadFile } from '$lib/Utils/uploadFiles';
 	import HostInfo from './HostInfo.svelte';
@@ -24,6 +24,7 @@
 	import type { Organization } from '$common/types/eventResponse';
 	import BackButton from '../BackButton.svelte';
 	import type { EventFormData } from '$lib/Types/FormData';
+	import { onMount } from 'svelte';
 
 	// TODO: Grab these from database:
 	let options: string[] = [
@@ -97,7 +98,7 @@
 		tagValues: true, // default to true
 		shiftOpenings: false,
 		location: false,
-		image: false,
+		image: imageBase64 !== null || false,
 		files: true // default to true
 	};
 
@@ -218,6 +219,14 @@
 			}
 		};
 
+		if (isEditing) {
+			handleEditEvent(body);
+		} else {
+			handleCreateEvent(body);
+		}
+	};
+
+	const handleCreateEvent = async (body: any) => {
 		const response = await fetch(`${PUBLIC_SERVER_HOST}/api/events`, {
 			method: 'POST',
 			headers: {
@@ -232,6 +241,26 @@
 			goto(`/app/events/${data._id}`);
 		} else {
 			console.error('Failed to create event');
+		}
+	};
+
+	const handleEditEvent = async (body: any) => {
+		const response = await fetch(`${PUBLIC_SERVER_HOST}/api/events/${formData.id}`, {
+			method: 'PATCH',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			credentials: 'include',
+			body: JSON.stringify(body)
+		});
+
+		if (response.ok) {
+			const data = await response.json();
+			// reloads the event page
+			await invalidateAll();
+			goto(`/app/events/${data._id}`);
+		} else {
+			console.error('Failed to edit event');
 		}
 	};
 
@@ -295,6 +324,12 @@
 		formData.image = uploadedFiles[0];
 		isValid.image = true;
 	};
+
+	onMount(() => {
+		if (formData) {
+			handleValidityChange();
+		}
+	});
 </script>
 
 <BackButton />

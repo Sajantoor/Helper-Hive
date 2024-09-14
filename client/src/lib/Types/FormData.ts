@@ -13,6 +13,7 @@ export interface EventFormData {
     imageUrl?: string;
     files: File[];
     uploadedFiles?: UploadedFiles[];
+    id?: string;
 }
 
 export interface UploadedFiles {
