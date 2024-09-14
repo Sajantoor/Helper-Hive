@@ -171,7 +171,7 @@ export async function deleteEvent(req: Request, res: Response) {
         return res.status(404).json(errorResponse);
     }
 
-    if (isUser(res, event.organization.toString())) {
+    if (!isUser(res, event.organization.toString())) {
         const errorResponse: ErrorResponse = { message: "User does not have permission to delete this event" };
         return res.status(403).json(errorResponse);
     }

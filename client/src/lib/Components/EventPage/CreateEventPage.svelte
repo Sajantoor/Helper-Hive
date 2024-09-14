@@ -264,6 +264,20 @@
 		}
 	};
 
+	const handleDeleteEvent = async () => {
+		const response = await fetch(`${PUBLIC_SERVER_HOST}/api/events/${formData.id}`, {
+			method: 'DELETE',
+			credentials: 'include'
+		});
+
+		if (response.ok) {
+			await invalidateAll();
+			goto('/app/');
+		} else {
+			console.error('Failed to delete event');
+		}
+	};
+
 	const createBase64Image = (file: File): Promise<string> => {
 		return new Promise((resolve, reject) => {
 			const reader = new FileReader();
@@ -521,6 +535,11 @@
 		<!-- delete event -->
 		<div class="w-full flex pb-10 justicenter">
 			<button
+				on:click={() => {
+					if (confirm('Are you sure you want to delete this event?')) {
+						handleDeleteEvent();
+					}
+				}}
 				type="button"
 				class="mdlg:w-1/5 w-4/6 bg-red-500 text-white py-2 px-4 mt-4 rounded-lg mx-auto text"
 			>
