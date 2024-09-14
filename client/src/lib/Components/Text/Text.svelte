@@ -32,4 +32,13 @@
 		font-size: 2rem;
 		font-weight: bold;
 	}
+
+	.largeHeading {
+		font-size: 4rem;
+		font-weight: bold;
+	}
+
+	.largeText {
+		font-size: 1.5rem;
+	}
 </style>
