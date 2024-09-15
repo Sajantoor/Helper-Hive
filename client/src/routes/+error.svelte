@@ -4,6 +4,10 @@
 	import BackButton from '$lib/Components/BackButton.svelte';
 	import Section from '$lib/Components/Text/Section.svelte';
 	import Text from '$lib/Components/Text/Text.svelte';
+
+	if ($page.error?.code === 401) {
+		goto('/login');
+	}
 </script>
 
 <BackButton />
@@ -22,16 +26,10 @@
 
 		{#if $page.error?.message}
 			<Text class="text-center">{$page.error?.message}</Text>
-		{/if}
 
-		<!-- TODO: This is temporary -->
-		<form class="space-y-6">
-			<button
-				type="submit"
-				class={`w-full bg-primaryYellow text-black py-2 px-4 rounded-lg mx-auto text`}
-			>
-				<Text>Submit</Text>
-			</button>
-		</form>
+			{#if $page.error.message === 'Account not confirmed'}
+				<Text class="text-center">Please check your email to confirm your account.</Text>
+			{/if}
+		{/if}
 	</div>
 </div>
