@@ -77,8 +77,8 @@
 	<Section class="text-center">Join a Community</Section>
 
 	<div class="flex justify-center">
-		<Text class="text-center w-5/6 mt-8"
-			>Join our hive, where volunteers and organizations come together for more than just service.
+		<Text class="text-center w-5/6 mt-8">
+			Join our hive, where volunteers and organizations come together for more than just service.
 			Experience streamlined volunteering, build lasting community connections, and network with
 			local leaders. Together, let's create a buzzing new volunteer community!
 		</Text>
@@ -89,8 +89,8 @@
 	<Section class="text-center">Frequently Asked Questions</Section>
 	<div class="faq-item">
 		<LargeText class="font-bold">What is Helper Hive?</LargeText>
-		<Text
-			>Helper Hive Volunteer Network is a vibrant community hub where you can easily find flexible
+		<Text>
+			Helper Hive Volunteer Network is a vibrant community hub where you can easily find flexible
 			drop-in volunteer opportunities that fit into your busy schedule. Our platform offers a
 			variety of unique roles with respected organizations, removing the hassle of lengthy
 			onboarding and training. At Helper Hive, you can engage freely and flexibly in activities that
@@ -101,8 +101,8 @@
 	</div>
 	<div class="faq-item">
 		<LargeText class="font-bold">Who can join?</LargeText>
-		<Text
-			>Helper Hive Volunteer Network warmly welcomes individuals from all walks of life to join our
+		<Text>
+			Helper Hive Volunteer Network warmly welcomes individuals from all walks of life to join our
 			community. We believe that everyone has unique skills and perspectives to offer, and we
 			encourage people of all ages and backgrounds to sign up and contribute. For children under the
 			age of 16, we require parental permission to ensure a supportive and safe volunteer
@@ -112,8 +112,8 @@
 	</div>
 	<div class="faq-item">
 		<LargeText class="font-bold">How do I join?</LargeText>
-		<Text
-			>Joining Helper Hive is easy! Just click the "Register" or "Login" buttons at the top of the
+		<Text>
+			Joining Helper Hive is easy! Just click the "Register" or "Login" buttons at the top of the
 			page to get started. You'll need to create an account using a valid email address, and once
 			your email is verified, you can optionally set up your user profile. After that, you'll have
 			full access to all the opportunities on our network. It's that simple—sign up and you're ready
@@ -122,8 +122,8 @@
 	</div>
 	<div class="faq-item">
 		<LargeText class="font-bold">Will my hours be recorded?</LargeText>
-		<Text
-			>Your volunteer hours will be automatically tracked on our website for your convenience. Once
+		<Text>
+			Your volunteer hours will be automatically tracked on our website for your convenience. Once
 			you sign up for an event, you can view your pending hours on your personal user dashboard.
 			After your hours are approved, they will be updated to a verified status and added to your
 			total count. You'll see a comprehensive breakdown of your hours, including the total completed
@@ -143,8 +143,19 @@
 	<div class="footer">
 		<div>
 			<Heading class="mb-4">Got Questions?</Heading>
-			<Heading>Email: helperhivevolunteer@gmail.com</Heading>
-			<Heading>Instagram: @helper.hive</Heading>
+
+			<a href="mailto:helperhivevolunteer@gmail.com">
+				<Text class="text-orange-800">helperhivevolunteer@gmail.com</Text>
+			</a>
+
+			<a href="https://instagram.com/helper.hive">
+				<Text class="text-orange-800">@helper.hive</Text>
+			</a>
+			<a href="https://github.com/Sajantoor/Helper-Hive/issues">
+				<!-- make the it a blue color -->
+
+				<Text class="text-orange-800">Report a Bug</Text>
+			</a>
 		</div>
 
 		<div class="flex items-center">
