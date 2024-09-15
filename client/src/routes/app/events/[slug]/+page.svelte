@@ -1,12 +1,11 @@
 <script lang="ts">
+	import BackButton from '$lib/Components/BackButton.svelte';
 	import EventPage from '$lib/Components/EventPage/EventPage.svelte';
-	import ArrowLeft from 'svelte-material-icons/ArrowLeft.svelte';
+	import type { LayoutData } from './$types';
 
-	export let data;
+	export let data: LayoutData;
 </script>
 
-<button class="absolute" on:click={() => window.history.back()}>
-	<ArrowLeft size={20} class="ml-10 mt-10 absolute" />
-</button>
+<BackButton />
 
 <EventPage eventData={data} />

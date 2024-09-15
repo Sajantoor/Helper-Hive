@@ -9,18 +9,22 @@
 	import TimeInput from '$lib/Components/Input/TimeInput.svelte';
 	import Location from '$lib/Components/EventPage/Location.svelte';
 
-	import ArrowLeft from 'svelte-material-icons/ArrowLeft.svelte';
 	import FileDocumentOutline from 'svelte-material-icons/FileDocumentOutline.svelte';
 	import CloseCircle from 'svelte-material-icons/CloseCircle.svelte';
 	import Circle from 'svelte-material-icons/Circle.svelte';
-	import Instagram from 'svelte-material-icons/Instagram.svelte';
 	import CalendarMonth from 'svelte-material-icons/CalendarMonthOutline.svelte';
 	import MapMarkerOutline from 'svelte-material-icons/MapMarkerOutline.svelte';
 	import ClockOutline from 'svelte-material-icons/ClockTimeFourOutline.svelte';
 	import { PUBLIC_SERVER_HOST } from '$env/static/public';
-	import { goto } from '$app/navigation';
+	import { goto, invalidateAll } from '$app/navigation';
 	import SmallText from '$lib/Components/Text/SmallText.svelte';
-	import { uploadFile } from '$lib/utils/uploadFiles';
+	import { uploadFile } from '$lib/Utils/uploadFiles';
+	import HostInfo from './HostInfo.svelte';
+	import { profileStore } from '$lib/stores/profileStore';
+	import type { OrganizationEventData } from '$common/types/eventResponse';
+	import BackButton from '../BackButton.svelte';
+	import type { EventFormData } from '$lib/Types/FormData';
+	import { onMount } from 'svelte';
 
 	// TODO: Grab these from database:
 	let options: string[] = [
@@ -38,31 +42,14 @@
 		'Family'
 	];
 
-	// TODO: Update this later...
-	export let organizationInfo = {
-		name: 'The City of Vancouver',
-		image:
-			'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT46Pp3V6MJmwjab7ghq7TSOu5COQongTQ83Q&s',
-		instagram: 'https://google.com'
-	};
+	let organizationInfo: OrganizationEventData;
 
-	let imageBase64: string | null = null;
-
-	interface EventFormData {
-		name: string | undefined;
-		description: string | undefined;
-		preShift: string | undefined;
-		startDate: Date | null;
-		endDate: Date | null;
-		startTime: string | undefined;
-		endTime: string | undefined;
-		tagValues: string[];
-		shiftOpenings: number | undefined;
-		location: string | undefined;
-		image: File | undefined;
-		imageUrl?: string;
-		files: File[];
-		uploadedFiles?: UploadedFiles[];
+	if ($profileStore) {
+		organizationInfo = {
+			_id: $profileStore.id,
+			name: $profileStore.name,
+			avatar: $profileStore.avatar,
+		};
 	}
 
 	export let formData: EventFormData = {
@@ -81,10 +68,9 @@
 		uploadedFiles: []
 	};
 
-	interface UploadedFiles {
-		name: string;
-		url: string;
-	}
+	export let isEditing = false;
+
+	let imageBase64: string | null = formData.imageUrl || null;
 
 	interface Validity {
 		name: boolean;
@@ -112,7 +98,7 @@
 		tagValues: true, // default to true
 		shiftOpenings: false,
 		location: false,
-		image: false,
+		image: imageBase64 !== null || false,
 		files: true // default to true
 	};
 
@@ -233,6 +219,14 @@
 			}
 		};
 
+		if (isEditing) {
+			handleEditEvent(body);
+		} else {
+			handleCreateEvent(body);
+		}
+	};
+
+	const handleCreateEvent = async (body: any) => {
 		const response = await fetch(`${PUBLIC_SERVER_HOST}/api/events`, {
 			method: 'POST',
 			headers: {
@@ -247,6 +241,40 @@
 			goto(`/app/events/${data._id}`);
 		} else {
 			console.error('Failed to create event');
+		}
+	};
+
+	const handleEditEvent = async (body: any) => {
+		const response = await fetch(`${PUBLIC_SERVER_HOST}/api/events/${formData.id}`, {
+			method: 'PATCH',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			credentials: 'include',
+			body: JSON.stringify(body)
+		});
+
+		if (response.ok) {
+			const data = await response.json();
+			// reloads the event page
+			await invalidateAll();
+			goto(`/app/events/${data._id}`);
+		} else {
+			console.error('Failed to edit event');
+		}
+	};
+
+	const handleDeleteEvent = async () => {
+		const response = await fetch(`${PUBLIC_SERVER_HOST}/api/events/${formData.id}`, {
+			method: 'DELETE',
+			credentials: 'include'
+		});
+
+		if (response.ok) {
+			await invalidateAll();
+			goto('/app/');
+		} else {
+			console.error('Failed to delete event');
 		}
 	};
 
@@ -310,11 +338,15 @@
 		formData.image = uploadedFiles[0];
 		isValid.image = true;
 	};
+
+	onMount(() => {
+		if (formData) {
+			handleValidityChange();
+		}
+	});
 </script>
 
-<button class="absolute" on:click={() => window.history.back()}>
-	<ArrowLeft size={20} class="ml-10 mt-10 absolute" />
-</button>
+<BackButton />
 
 <form on:submit|preventDefault={handleSubmit} class="space-y-6" novalidate>
 	<div
@@ -386,25 +418,7 @@
 			{/each}
 
 			<div>
-				<Text class="heading mt-8 mb-4">Hosted by</Text>
-				<div class="flex justify-between items-center mb-8">
-					<div class="flex items-center">
-						<img
-							class="rounded-full h-14 w-14"
-							src={organizationInfo.image}
-							alt={organizationInfo.name}
-						/>
-						<Text class="ml-8">{organizationInfo.name}</Text>
-					</div>
-					{#if organizationInfo.instagram}
-						<div
-							class="cursor-pointer"
-							on:click|preventDefault={() => window.open(organizationInfo.instagram, '_blank')}
-						>
-							<Instagram class="text-primaryYellow" size={40} />
-						</div>
-					{/if}
-				</div>
+				<HostInfo organization={organizationInfo} />
 			</div>
 			<div class="w-full max-w-1/2">
 				<Location bind:location={formData.location} />
@@ -499,12 +513,38 @@
 			/>
 		</div>
 	</div>
-	<div class="pt-28 pb-10 w-full flex justify-center">
-		<button
-			type="submit"
-			class={`mdlg:w-1/5 w-4/6 ${formValid ? 'bg-primaryYellow text-black' : 'bg-tagYellow text-altTextBrown'} py-2 px-4 mt-[2.5rem] rounded-lg mx-auto text`}
-		>
-			<Text>Publish Event</Text>
-		</button>
+	<div class="pt-28 {isEditing ? 'pb-1' : 'pb-10'} w-full flex justify-center">
+		{#if !isEditing}
+			<button
+				type="submit"
+				class={`mdlg:w-1/5 w-4/6 ${formValid ? 'bg-primaryYellow text-black' : 'bg-tagYellow text-altTextBrown'} py-2 px-4 mt-[2.5rem] rounded-lg mx-auto text`}
+			>
+				<Text>Publish Event</Text>
+			</button>
+		{:else}
+			<button
+				type="submit"
+				class={`mdlg:w-1/5 w-4/6 ${formValid ? 'bg-primaryYellow text-black' : 'bg-tagYellow text-altTextBrown'} py-2 px-4 mt-[2.5rem] rounded-lg mx-auto text`}
+			>
+				<Text>Save Changes</Text>
+			</button>
+		{/if}
 	</div>
+
+	{#if isEditing}
+		<!-- delete event -->
+		<div class="w-full flex pb-10 justicenter">
+			<button
+				on:click={() => {
+					if (confirm('Are you sure you want to delete this event?')) {
+						handleDeleteEvent();
+					}
+				}}
+				type="button"
+				class="mdlg:w-1/5 w-4/6 bg-red-500 text-white py-2 px-4 mt-4 rounded-lg mx-auto text"
+			>
+				<Text>Delete Event</Text>
+			</button>
+		</div>
+	{/if}
 </form>

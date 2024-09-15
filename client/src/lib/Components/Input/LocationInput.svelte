@@ -46,6 +46,10 @@
 				const place = autocomplete.getPlace();
 				handlePlaceChanged(place);
 			});
+
+			if (value) {
+				handleBlur();
+			}
 		};
 	});
 
@@ -69,6 +73,7 @@
 			on:input={onInput}
 			on:blur={handleBlur}
 			bind:this={element}
+			bind:value
 			{placeholder}
 			class="mt-1 pl-3 p-2 w-full bg-placeholderGray border-none rounded-lg placeholder:italic
 			{touched && !valid && 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'}"

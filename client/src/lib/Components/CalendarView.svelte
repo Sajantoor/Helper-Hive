@@ -1,20 +1,20 @@
 <script lang="ts">
 	import CalendarElement from '$lib/Components/CalendarEvent.svelte';
 	import { onMount } from 'svelte';
-	import type { EventContent } from '$lib/Types/Events';
+	import type { EventResponse } from '$common/types/eventResponse';
 	import Text from './Text/Text.svelte';
 
-	export let events: EventContent[] = []; // Events passed as a prop
+	export let events: EventResponse[] = []; // Events passed as a prop
 
 	let currentDate = new Date();
-	let calendarElements: EventContent[] = [];
+	let calendarElements: EventResponse[] = [];
 	let currentPage = 0;
 
 	let displayedMonths = '';
 
 	const daysPerPage = 10;
 
-	const paginateCalendarElements = (page: number): EventContent[] => {
+	const paginateCalendarElements = (page: number): EventResponse[] => {
 		const start = page * daysPerPage;
 		const end = start + daysPerPage;
 		const elements = events.slice(start, end);
@@ -23,7 +23,7 @@
 		return elements;
 	};
 
-	const updateDisplayedMonths = (elements: EventContent[], page: number) => {
+	const updateDisplayedMonths = (elements: EventResponse[], page: number) => {
 		const uniqueMonths = Array.from(
 			new Set(
 				elements.map((e) => {

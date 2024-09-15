@@ -1,6 +1,5 @@
-import type { EventResponse } from '$common/types/eventResponse.js';
 import { PUBLIC_SERVER_HOST } from '$env/static/public';
-import { handleErrors } from '$lib/Utils/handleErrors.js';
+import type { EventContent } from '$lib/Types/Events';
 
 export async function load({ cookies }) {
     const response = await fetch(`${PUBLIC_SERVER_HOST}/api/events`, {
@@ -13,10 +12,11 @@ export async function load({ cookies }) {
     });
 
     if (!response.ok) {
-        await handleErrors(response);
+        console.log(response.status);
+        throw new Error('Failed to load events');
     }
 
-    const events = await response.json() as EventResponse[];
+    const events = await response.json() as EventContent[];
     events.forEach(event => {
         event.date.startDay = new Date(event.date.startDay);
         event.date.endDay = new Date(event.date.endDay);

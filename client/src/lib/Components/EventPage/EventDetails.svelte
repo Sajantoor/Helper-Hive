@@ -5,15 +5,19 @@
 	import CalendarMonth from 'svelte-material-icons/CalendarMonthOutline.svelte';
 	import MapMarkerOutline from 'svelte-material-icons/MapMarkerOutline.svelte';
 	import { PUBLIC_SERVER_HOST } from '$env/static/public';
-	import type { EventContent } from '$lib/Types/Events';
+	import type { EventResponse } from '$common/types/eventResponse';
+	import { profileStore } from '$lib/stores/profileStore';
+	import { goto } from '$app/navigation';
 
-	export let event: EventContent;
+	export let event: EventResponse;
 	const id = event._id;
 	const eventTitle = event.name;
 	const tags = event.details.tags;
 	const startDate = event.date.startDay;
 	const endDate = event.date.endDay;
 	const location = event.details.location;
+	let isOrganization = $profileStore?.role === 'organization';
+	let isOwner = isOrganization && $profileStore?.id === event.organization._id;
 
 	let spotsAvailable = event.registration.totalSpots - event.registration.totalRegistered;
 	let registered = event.registration.isRegistered || false;
@@ -26,6 +30,7 @@
 		: `${formatDate(startDate)} - ${formatDate(endDate)}`;
 
 	let locationTitle: string, locationDescription: string;
+
 	if (location) {
 		locationTitle = location.split(':')[0].trim();
 		locationDescription = location.split(':')[1].trim();
@@ -134,13 +139,23 @@
 	</div>
 
 	<div class="mt-4">
-		<Text class="text-altTextGray">{spotsAvailable} Spots Avaliable</Text>
-		<button
-			class={`w-full ${spotsAvailable > 0 && !registered ? 'bg-primaryYellow text-black' : 'bg-placeholderGray text-placeholderGrayText cursor-default'} py-2 px-4 mt-2 rounded-lg mx-auto text`}
-			on:click={handleRegister}
-		>
-			<Text>Register</Text>
-		</button>
+		<Text class="text-altTextGray">{spotsAvailable} Spots Available</Text>
+		{#if !isOrganization}
+			<button
+				class={`w-full ${spotsAvailable > 0 && !registered ? 'bg-primaryYellow text-black' : 'bg-placeholderGray text-placeholderGrayText cursor-default'} py-2 px-4 mt-2 rounded-lg mx-auto text`}
+				on:click={handleRegister}
+			>
+				<Text>Register</Text>
+			</button>
+		{/if}
+		{#if isOwner}
+			<button
+				class="w-full bg-primaryYellow text-black py-2 px-4 mt-2 rounded-lg mx-auto text"
+				on:click={() => goto(`/app/events/${id}/edit`)}
+			>
+				<Text>Edit Event</Text>
+			</button>
+		{/if}
 	</div>
 </div>
 

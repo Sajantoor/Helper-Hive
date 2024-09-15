@@ -51,7 +51,7 @@ app.get(`${API_PREFIX}/profile`, authorize, profile);
 app.get(`${API_PREFIX}/upload`, getS3SecureURL);
 app.post(`${API_PREFIX}/reset-password`, resetPassword);
 
-app.get(`${EVENTS_API}`, authorize, getEvents);
+app.get(`${EVENTS_API}`, getEvents);
 app.get(`${EVENTS_API}/:id`, authorize, getEvent);
 app.post(`${EVENTS_API}`, authorize, authorizeOrganization, createEvent);
 app.patch(`${EVENTS_API}/:id`, authorize, authorizeOrganization, updateEvent);

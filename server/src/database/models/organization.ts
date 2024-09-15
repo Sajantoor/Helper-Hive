@@ -2,7 +2,7 @@ import { Schema, model } from 'mongoose';
 
 export interface IOrganization {
     name: string;
-    logo?: string;
+    avatar: string;
     email: string;
     phoneNumber: string;
     contactPerson: {
@@ -16,7 +16,7 @@ export interface IOrganization {
 
 const organizationSchema = new Schema<IOrganization>({
     name: { type: String, required: true },
-    logo: { type: String },
+    avatar: { type: String, required: true },
     email: { type: String, required: true, unique: true, match: /.+\@.+\..+/ },
     phoneNumber: { type: String, required: true, match: /^\+?[1-9]\d{1,14}$/ },
     contactPerson: {

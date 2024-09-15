@@ -33,7 +33,7 @@ const updateEventBodySchema = eventBodySchema.partial();
 export async function getEvents(req: Request, res: Response) {
     const events = await Events.find().populate({
         path: 'organization',
-        select: 'name logo',
+        select: 'name avatar',
     });
 
     // sort events by date
@@ -59,7 +59,7 @@ export async function getEvent(req: Request, res: Response) {
         // return the event's attendees 
         event = await Events.findById(eventId).populate({
             path: 'organization',
-            select: 'name logo',
+            select: 'name avatar',
         });
     } catch (error) {
         const errorResponse: ErrorResponse = { message: "Invalid event id" };
@@ -133,7 +133,7 @@ export async function updateEvent(req: Request, res: Response) {
         return res.status(404).json(errorResponse);
     }
 
-    if (isUser(res, event.organization.toString())) {
+    if (!isUser(res, event.organization.toString())) {
         const errorResponse: ErrorResponse = { message: "User does not have permission to update this event" };
         return res.status(403).json(errorResponse);
     }
@@ -141,11 +141,12 @@ export async function updateEvent(req: Request, res: Response) {
     let updatedEvent;
     try {
         // return the updated event, new option is set to true
-        updatedEvent = await Events.findByIdAndUpdate(eventId, eventBody, { new: true });
+        updatedEvent = await Events.findByIdAndUpdate(eventId, eventBody.data, { new: true });
     } catch (error) {
         const errorResponse: ErrorResponse = { message: "Error updating event", error };
         return res.status(500).json(errorResponse);
     }
+
     return res.status(200).json(updatedEvent);
 }
 
@@ -170,7 +171,7 @@ export async function deleteEvent(req: Request, res: Response) {
         return res.status(404).json(errorResponse);
     }
 
-    if (isUser(res, event.organization.toString())) {
+    if (!isUser(res, event.organization.toString())) {
         const errorResponse: ErrorResponse = { message: "User does not have permission to delete this event" };
         return res.status(403).json(errorResponse);
     }
