@@ -77,6 +77,37 @@ export async function forgotPassword(req: Request, res: Response) {
 }
 
 export async function resetPassword(req: Request, res: Response) {
+    const { password, newPassword } = req.body as { password: string, newPassword: string };
+    const tokenData = res.locals.user;
+
+    if (!password || !newPassword) {
+        return res.status(400).json({ message: "Password and new password are required" });
+    }
+
+    const user = await getUser(tokenData);
+
+    if (!user) {
+        return res.status(400).json({ message: "Invalid token" });
+    }
+
+    const passwordMatch = await bcrypt.compare(password, user.password);
+
+    if (!passwordMatch) {
+        return res.status(401).json({ message: "Invalid password" });
+    }
+
+    user.password = await hashPassword(newPassword);
+
+    try {
+        await user.save();
+    } catch (error) {
+        return res.status(500).json({ message: "Error resetting password", error });
+    }
+
+    return res.status(200).json({ message: "Password reset successful" });
+}
+
+export async function resetForgottenPassword(req: Request, res: Response) {
     const { password } = req.body as { password: string };
     const token = req.params.id;
 
@@ -90,13 +121,7 @@ export async function resetPassword(req: Request, res: Response) {
         return res.status(400).json({ message: "Invalid token" });
     }
 
-    let user;
-
-    if (data.userRole === "volunteer") {
-        user = await User.findById(data.userId);
-    } else {
-        user = await Organization.findById(data.userId);
-    }
+    const user = await getUser(data);
 
     if (!user) {
         return res.status(400).json({ message: "Invalid token" });
@@ -126,13 +151,7 @@ export async function confirmAccount(req: Request, res: Response) {
         return res.status(400).json({ message: "Invalid token" });
     }
 
-    let user;
-
-    if (data.userRole === "volunteer") {
-        user = await User.findById(data.userId);
-    } else {
-        user = await Organization.findById(data.userId);
-    }
+    const user = await getUser(data);
 
     if (!user) {
         return res.status(400).json({ message: "Invalid token" });
@@ -202,3 +221,15 @@ export async function profile(req: Request, res: Response) {
     return res.status(200).json(response);
 }
 
+
+async function getUser(data: TokenData) {
+    let user;
+
+    if (data.userRole === "volunteer") {
+        user = await User.findById(data.userId);
+    } else {
+        user = await Organization.findById(data.userId);
+    }
+
+    return user;
+}
