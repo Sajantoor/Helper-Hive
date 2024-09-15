@@ -48,7 +48,7 @@ app.post(`${USERS_API}/register`, registerUser);
 app.post(`${API_PREFIX}/logout`, authorize, logout);
 app.post(`${API_PREFIX}/token`, authorize, renewToken);
 app.get(`${API_PREFIX}/profile`, authorize, profile);
-app.get(`${API_PREFIX}/upload`, getS3SecureURL);
+app.get(`${API_PREFIX}/upload/:name`, getS3SecureURL);
 
 app.get(`${EVENTS_API}`, getEvents);
 app.get(`${EVENTS_API}/:id`, authorize, getEvent);

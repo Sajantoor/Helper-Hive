@@ -1,7 +1,7 @@
 import { PUBLIC_SERVER_HOST } from "$env/static/public"
 
 export async function uploadFile(file: File) {
-    const s3SecureURLResponse = await fetch(`${PUBLIC_SERVER_HOST}/api/upload`);
+    const s3SecureURLResponse = await fetch(`${PUBLIC_SERVER_HOST}/api/upload/${file.name}`);
     const { uploadUrl } = await s3SecureURLResponse.json();
 
     const response = await fetch(uploadUrl, {

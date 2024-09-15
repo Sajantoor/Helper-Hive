@@ -6,7 +6,9 @@
 	import Text from '$lib/Components/Text/Text.svelte';
 
 	if ($page.error?.code === 401) {
-		goto('/login');
+		if (typeof window !== 'undefined') {
+			goto('/login');
+		}
 	}
 </script>
 
