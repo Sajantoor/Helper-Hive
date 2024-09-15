@@ -4,12 +4,16 @@
 	import Popup from '$lib/Components/TCPopup.svelte';
 	import { goto } from '$app/navigation';
 	import { PUBLIC_SERVER_HOST } from '$env/static/public';
+	import FileUpload from '$lib/Components/Input/Upload.svelte';
+	import CloseCircle from 'svelte-material-icons/CloseCircle.svelte';
+	import Circle from 'svelte-material-icons/Circle.svelte';
 
 	import PasswordInput from '$lib/Components/Input/PasswordInput.svelte';
 	import PhoneInput from '$lib/Components/Input/PhoneInput.svelte';
 	import TextInput from '$lib/Components/Input/TextInput.svelte';
 	import EmailInput from '$lib/Components/Input/EmailInput.svelte';
 	import { generateAndUploadRandomAvatar } from '$lib/Utils/generateRandomAvatar';
+	import { createBase64Image, uploadFile } from '$lib/Utils/uploadFiles';
 
 	let touched = false;
 
@@ -40,6 +44,9 @@
 
 	let isFormValid = false;
 
+	let avatarBase64 = '';
+	let avatarFile: File | null = null;
+
 	const validateForm = () => {
 		return Object.values(isValid).every(Boolean);
 	};
@@ -51,8 +58,10 @@
 			return;
 		}
 
-		if (!formData.avatar) {
+		if (!avatarFile) {
 			formData.avatar = await generateAndUploadRandomAvatar(formData.email);
+		} else {
+			formData.avatar = await uploadFile(avatarFile);
 		}
 
 		const body = {
@@ -86,6 +95,21 @@
 	const openPopup = (id: string) => {
 		const popup = document.getElementById(id);
 		popup?.classList.remove('hidden');
+	};
+
+	const handleImageUpload = async (event: CustomEvent<{ files: File[] }>) => {
+		const uploadedFiles = event.detail.files;
+		if (uploadedFiles.length === 0) {
+			return;
+		}
+
+		avatarBase64 = await createBase64Image(uploadedFiles[0]);
+		avatarFile = uploadedFiles[0];
+	};
+
+	const removeImage = () => {
+		avatarBase64 = '';
+		avatarFile = null;
 	};
 
 	$: if (formData || isValid) {
@@ -139,6 +163,29 @@
 					bind:valid={isValid.phoneNumber}
 					{touched}
 				/>
+
+				<Text>Upload your logo</Text>
+				{#if !avatarFile}
+					<FileUpload
+						type="image"
+						placeholder="Upload a logo..."
+						valid={true}
+						on:file={handleImageUpload}
+						{touched}
+					/>
+				{:else}
+					<div
+						class="w-24 h-24 bg-cover bg-center rounded-full relative"
+						style="background-image: url({avatarBase64});"
+					>
+						<div class="absolute top-0 right-0 cursor-pointer" on:click={removeImage}>
+							<Circle class="text-white rounded-full p-1" size={30} />
+						</div>
+						<div class="absolute top-0 right-0 cursor-pointer" on:click={removeImage}>
+							<CloseCircle class="text-primaryYellow rounded-full p-1" size={30} />
+						</div>
+					</div>
+				{/if}
 
 				<div style="margin-top: 2.5rem;">
 					<Text class="heading mb-2">Contact Personnel</Text>

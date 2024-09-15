@@ -18,12 +18,12 @@
 	import { PUBLIC_SERVER_HOST } from '$env/static/public';
 	import { goto, invalidateAll } from '$app/navigation';
 	import SmallText from '$lib/Components/Text/SmallText.svelte';
-	import { uploadFile } from '$lib/Utils/uploadFiles';
+	import { createBase64Image, uploadFile } from '$lib/Utils/uploadFiles';
 	import HostInfo from './HostInfo.svelte';
 	import { profileStore } from '$lib/stores/profileStore';
 	import type { OrganizationEventData } from '$common/types/eventResponse';
 	import BackButton from '../BackButton.svelte';
-	import type { EventFormData } from '$lib/Types/FormData';
+	import type { EventFormData } from '$common/Types/FormData';
 	import { onMount } from 'svelte';
 
 	// TODO: Grab these from database:
@@ -48,7 +48,7 @@
 		organizationInfo = {
 			_id: $profileStore.id,
 			name: $profileStore.name,
-			avatar: $profileStore.avatar,
+			avatar: $profileStore.avatar
 		};
 	}
 
@@ -276,17 +276,6 @@
 		} else {
 			console.error('Failed to delete event');
 		}
-	};
-
-	const createBase64Image = (file: File): Promise<string> => {
-		return new Promise((resolve, reject) => {
-			const reader = new FileReader();
-			reader.onload = () => {
-				resolve(reader.result as string);
-			};
-			reader.onerror = reject;
-			reader.readAsDataURL(file);
-		});
 	};
 
 	const removeImage = (): void => {
