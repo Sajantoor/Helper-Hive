@@ -39,6 +39,7 @@
 		"@dicebear/collection": "^9.2.1",
 		"@dicebear/converter": "^9.2.1",
 		"@dicebear/core": "^9.2.1",
+		"amplify-adapter": "^0.1.2",
 		"helper-hive-client": "file:",
 		"leaflet": "^1.9.4",
 		"npm": "^10.8.2",
