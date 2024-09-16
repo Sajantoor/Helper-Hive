@@ -7,81 +7,59 @@
 	export let events: EventResponse[] = []; // Events passed as a prop
 
 	let currentDate = new Date();
+	currentDate.setHours(0, 0, 0, 0);
+	let currentIndex = 0;
+
 	let calendarElements: EventResponse[] = [];
-	let currentPage = 0;
-
-	let displayedMonths = '';
-
-	const daysPerPage = 10;
-
-	const paginateCalendarElements = (page: number): EventResponse[] => {
-		const start = page * daysPerPage;
-		const end = start + daysPerPage;
-		const elements = events.slice(start, end);
-
-		updateDisplayedMonths(elements, page);
-		return elements;
-	};
-
-	const updateDisplayedMonths = (elements: EventResponse[], page: number) => {
-		const uniqueMonths = Array.from(
-			new Set(
-				elements.map((e) => {
-					const month = e.date.startDay.toLocaleString('default', { month: 'short' });
-					const year =
-						e.date.startDay.getFullYear() !== currentDate.getFullYear()
-							? ` ${e.date.startDay.getFullYear()}`
-							: '';
-					return `${month}${year}`;
-				})
-			)
-		);
-
-		if (uniqueMonths.length === 1) {
-			displayedMonths = uniqueMonths[0];
-		} else {
-			displayedMonths = `${uniqueMonths[0]} - ${uniqueMonths[uniqueMonths.length - 1]}`;
-		}
-	};
+	let currentKey = `${currentDate.toLocaleString('default', { month: 'short' })} ${currentDate.getFullYear()}`;
+	let eventsByMonthMap = new Map<string, EventResponse[]>();
 
 	const nextPage = () => {
-		if ((currentPage + 1) * daysPerPage < events.length) {
-			currentPage++;
-			calendarElements = paginateCalendarElements(currentPage);
-		}
+		currentDate.setMonth(currentDate.getMonth() + 1);
+		currentKey = `${currentDate.toLocaleString('default', { month: 'short' })} ${currentDate.getFullYear()}`;
+		currentIndex++;
 	};
 
 	const firstPage = () => {
-		currentPage = 0;
-		calendarElements = paginateCalendarElements(currentPage);
+		currentDate = new Date();
+		currentDate.setHours(0, 0, 0, 0);
+		currentKey = `${currentDate.toLocaleString('default', { month: 'short' })} ${currentDate.getFullYear()}`;
+		currentIndex = 0;
 	};
 
 	const previousPage = () => {
-		if (currentPage > 0) {
-			currentPage--;
-			calendarElements = paginateCalendarElements(currentPage);
-		}
+		currentDate.setMonth(currentDate.getMonth() - 1);
+		currentKey = `${currentDate.toLocaleString('default', { month: 'short' })} ${currentDate.getFullYear()}`;
+		currentIndex--;
 	};
 
 	onMount(() => {
-		// filter anything that is not in the future
-		let yesterday = new Date();
-		yesterday.setDate(yesterday.getDate() - 1);
-		events = events.filter((e) => e.date.startDay >= yesterday);
-		calendarElements = paginateCalendarElements(currentPage);
+		events.forEach((event) => {
+			const month = event.date.startDay.toLocaleString('default', { month: 'short' });
+			const year = event.date.startDay.getFullYear();
+			const key = `${month} ${year}`;
+
+			if (eventsByMonthMap.has(key)) {
+				eventsByMonthMap.get(key)!.push(event);
+			} else {
+				eventsByMonthMap.set(key, [event]);
+			}
+		});
+
+		calendarElements = eventsByMonthMap.get(currentKey) || [];
 	});
+
+	$: if (currentKey) {
+		calendarElements = eventsByMonthMap.get(currentKey) || [];
+	}
 </script>
 
 <div class="calendar-view">
 	<div class="header w-full">
 		<Text class="calendar-title text-2xl font-bold">Calendar</Text>
 		<div class="navigation flex mt-2">
-			<button on:click={previousPage} disabled={currentPage === 0}>{'<'}</button>
-			<button
-				on:click={nextPage}
-				class="ml-2"
-				disabled={(currentPage + 1) * daysPerPage >= events.length}>{'>'}</button
-			>
+			<button on:click={previousPage} disabled={currentIndex === 0}>{'<'}</button>
+			<button on:click={nextPage} class="ml-2">{'>'}</button>
 			<div class="today_button ml-6 p-2 border rounded">
 				<button on:click={firstPage}>
 					<Text>Today</Text>
@@ -89,25 +67,31 @@
 			</div>
 
 			<div class="ml-2">
-				<Text class="text-xl ml-6 font-bold">{displayedMonths}</Text>
+				<Text class="text-xl ml-6 font-bold">{currentKey}</Text>
 			</div>
 		</div>
 	</div>
-	<div class="calendar-grid grid grid-cols-4 gap-4 mt-4">
-		{#each calendarElements as element (element.date)}
-			<div class="grid-element">
-				<CalendarElement
-					id={element._id}
-					img={element.details.photo}
-					title={element.name}
-					location={element.details.location}
-					date={element.date.startDay}
-					startTime={element.date.startTime}
-					endTime={element.date.endTime}
-				/>
-			</div>
-		{/each}
-	</div>
+	{#if calendarElements.length === 0}
+		<div class="mt-20 mb-40">
+			<Text class="italic text-center">No events for this month...</Text>
+		</div>
+	{:else}
+		<div class="calendar-grid grid grid-cols-4 gap-4 mt-4">
+			{#each calendarElements as element (element.date)}
+				<div class="grid-element">
+					<CalendarElement
+						id={element._id}
+						img={element.details.photo}
+						title={element.name}
+						location={element.details.location}
+						date={element.date.startDay}
+						startTime={element.date.startTime}
+						endTime={element.date.endTime}
+					/>
+				</div>
+			{/each}
+		</div>
+	{/if}
 </div>
 
 <style lang="postcss">

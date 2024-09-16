@@ -35,11 +35,11 @@ export async function getEvents(req: Request, res: Response) {
     today.setHours(0, 0, 0, 0);
 
     const events = await Events.find({
-        'date.startDay': { $gte: today },
+        'date.startTime': { $gte: today },
     }).populate({
         path: 'organization',
         select: 'name avatar',
-    }).sort({ 'date.startDay': 1 });
+    }).sort({ 'date.startTime': 1 });
 
     // sort events by date
     events.sort((a: IEvents, b: IEvents) => {
