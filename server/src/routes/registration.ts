@@ -110,6 +110,10 @@ export async function registerForEvent(req: Request, res: Response) {
             return res.status(400).json({ message: "User is already registered for this event" });
         }
 
+        if (event.registration.totalRegistered >= event.registration.totalSpots) {
+            return res.status(400).json({ message: "Event is full" });
+        }
+
         user.registeredEvents.push(eventObjectId);
 
         event.registration.registeredVolunteers.push(userObjectId.toString());

@@ -19,12 +19,17 @@ const cookieOptions = {
     secure: __prod__,
     sameSite: "lax",
     path: "/",
-    domain: __prod__ ? `.${process.env.CLIENT_URL}` : "",
+    domain: __prod__ ? `${process.env.CLIENT_URL}` : "",
     maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
 } as const;
 
-export function generateAccessToken(data: TokenData, validaity = "15m"): string {
-    return jwt.sign(data, access_code_secret, { expiresIn: validaity });
+export function generateAccessToken(data: TokenData, validity = "15m"): string | null {
+    try {
+        return jwt.sign(data, access_code_secret, { expiresIn: validity });
+    } catch (err) {
+        console.error(err);
+        return null;
+    }
 }
 
 export function validateAccessToken(token: string) {
@@ -37,8 +42,16 @@ export function validateAccessToken(token: string) {
 }
 
 async function generateAuthTokens(data: TokenData): Promise<{ refreshToken: string; accessToken: string; } | null> {
-    const refreshToken = jwt.sign(data, refresh_code_secret, { expiresIn: "7d" });
-    const accessToken = jwt.sign(data, access_code_secret, { expiresIn: "2h" });
+    let refreshToken: string;
+    let accessToken: string;
+
+    try {
+        refreshToken = jwt.sign(data, refresh_code_secret, { expiresIn: "7d" });
+        accessToken = jwt.sign(data, access_code_secret, { expiresIn: "15m" });
+    } catch (err) {
+        console.error(err);
+        return null;
+    }
 
     const refreshTokenEntry = new RefreshToken({ token: refreshToken });
     try {
@@ -118,23 +131,31 @@ export async function renewToken(req: Request, res: Response, next: NextFunction
         return unauthorizedError(res);
     }
 
+    if (!data) {
+        return unauthorizedError(res);
+    }
 
     const refreshTokenEntry = await RefreshToken.findOne({ token: refreshToken });
     if (!refreshTokenEntry) {
         return unauthorizedError(res);
     }
 
-    if (!data) {
-        return unauthorizedError(res);
+    const payload: TokenData = {
+        userId: data.userId,
+        userRole: data.userRole,
+        // TODO if this is false we could check if the user has confirmed their 
+        // account
+        accountConfirmed: data.accountConfirmed,
     }
 
-    const tokens = await generateAuthTokens(data);
-    if (!tokens) {
+    const accessToken = generateAccessToken(payload);
+    if (!accessToken) {
         return res.status(500).json({ message: "Internal server error" });
     }
 
-    res.cookie("id", tokens.accessToken, cookieOptions);
-    res.json({ accessToken: tokens.accessToken });
+    res.clearCookie("id", cookieOptions);
+    res.cookie("id", accessToken, cookieOptions);
+    res.status(200).json({ accessToken: accessToken });
 }
 
 function unauthorizedError(res: Response): void {

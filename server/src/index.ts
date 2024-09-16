@@ -43,10 +43,10 @@ app.get(`${API_PREFIX}/confirm-account/:id`, confirmAccount);
 
 app.post(`${ORGANIZATIONS_API}/register`, registerOrganization);
 app.post(`${USERS_API}/register`, registerUser);
+app.post(`${API_PREFIX}/token`, renewToken);
 
 // Authenticated Routes
 app.post(`${API_PREFIX}/logout`, authorize, logout);
-app.post(`${API_PREFIX}/token`, authorize, renewToken);
 app.get(`${API_PREFIX}/profile`, authorize, profile);
 app.get(`${API_PREFIX}/upload/:name`, getS3SecureURL);
 

@@ -82,6 +82,10 @@ export async function registerUser(req: Request, res: Response) {
         accountConfirmed: savedUser.emailConfirmed,
     }, "24h");
 
+    if (!token) {
+        return res.status(500).json({ message: "Error generating token" });
+    }
+
     sendConfirmRegistrationEmail(savedUser.email, token);
     return res.status(201).json(userResponse);
 }

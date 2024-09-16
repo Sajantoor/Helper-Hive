@@ -73,6 +73,10 @@ export async function forgotPassword(req: Request, res: Response) {
         accountConfirmed: user.emailConfirmed,
     }, "1h");
 
+    if (!token) {
+        return res.status(500).json({ message: "Error generating token" });
+    }
+
     await sendPasswordResetEmail(user.email, token);
     res.status(200).json({ message: "Password reset email sent" });
 }
