@@ -22,10 +22,10 @@ export const handle: Handle = async ({ event, resolve }) => {
         // TODO: make sure this is the same as the server
         event.cookies.set("id", token.accessToken, {
             httpOnly: true,
-            secure: false,
-            sameSite: "lax",
+            secure: true,
+            sameSite: "none",
             path: "/",
-            domain: "",
+            domain: "helperhive.ca",
             maxAge: 60 * 60 * 24 * 7, // 7 days
         });
     }
