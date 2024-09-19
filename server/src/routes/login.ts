@@ -13,10 +13,13 @@ type LoginRequest = {
 }
 
 export async function login(req: Request, res: Response) {
-    const { email, password } = req.body as LoginRequest;
+    let { email, password } = req.body as LoginRequest;
+
     if (!email || !password) {
         return res.status(400).json({ message: "Email and password are required" });
     }
+
+    email = email.toLowerCase();
 
     let user = await User.findOne({ email });
     let userRole: UserRole = "volunteer";
@@ -52,10 +55,12 @@ export async function logout(req: Request, res: Response) {
 }
 
 export async function forgotPassword(req: Request, res: Response) {
-    const { email } = req.body as { email: string };
+    let { email } = req.body as { email: string };
     if (!email) {
         return res.status(400).json({ message: "Email is required" });
     }
+
+    email = email.toLowerCase();
 
     const user = await User.findOne({ email }) || await Organization.findOne({
         email,

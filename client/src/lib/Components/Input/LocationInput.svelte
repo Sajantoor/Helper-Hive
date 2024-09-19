@@ -55,7 +55,6 @@
 
 	const onInput = () => {
 		touched = true;
-		value = '';
 	};
 
 	const handleBlur = () => {
