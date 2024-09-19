@@ -19,7 +19,7 @@ const cookieOptions = {
     secure: __prod__,
     sameSite: "none",
     path: "/",
-    domain: __prod__ ? process.env.CLIENT_URL : "",
+    domain: __prod__ ? process.env.DOMAIN : "",
     maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
 } as const;
 
