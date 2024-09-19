@@ -1,21 +1,20 @@
 import nodemailer from 'nodemailer';
 
-const domain = process.env.DOMAIN!;
+const domain = process.env.CLIENT_URL!;
 
 const transporter = nodemailer.createTransport({
-    service: "Gmail",
-    host: "smtp.gmail.com",
+    host: process.env.SMTP_HOST,
     port: 465,
     secure: true,
     auth: {
-        user: process.env.GMAIL_USER,
-        pass: process.env.GMAIL_PASS,
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
     },
 });
 
 export async function sendMail(to: string, subject: string, text: string) {
     const mailOptions = {
-        from: '"Helper Hive" <helperhive@ethereal.email>',
+        from: '"Helper Hive" <noreply@helperhive.ca>',
         to,
         subject,
         text,

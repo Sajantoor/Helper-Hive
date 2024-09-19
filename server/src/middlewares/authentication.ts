@@ -17,9 +17,9 @@ export type TokenData = {
 const cookieOptions = {
     httpOnly: true,
     secure: __prod__,
-    sameSite: "lax",
+    sameSite: "none",
     path: "/",
-    domain: __prod__ ? `${process.env.CLIENT_URL}` : "",
+    domain: __prod__ ? process.env.CLIENT_URL : "",
     maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
 } as const;
 
@@ -93,7 +93,7 @@ export async function authorize(req: Request, res: Response, next: NextFunction)
         return unauthorizedError(res);
     }
 
-    if (!data.accountConfirmed) {
+    if (!process.env.EMAIL_SETUP && !data.accountConfirmed) {
         return res.status(403).json({ message: "Account not confirmed" });
     }
 
