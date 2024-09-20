@@ -1,5 +1,6 @@
-import { PUBLIC_SERVER_HOST } from "$env/static/public";
+import { PUBLIC_SERVER_DOMAIN, PUBLIC_SERVER_HOST } from "$env/static/public";
 import type { Handle } from "@sveltejs/kit";
+const { PROD } = import.meta.env;
 
 export const handle: Handle = async ({ event, resolve }) => {
     if (event.cookies.get("rid")) {
@@ -22,10 +23,10 @@ export const handle: Handle = async ({ event, resolve }) => {
         // TODO: make sure this is the same as the server
         event.cookies.set("id", token.accessToken, {
             httpOnly: true,
-            secure: true,
-            sameSite: "none",
+            secure: PROD,
+            sameSite: PROD ? "none" : "lax",
             path: "/",
-            domain: "helperhive.ca",
+            domain: PROD ? PUBLIC_SERVER_DOMAIN : "",
             maxAge: 60 * 60 * 24 * 7, // 7 days
         });
     }

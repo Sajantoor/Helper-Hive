@@ -17,7 +17,7 @@ export type TokenData = {
 const cookieOptions = {
     httpOnly: true,
     secure: __prod__,
-    sameSite: "none",
+    sameSite: __prod__ ? "none" : "lax",
     path: "/",
     domain: __prod__ ? process.env.DOMAIN : "",
     maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
@@ -74,8 +74,8 @@ export async function setAuthCookies(res: Response, data: TokenData) {
 }
 
 export function clearCookies(res: Response) {
-    res.clearCookie("id", cookieOptions);
-    res.clearCookie("rid", cookieOptions);
+    res.clearCookie("id");
+    res.clearCookie("rid");
 }
 
 function validateToken(req: Request, res: Response): TokenData | null {
@@ -153,7 +153,7 @@ export async function renewToken(req: Request, res: Response, next: NextFunction
         return res.status(500).json({ message: "Internal server error" });
     }
 
-    res.clearCookie("id", cookieOptions);
+    res.clearCookie("id");
     res.cookie("id", accessToken, cookieOptions);
     res.status(200).json({ accessToken: accessToken });
 }
