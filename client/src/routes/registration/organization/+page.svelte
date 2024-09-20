@@ -46,6 +46,7 @@
 
 	let avatarBase64 = '';
 	let avatarFile: File | null = null;
+	let errorMessage = '';
 
 	const validateForm = () => {
 		return Object.values(isValid).every(Boolean);
@@ -53,6 +54,7 @@
 
 	const handleSubmit = async () => {
 		touched = true;
+		errorMessage = '';
 
 		if (!isFormValid) {
 			return;
@@ -85,7 +87,8 @@
 		});
 
 		if (!response.ok) {
-			console.error('Failed to register organization');
+			const data = await response.json();
+			errorMessage = data.message;
 			return;
 		}
 
@@ -289,6 +292,10 @@
 				>
 					<Text>Sign Up</Text>
 				</button>
+
+				{#if errorMessage}
+					<Text class="text-red-500 text-center">{errorMessage}</Text>
+				{/if}
 			</form>
 
 			<SmallText class="mt-4 text-center">

@@ -54,9 +54,11 @@
 	let touched = false;
 	let dobErrorMessage = 'Please enter a valid date of birth';
 	const ageLimit = 16;
+	let errorMessage = '';
 
 	const handleSubmit = async () => {
 		touched = true;
+		errorMessage = '';
 
 		if (!isFormValid) {
 			return;
@@ -90,7 +92,8 @@
 		if (response.ok) {
 			goto('/login');
 		} else {
-			console.error('Failed to register:', response);
+			const data = await response.json();
+			errorMessage = data.message;
 		}
 	};
 
@@ -315,6 +318,10 @@
 				>
 					<Text>Sign Up</Text>
 				</button>
+
+				{#if errorMessage}
+					<Text class="text-red-500 text-center">{errorMessage}</Text>
+				{/if}
 			</form>
 
 			<SmallText class="mt-4 text-center">
