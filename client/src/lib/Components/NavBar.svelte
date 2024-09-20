@@ -5,9 +5,8 @@
 	import logoSrc from '$lib/assets/Logo.png';
 	import { goto } from '$app/navigation';
 	import { PUBLIC_SERVER_HOST } from '$env/static/public';
-	import { FALLBACK_PROFILE_PICTURE } from '$lib/Utils/constants';
 
-	export let avatar: string = FALLBACK_PROFILE_PICTURE;
+	export let avatar: string = '';
 	export let isOrganization = false;
 	export let name = '';
 	export let email = '';

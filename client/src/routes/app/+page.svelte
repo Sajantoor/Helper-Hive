@@ -13,7 +13,6 @@
 
 <div class="dashboard mb-8">
 	<Text class="text-2xl font-bold ml-[5%] mt-[1%] mb-[1%]">Events</Text>
-	<Searchbar />
 
 	{#if tags && tags.length > 0}
 		<div class="tags-section mt-[2%] mb-4 ml-[5%]">
@@ -26,9 +25,10 @@
 			</div>
 		</div>
 	{/if}
-	<Text class="text-2xl font-bold ml-[5%] mt-[1%] mb-[1%]">Featured Events</Text>
+	<Text class="text-2xl font-bold ml-[5%] mt-[1%] mb-[1%]">Upcoming Events</Text>
 
-	<EventScroller {events} />
+	<!-- limit to 12 events -->
+	<EventScroller events={events.slice(0, 12)} />	
 	<CalendarView {events} />
 </div>
 
