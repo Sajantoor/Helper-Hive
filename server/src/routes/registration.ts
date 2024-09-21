@@ -21,12 +21,12 @@ export async function getUserFutureEvents(req: Request, res: Response) {
             events = await Event.find({
                 'date.endDay': { $gte: currentDate },
                 "registration.registeredVolunteers": userId,
-            });
+            }).sort({ 'date.endTime': 1 });
         } else if (userRole === "organization") {
             events = await Event.find({
                 'date.endDay': { $gte: currentDate },
                 organization: userId
-            });
+            }).sort({ 'date.endTime': 1 });
         }
     } catch (error) {
         return res.status(500).json({ message: "Error fetching future events", error });
@@ -53,12 +53,12 @@ export async function getUserPastEvents(req: Request, res: Response) {
             events = await Event.find({
                 'date.endDay': { $lt: currentDate },
                 "registration.registeredVolunteers": userId,
-            });
+            }).sort({ 'date.endTime': -1 });
         } else if (userRole === "organization") {
             events = await Event.find({
                 'date.endDay': { $lt: currentDate },
                 organization: userId
-            });
+            }).sort({ 'date.endTime': -1 });
         }
     } catch (error) {
         return res.status(500).json({ message: "Error fetching past events", error });
