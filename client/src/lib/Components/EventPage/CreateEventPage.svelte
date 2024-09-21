@@ -25,22 +25,7 @@
 	import BackButton from '../BackButton.svelte';
 	import type { EventFormData } from '$common/Types/FormData';
 	import { onMount } from 'svelte';
-
-	// TODO: Grab these from database:
-	let options: string[] = [
-		'Childcare',
-		'Education',
-		'Political',
-		'Medical',
-		'Science',
-		'Museum',
-		'Food',
-		'Support',
-		'Cleaning',
-		'Athletics',
-		'Event Planning',
-		'Family'
-	];
+	import { tags } from '$lib/Utils/tags';
 
 	let organizationInfo: OrganizationEventData;
 
@@ -482,7 +467,7 @@
 			</div>
 
 			<Text class="font-bold">Tag Select</Text>
-			<TagSelect placeholder="Add tag" bind:tagValues={formData.tagValues} {options} />
+			<TagSelect placeholder="Add tag" bind:tagValues={formData.tagValues} options={tags} />
 
 			<NumberInput
 				label="Number of Shift Openings"
