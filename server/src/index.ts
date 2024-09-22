@@ -37,7 +37,7 @@ const REGISTRATION_API = `${API_PREFIX}/registrations`;
 
 // Unauthenticated routes
 app.post(`${API_PREFIX}/login`, login);
-app.post(`${API_PREFIX}/reset-password/:id`, resetForgottenPassword);
+app.post(`${API_PREFIX}/reset-password`, resetForgottenPassword);  // reset-password does not require id in the implemenation
 app.post(`${API_PREFIX}/forgot-password`, forgotPassword);
 app.get(`${API_PREFIX}/confirm-account/:id`, confirmAccount);
 
