@@ -42,8 +42,6 @@
 		margin: 0 auto;
 		display: flex;
 		flex-wrap: nowrap;
-		align-items: center;
-		position: relative;
 	}
 
 	.items {

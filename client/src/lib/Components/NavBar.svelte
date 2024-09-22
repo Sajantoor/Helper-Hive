@@ -51,13 +51,13 @@
 <nav
 	class="flex items-center justify-between p-1 bg-white text-black border-b-1 shadow-sm relative"
 >
-	<div class="flex items-center gap-10">
+	<div class="flex items-center gap-3 desktop:gap-10">
 		<div class="logo mr-4">
 			<a href="/app">
 				<img src={logoSrc} alt="Logo" class="h-10 ml-5" />
 			</a>
 		</div>
-		<div class="nav-links flex gap-14">
+		<div class="nav-links flex gap-6 desktop:gap-14">
 			<a href="/app" class="text-black hover:underline"><Text>Events</Text></a>
 			{#if isOrganization}
 				<a href="/app/events/create" class="text-black hover:underline">
@@ -68,7 +68,7 @@
 	</div>
 	<div class="profile-pic relative">
 		<button on:click={toggleDropdown} class="focus:outline-none">
-			<img src={avatar} alt="Profile" class="h-8 w-8 mr-8 rounded-full object-cover" />
+			<img src={avatar} alt="Profile" class="h-8 w-8 mr-8 mt-2 rounded-full object-cover" />
 		</button>
 
 		{#if isDropdownOpen}

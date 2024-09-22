@@ -7,7 +7,7 @@ services:
     helper-hive-server:
         image: helper-hive-server
         environment:
-            - NODE_ENV=production
+            - NODE_ENV=development
             - MONGO_DB_URI=mongodb://mongo:27017/HelperHive
             - ACCESS_CODE_SECRET=${ACCESS_CODE_SECRET:?error}
             - REFRESH_CODE_SECRET=${REFRESH_CODE_SECRET:?error}

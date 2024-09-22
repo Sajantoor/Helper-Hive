@@ -17,7 +17,7 @@
 </script>
 
 <div
-	class="eventCard max-w-80 w-full h-1/4 m-5 rounded-xl overflow-hidden border-2 border-neutral-100 inline-block flex-shrink-0"
+	class="eventCard max-w-80 w-full m-5 rounded-xl overflow-hidden border-2 border-neutral-100 inline-block align-top flex-shrink-0 cursor-pointer"
 >
 	<a
 		on:click={() => {

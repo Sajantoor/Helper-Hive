@@ -332,11 +332,11 @@
 
 <form on:submit|preventDefault={handleSubmit} class="space-y-6" novalidate>
 	<div
-		class="mx-auto mt-8 mb-8 w-[70vw] flex flex-col grid-cols-1 mdlg:grid mdlg:grid-cols-[44%_56%] mdlg:gap-[2rem_5rem] mdlg:justify-center"
+		class="mx-auto mt-8 mb-8 w-[80vw] desktop:w-[70vw] flex flex-col grid-cols-1 mdlg:grid mdlg:grid-cols-[44%_56%] mdlg:gap-[2rem_5rem] mdlg:justify-center"
 	>
 		<!-- Image Upload -->
 		<div
-			class="relative mb-8 mdlg:mb-0 aspect-[7/5] flex flex-col mdlg:aspect-[5/4] w-full order-1 mdlg:order-1 mdlg:col-span-1"
+			class="relative mb-6 desktop:mb-8 mdlg:mb-0 aspect-[7/5] flex flex-col mdlg:aspect-[5/4] w-[95%] desktop:w-full mx-auto order-1 mdlg:order-1 mdlg:col-span-1"
 		>
 			{#if !imageBase64}
 				<FileUpload

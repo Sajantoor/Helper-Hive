@@ -3,6 +3,9 @@
 	import { onMount } from 'svelte';
 	import type { EventResponse } from '$common/types/eventResponse';
 	import Text from './Text/Text.svelte';
+	
+	import LeftArrow from 'svelte-material-icons/ChevronLeft.svelte';
+	import RightArrow from 'svelte-material-icons/ChevronRight.svelte';
 
 	export let events: EventResponse[] = []; // Events passed as a prop
 
@@ -57,17 +60,24 @@
 <div class="calendar-view">
 	<div class="header w-full">
 		<Text class="calendar-title text-2xl font-bold">Calendar</Text>
-		<div class="navigation flex mt-2">
-			<button on:click={previousPage} disabled={currentIndex === 0}>{'<'}</button>
-			<button on:click={nextPage} class="ml-2">{'>'}</button>
-			<div class="today_button ml-6 p-2 border rounded">
-				<button on:click={firstPage}>
-					<Text>Today</Text>
+		<div class="navigation pr-5 flex mt-2 justify-between desktop:justify-start">
+			<div class="ml-2">
+				<Text class="text-xl destop:mr-6 font-bold">{currentKey}</Text>
+			</div>
+			
+			<div>
+				<button on:click={previousPage} disabled={currentIndex === 0}>
+					<LeftArrow />
+				</button>
+				<button on:click={nextPage} class="ml-2">
+					<RightArrow />
 				</button>
 			</div>
-
-			<div class="ml-2">
-				<Text class="text-xl ml-6 font-bold">{currentKey}</Text>
+			
+			<div class="today_button ml-6 p-2 border rounded">
+				<button on:click={firstPage} disabled={currentIndex === 0}>
+					<Text>Today</Text>
+				</button>
 			</div>
 		</div>
 	</div>
@@ -163,13 +173,11 @@
 		}
 
 		.navigation {
-			justify-content: center;
 			width: 100%;
 			margin-top: 1rem;
 		}
 
 		.today_button {
-			margin-top: 1rem;
 			margin-left: 0;
 			text-align: center;
 		}

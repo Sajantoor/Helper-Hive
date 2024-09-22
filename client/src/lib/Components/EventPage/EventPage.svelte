@@ -10,8 +10,8 @@
 	export let eventData: EventResponse;
 </script>
 
-<div class="event-page">
-	<img class="eventImg rounded-3xl" src={eventData.details.photo} alt={eventData.name} />
+<div class="event-page w-[80vw] desktop:w-[70vw]">
+	<img class="eventImg rounded-3xl  w-[95%] desktop:w-full mx-auto" src={eventData.details.photo} alt={eventData.name} />
 
 	<EventDetails event={eventData} />
 
@@ -27,7 +27,7 @@
 		{/if}
 	</div>
 
-	<div>
+	<div class="mt-2 desktop:mt-0">
 		{#if eventData.details.description}
 			<div>
 				<Heading class="mb-4">About this event</Heading>
@@ -49,7 +49,6 @@
 		margin: auto;
 		margin-top: 2rem;
 		margin-bottom: 2rem;
-		width: 70vw;
 		display: grid;
 		grid-template-columns: 44% 56%;
 		grid-template-rows: auto;
@@ -70,6 +69,12 @@
 		.event-page {
 			display: flex;
 			flex-direction: column;
+		}
+	}
+
+	@media (max-width: 550px) {
+		.event-page {
+			grid-gap: 1.5rem 5rem;
 		}
 	}
 </style>
