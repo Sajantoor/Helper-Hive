@@ -165,8 +165,8 @@
 
 	{#if type === 'liabilityOrg'}
 		<Heading>Organization Liability Waiver and Release</Heading>
-		<Text>
-			<ol class="list-decimal">
+		<SmallText>
+			<ol class="list-decimal"> <br />
 				<li>
 					Acknowledgment and Assumption of Risk:
 					<br />
@@ -245,12 +245,12 @@
 					hereof.
 				</li>
 			</ol>
-		</Text>
+		</SmallText>
 	{/if}
 
 	{#if type === 'liabilityVol'}
 		<Heading>Volunteer Liability Waiver and Release</Heading>
-		<ol class="list-decimal">
+		<ol class="list-decimal"> <br />
 			<li>
 				Acknowledgment and Assumption of Risk:
 				<br />

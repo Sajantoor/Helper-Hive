@@ -29,7 +29,7 @@
 
 <div class="ml-5 mr-5 desktop:ml-10 desktop:mr-10">
 	<!-- Profile section -->
-	<div class="mt-2 mb-5 desktop:p-4 flex flex-col desktop:flex-row">
+	<div class="mt-2 mb-5 desktop:mr-4 desktop:p-4 flex flex-col desktop:flex-row">
 		<div class="flex flex-row w-full">
 			<!-- Profile picture  -->
 			<div class="max-desktop:mt-2 max-mdlg:w-[32.5%] min-w-36 max-w-48 p-2">
@@ -59,7 +59,7 @@
 				{/if}
 			</div>
 			<!-- Completed hours -->
-			<div class="p-2 content-center desktop:ml-auto">
+			<div class="pt-2 pl-2 pr-2 pb-1 content-center desktop:ml-auto">
 				{#if completedHours}
 					<div class="flex">
 						<Heading class="desktop:text-right">

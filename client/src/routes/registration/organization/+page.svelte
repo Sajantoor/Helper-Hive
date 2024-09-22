@@ -121,7 +121,7 @@
 </script>
 
 <div class="flex flex-col lg:flex-row justify-center items-center min-h-screen">
-	<div class="container mx-auto px-4 flex flex-col lg:flex-row lg:ml-2">
+	<div class="container mx-auto desktop:px-4 flex flex-col lg:flex-row lg:ml-2">
 		<!-- Left section -->
 		<div
 			class="flex flex-col justify-start lg:items-start items-center w-full lg:w-3/10 lg:max-w-[30%] lg:text-left text-center"

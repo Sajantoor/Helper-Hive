@@ -92,14 +92,14 @@
 			bind:this={ref}
 			bind:value
 			{placeholder}
-			class="mt-1 pl-3 p-2 w-full bg-placeholderGray border-none rounded-lg
+			class="mt-1 pl-3 p-2 w-full bg-placeholderGray border-none rounded-lg max-desktop:pt-3 max-desktop:pb-3
 			{touched && !valid && 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'}"
 			on:input={handleInput}
 			on:blur={handleBlur}
 		/>
 		<button
 			type="button"
-			class="absolute top-1/2 right-4 transform -translate-y-[45%] border-none bg-none cursor-pointer"
+			class="absolute top-1/2 right-4 transform -translate-y-[45%] max-desktop:scale-125 border-none bg-none cursor-pointer"
 			tabindex="-1"
 			on:click={togglePassword}
 		>
