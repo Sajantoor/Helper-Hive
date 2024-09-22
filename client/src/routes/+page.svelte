@@ -39,6 +39,10 @@
 	<Text class="w-1/3 text-center mt-2">
 		Dive into the hive of local opportunities, pick what sparks your curiosity, and join in—it's as
 		easy as gathering nectar!
+
+		<br /> <br />
+		Thank you for your interest in Helper Hive! We are currently not launched yet. Please check back
+		later.
 	</Text>
 	<a href="/registration/volunteer">
 		<button class="bg-primaryYellow text-black py-2 px-4 mt-8 rounded-lg">
@@ -70,7 +74,7 @@
 
 <div class="mb-8">
 	<Section class="text-center mb-8">Upcoming Events</Section>
-	<EventScroller {events} />
+	<EventScroller events={events.slice(0, 6)} />
 </div>
 
 <div class="mb-16">

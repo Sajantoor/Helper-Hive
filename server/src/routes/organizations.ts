@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import Organization from "../database/models/organization";
 import { hashPassword } from "../middlewares/authentication";
 import { z } from 'zod';
+import User from "../database/models/user";
 
 interface ContactPerson {
     firstName: string;
@@ -78,7 +79,17 @@ export async function registerOrganization(req: Request, res: Response) {
         return res.status(400).json({ message: "Invalid organization body", error: organizationBody.error.errors });
     }
 
+    organizationBody.data.email = organizationBody.data.email.toLowerCase();
     organizationBody.data.password = await hashPassword(organizationBody.data.password);
+
+    // check if there's a user with the same email
+    const user = await User.findOne({
+        email: organizationBody.data.email,
+    });
+
+    if (user) {
+        return res.status(400).json({ message: "Email already in use" });
+    }
 
     try {
         const newOrganization = new Organization(organizationBody.data);
@@ -105,6 +116,10 @@ export async function updateOrganization(req: Request, res: Response) {
 
     if (organizationBody.data.password) {
         return res.status(400).json({ message: "Password cannot be updated using this endpoint" });
+    }
+
+    if (organizationBody.data.email) {
+        return res.status(400).json({ message: "Email cannot be updated" });
     }
 
     try {

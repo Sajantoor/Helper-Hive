@@ -3,6 +3,7 @@ import User from "../database/models/user";
 import { generateAccessToken, hashPassword } from "../middlewares/authentication";
 import { sendConfirmRegistrationEmail } from "../utils/email";
 import z from "zod";
+import Organization from "../database/models/organization";
 
 interface EmergencyContact {
     name: string;
@@ -64,9 +65,19 @@ export async function registerUser(req: Request, res: Response) {
         return res.status(400).json({ message: "Invalid user body", error: userBody.error });
     }
 
+    userBody.data.email = userBody.data.email.toLowerCase();
     userBody.data.password = await hashPassword(userBody.data.password);
 
     let savedUser, userResponse;
+
+    // check if there is an organization with the same email
+    const organization = await Organization.findOne({
+        email: userBody.data.email,
+    });
+
+    if (organization) {
+        return res.status(400).json({ message: "Email already in use" });
+    }
 
     try {
         const newUser = new User(userBody.data);
@@ -81,6 +92,10 @@ export async function registerUser(req: Request, res: Response) {
         userRole: "volunteer",
         accountConfirmed: savedUser.emailConfirmed,
     }, "24h");
+
+    if (!token) {
+        return res.status(500).json({ message: "Error generating token" });
+    }
 
     sendConfirmRegistrationEmail(savedUser.email, token);
     return res.status(201).json(userResponse);
@@ -100,6 +115,10 @@ export async function updateUser(req: Request, res: Response) {
 
     if (userBody.data.password) {
         return res.status(400).json({ message: "Password cannot be updated using this endpoint" });
+    }
+
+    if (userBody.data.email) {
+        return res.status(400).json({ message: "Email cannot be updated" });
     }
 
     try {

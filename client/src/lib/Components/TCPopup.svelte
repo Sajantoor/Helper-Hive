@@ -5,36 +5,13 @@
 
 	export let id = '';
 	export let title = '';
-	export let type = 'terms';
+	export let type: 'terms' | 'liabilityOrg' | 'liabilityVol' = 'terms';
 
 	const closePopup = () => {
 		const popup = document.getElementById(id);
 		popup?.classList.add('hidden');
 	};
 </script>
-
-<style>
-	.scrollbar-custom::-webkit-scrollbar {
-		width: 8px;
-	}
-
-	.scrollbar-custom::-webkit-scrollbar-track {
-		background: transparent;
-	}
-
-	.scrollbar-custom::-webkit-scrollbar-thumb {
-		background-color: #FABD22;
-		border-radius: 10px;
-	}
-	
-	.scrollbar-custom::-webkit-scrollbar-thumb:hover {
-		background-color: #CEA32D;
-	}
-
-	.scrollbar-custom::-webkit-scrollbar-thumb:active {
-		background-color: #A98D36;
-	}
-</style>
 
 <div {id} class="fixed inset-0 flex items-center justify-center bg-dimBlack bg-opacity-50 hidden">
 	<div class="bg-darkGray p-4 rounded-3xl w-4/5 h-5/6 overflow-hidden relative">
@@ -43,7 +20,9 @@
 		>
 			<Text class="heading text-white text-center w-full">{title}</Text>
 			<div class="pl-4" on:click|preventDefault={closePopup}>
-				<CloseCircle class="cursor-pointer text-xl mr-1 mt-1 text-tagYellow hover:text-primaryYellow active:text-altTextBrown" />
+				<CloseCircle
+					class="cursor-pointer text-xl mr-1 mt-1 text-tagYellow hover:text-primaryYellow active:text-altTextBrown"
+				/>
 			</div>
 		</div>
 		<div class="absolute inset-0 top-[4rem] bg-white p-4 rounded-b-3xl rounded-t-lg mb-2 mr-2 ml-2">
@@ -55,3 +34,26 @@
 		</div>
 	</div>
 </div>
+
+<style>
+	.scrollbar-custom::-webkit-scrollbar {
+		width: 8px;
+	}
+
+	.scrollbar-custom::-webkit-scrollbar-track {
+		background: transparent;
+	}
+
+	.scrollbar-custom::-webkit-scrollbar-thumb {
+		background-color: #fabd22;
+		border-radius: 10px;
+	}
+
+	.scrollbar-custom::-webkit-scrollbar-thumb:hover {
+		background-color: #cea32d;
+	}
+
+	.scrollbar-custom::-webkit-scrollbar-thumb:active {
+		background-color: #a98d36;
+	}
+</style>

@@ -35,7 +35,7 @@
 
 <!-- Profile section -->
 <div class="ml-10 mt-2 p-8 mr-10 mb-5 pb-28">
-	{#if isCurrentUser}
+	<!-- {#if isCurrentUser}
 		<div class="editProfile float-right">
 			<button on:click={toggleOverlay} class="editProfile flex border-2 rounded-full p-2 pl-4 pr-4">
 				<Pencil size={25} />
@@ -46,6 +46,7 @@
 			<EditProfile on:closeOverlay={toggleOverlay} avatar={$profileStore?.avatar} />
 		{/if}
 	{/if}
+	{/if} -->
 
 	<img
 		src={avatarSrc}

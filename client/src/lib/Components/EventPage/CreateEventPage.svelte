@@ -18,29 +18,14 @@
 	import { PUBLIC_SERVER_HOST } from '$env/static/public';
 	import { goto, invalidateAll } from '$app/navigation';
 	import SmallText from '$lib/Components/Text/SmallText.svelte';
-	import { uploadFile } from '$lib/Utils/uploadFiles';
+	import { createBase64Image, uploadFile } from '$lib/Utils/uploadFiles';
 	import HostInfo from './HostInfo.svelte';
 	import { profileStore } from '$lib/stores/profileStore';
 	import type { OrganizationEventData } from '$common/types/eventResponse';
 	import BackButton from '../BackButton.svelte';
-	import type { EventFormData } from '$lib/Types/FormData';
+	import type { EventFormData } from '$common/Types/FormData';
 	import { onMount } from 'svelte';
-
-	// TODO: Grab these from database:
-	let options: string[] = [
-		'Childcare',
-		'Education',
-		'Political',
-		'Medical',
-		'Science',
-		'Museum',
-		'Food',
-		'Support',
-		'Cleaning',
-		'Athletics',
-		'Event Planning',
-		'Family'
-	];
+	import { tags } from '$lib/Utils/tags';
 
 	let organizationInfo: OrganizationEventData;
 
@@ -48,7 +33,7 @@
 		organizationInfo = {
 			_id: $profileStore.id,
 			name: $profileStore.name,
-			avatar: $profileStore.avatar,
+			avatar: $profileStore.avatar
 		};
 	}
 
@@ -109,6 +94,7 @@
 	let endDateError = 'Invalid end date';
 	let startTimeError = 'Invalid start time';
 	let endTimeError = 'Invalid end time';
+	let errorMessage = '';
 
 	$: if (formData || isValid) {
 		handleValidityChange();
@@ -178,6 +164,8 @@
 			return;
 		}
 
+		errorMessage = '';
+
 		// only upload image if it has changed
 		if (!formData.imageUrl) {
 			formData.imageUrl = await uploadFile(formData.image!);
@@ -240,7 +228,8 @@
 			const data = await response.json();
 			goto(`/app/events/${data._id}`);
 		} else {
-			console.error('Failed to create event');
+			const data = await response.json();
+			errorMessage = data.message;
 		}
 	};
 
@@ -260,11 +249,14 @@
 			await invalidateAll();
 			goto(`/app/events/${data._id}`);
 		} else {
-			console.error('Failed to edit event');
+			const data = await response.json();
+			errorMessage = data.message;
 		}
 	};
 
 	const handleDeleteEvent = async () => {
+		errorMessage = '';
+
 		const response = await fetch(`${PUBLIC_SERVER_HOST}/api/events/${formData.id}`, {
 			method: 'DELETE',
 			credentials: 'include'
@@ -274,19 +266,9 @@
 			await invalidateAll();
 			goto('/app/');
 		} else {
-			console.error('Failed to delete event');
+			const data = await response.json();
+			errorMessage = data.message;
 		}
-	};
-
-	const createBase64Image = (file: File): Promise<string> => {
-		return new Promise((resolve, reject) => {
-			const reader = new FileReader();
-			reader.onload = () => {
-				resolve(reader.result as string);
-			};
-			reader.onerror = reject;
-			reader.readAsDataURL(file);
-		});
 	};
 
 	const removeImage = (): void => {
@@ -485,7 +467,7 @@
 			</div>
 
 			<Text class="font-bold">Tag Select</Text>
-			<TagSelect placeholder="Add tag" bind:tagValues={formData.tagValues} {options} />
+			<TagSelect placeholder="Add tag" bind:tagValues={formData.tagValues} options={tags} />
 
 			<NumberInput
 				label="Number of Shift Openings"
@@ -513,27 +495,27 @@
 			/>
 		</div>
 	</div>
-	<div class="pt-28 {isEditing ? 'pb-1' : 'pb-10'} w-full flex justify-center">
+
+	<div class="pt-16 {isEditing ? 'pb-1' : 'pb-10'} pb-10 w-full">
+		{#if errorMessage}
+			<Text class="text-red-500 text-center">{errorMessage}</Text>
+		{/if}
+
 		{#if !isEditing}
 			<button
 				type="submit"
-				class={`mdlg:w-1/5 w-4/6 ${formValid ? 'bg-primaryYellow text-black' : 'bg-tagYellow text-altTextBrown'} py-2 px-4 mt-[2.5rem] rounded-lg mx-auto text`}
+				class={`mdlg:w-1/5 w-4/6 m-auto block ${formValid ? 'bg-primaryYellow text-black' : 'bg-tagYellow text-altTextBrown'} py-2 px-4 mt-[2.5rem] rounded-lg mx-auto text`}
 			>
 				<Text>Publish Event</Text>
 			</button>
 		{:else}
 			<button
 				type="submit"
-				class={`mdlg:w-1/5 w-4/6 ${formValid ? 'bg-primaryYellow text-black' : 'bg-tagYellow text-altTextBrown'} py-2 px-4 mt-[2.5rem] rounded-lg mx-auto text`}
+				class={`mdlg:w-1/5 w-4/6 m-auto block ${formValid ? 'bg-primaryYellow text-black' : 'bg-tagYellow text-altTextBrown'} py-2 px-4 mt-[2.5rem] rounded-lg mx-auto text`}
 			>
 				<Text>Save Changes</Text>
 			</button>
-		{/if}
-	</div>
 
-	{#if isEditing}
-		<!-- delete event -->
-		<div class="w-full flex pb-10 justicenter">
 			<button
 				on:click={() => {
 					if (confirm('Are you sure you want to delete this event?')) {
@@ -541,10 +523,10 @@
 					}
 				}}
 				type="button"
-				class="mdlg:w-1/5 w-4/6 bg-red-500 text-white py-2 px-4 mt-4 rounded-lg mx-auto text"
+				class="mdlg:w-1/5 w-4/6 m-auto block bg-red-500 text-white py-2 px-4 mt-4 rounded-lg mx-auto text"
 			>
 				<Text>Delete Event</Text>
 			</button>
-		</div>
-	{/if}
+		{/if}
+	</div>
 </form>

@@ -12,7 +12,12 @@ const s3 = new S3({
 })
 
 export async function getS3SecureURL(req: Request, res: Response) {
-    const randomKey = Crypto.randomBytes(16).toString("hex");
+    const file = req.params.name;
+    if (!file) {
+        return res.status(400).json({ message: "File type is required" });
+    }
+
+    const randomKey = Crypto.randomUUID() + "/" + file;
     const s3Params = {
         Bucket: process.env.AWS_BUCKET_NAME,
         Key: randomKey,

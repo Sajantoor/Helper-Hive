@@ -5,9 +5,8 @@
 	import logoSrc from '$lib/assets/Logo.png';
 	import { goto } from '$app/navigation';
 	import { PUBLIC_SERVER_HOST } from '$env/static/public';
-	import { FALLBACK_PROFILE_PICTURE } from '$lib/Utils/constants';
 
-	export let avatar: string = FALLBACK_PROFILE_PICTURE;
+	export let avatar: string = '';
 	export let isOrganization = false;
 	export let name = '';
 	export let email = '';
@@ -40,12 +39,10 @@
 	});
 
 	const handleLogout = async () => {
-		const response = await fetch(`${PUBLIC_SERVER_HOST}/api/logout`, {
+		await fetch(`${PUBLIC_SERVER_HOST}/api/logout`, {
 			method: 'POST',
 			credentials: 'include'
 		});
-
-		console.log(response);
 
 		goto('/login');
 	};
@@ -56,7 +53,9 @@
 >
 	<div class="flex items-center gap-10">
 		<div class="logo mr-4">
-			<img src={logoSrc} alt="Logo" class="h-10 ml-5" />
+			<a href="/app">
+				<img src={logoSrc} alt="Logo" class="h-10 ml-5" />
+			</a>
 		</div>
 		<div class="nav-links flex gap-14">
 			<a href="/app" class="text-black hover:underline"><Text>Events</Text></a>

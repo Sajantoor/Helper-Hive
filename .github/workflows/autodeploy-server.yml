@@ -1,0 +1,21 @@
+name: Server CI/CD
+
+on:
+  push:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: self-hosted
+    env: 
+      PROD_ENV: ${{ secrets.PROD_ENV }}
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build the Docker image
+      run: |
+        docker build -t "helper-hive-server" .
+    - name: Run Docker Compose
+      run: |
+        touch .env
+        echo "$PROD_ENV" > .env
+        docker compose up -d

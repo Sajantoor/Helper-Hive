@@ -6,10 +6,15 @@
 	import PasswordInput from '$lib/Components/Input/PasswordInput.svelte';
 	import PhoneInput from '$lib/Components/Input/PhoneInput.svelte';
 	import TextInput from '$lib/Components/Input/TextInput.svelte';
+	import FileUpload from '$lib/Components/Input/Upload.svelte';
+	import CloseCircle from 'svelte-material-icons/CloseCircle.svelte';
+	import Circle from 'svelte-material-icons/Circle.svelte';
+
 	import { goto } from '$app/navigation';
 	import { PUBLIC_SERVER_HOST } from '$env/static/public';
 	import SmallText from '$lib/Components/Text/SmallText.svelte';
 	import { generateAndUploadRandomAvatar } from '$lib/Utils/generateRandomAvatar';
+	import { createBase64Image, uploadFile } from '$lib/Utils/uploadFiles';
 
 	let formData: {
 		firstName: string;
@@ -43,20 +48,26 @@
 		liabilityAgreed: false
 	};
 
+	let avatarFile: File | null = null;
+
 	let isFormValid = false;
 	let touched = false;
 	let dobErrorMessage = 'Please enter a valid date of birth';
 	const ageLimit = 16;
+	let errorMessage = '';
 
 	const handleSubmit = async () => {
 		touched = true;
+		errorMessage = '';
 
 		if (!isFormValid) {
 			return;
 		}
 
-		if (!formData.avatar) {
+		if (!avatarFile) {
 			formData.avatar = await generateAndUploadRandomAvatar(formData.email);
+		} else {
+			formData.avatar = await uploadFile(avatarFile);
 		}
 
 		const body = {
@@ -81,7 +92,8 @@
 		if (response.ok) {
 			goto('/login');
 		} else {
-			console.error('Failed to register:', response);
+			const data = await response.json();
+			errorMessage = data.message;
 		}
 	};
 
@@ -114,6 +126,23 @@
 		const popup = document.getElementById(id);
 		popup?.classList.remove('hidden');
 	};
+
+	let avatarBase64 = '';
+
+	const handleImageUpload = async (event: CustomEvent<{ files: File[] }>) => {
+		const uploadedFiles = event.detail.files;
+		if (uploadedFiles.length === 0) {
+			return;
+		}
+
+		avatarBase64 = await createBase64Image(uploadedFiles[0]);
+		avatarFile = uploadedFiles[0];
+	};
+
+	const removeImage = () => {
+		avatarBase64 = '';
+		avatarFile = null;
+	};
 </script>
 
 <div class="flex flex-col lg:flex-row justify-center items-center min-h-screen">
@@ -124,9 +153,9 @@
 		>
 			<Text class="section lg:w-1/2 mb-4 whitespace-normal pt-10">Volunteer Registration</Text>
 			<SmallText>
-				Wrong Place? <a href="/registration/organization" class="text-blue-500 underline"
-					>Click here</a
-				> for Organization Registration
+				Wrong Place?
+				<a href="/registration/organization" class="text-blue-500 underline"> Click here</a>
+				for Organization Registration
 			</SmallText>
 		</div>
 
@@ -183,6 +212,29 @@
 					maxDate="today"
 					{touched}
 				/>
+
+				<Text>Upload a profile picture</Text>
+				{#if !avatarFile}
+					<FileUpload
+						type="image"
+						placeholder="Upload a profile picture..."
+						valid={true}
+						on:file={handleImageUpload}
+						{touched}
+					/>
+				{:else}
+					<div
+						class="w-24 h-24 bg-cover bg-center rounded-full relative"
+						style="background-image: url({avatarBase64});"
+					>
+						<div class="absolute top-0 right-0 cursor-pointer" on:click={removeImage}>
+							<Circle class="text-white rounded-full p-1" size={30} />
+						</div>
+						<div class="absolute top-0 right-0 cursor-pointer" on:click={removeImage}>
+							<CloseCircle class="text-primaryYellow rounded-full p-1" size={30} />
+						</div>
+					</div>
+				{/if}
 
 				<!-- Create Password Section -->
 				<div style="margin-top: 2rem;">
@@ -266,6 +318,10 @@
 				>
 					<Text>Sign Up</Text>
 				</button>
+
+				{#if errorMessage}
+					<Text class="text-red-500 text-center">{errorMessage}</Text>
+				{/if}
 			</form>
 
 			<SmallText class="mt-4 text-center">

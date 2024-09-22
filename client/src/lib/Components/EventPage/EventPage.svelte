@@ -19,8 +19,8 @@
 		<HostInfo organization={eventData.organization} />
 		<Files files={eventData.details.files} />
 
-		<Text class="text-altTextGray mb-4">Contact the host</Text>
-		<Text class="text-altTextGray">Report this event</Text>
+		<!-- <Text class="text-altTextGray mb-4">Contact the host</Text>
+		<Text class="text-altTextGray">Report this event</Text> -->
 
 		{#if eventData.details.location}
 			<Location location={eventData.details.location} />
