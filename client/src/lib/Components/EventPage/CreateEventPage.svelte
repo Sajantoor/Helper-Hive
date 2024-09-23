@@ -375,7 +375,7 @@
 				/>
 			</div>
 			{#each formData.files as file, index}
-				<div class="inline-block mr-3 relative">
+				<div class="inline-block mr-3 mb-2 relative {formData.files.length === fileLimit ? 'mt-4' : ''}">
 					<div class="flex flex-col items-center">
 						<FileDocumentOutline class="file text-primaryYellow" size={30} />
 						<SmallText class=" text-gray-400 mt-1 break-all text-center">

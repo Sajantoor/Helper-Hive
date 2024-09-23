@@ -51,12 +51,12 @@
 		<div class="flex flex-row-reverse max-desktop:mt-2 justify-between desktop:flex-col desktop:w-1/4">
 			<!-- Edit profile -->
 			<div class="pl-2 pt-2 pb-2 desktop:pt-4 desktop:ml-auto">
-				{#if isCurrentUser}
+				<!--{#if isCurrentUser}
 					<button class="editProfile flex border-2 rounded-full p-2 pl-4 pr-4">
 						<Pencil size={25} class="mt-auto mb-auto"/>
 						<Text class="ml-2">Edit Profile</Text>
 					</button>
-				{/if}
+				{/if}-->
 			</div>
 			<!-- Completed hours -->
 			<div class="pt-2 pl-2 pr-2 pb-1 content-center desktop:ml-auto">

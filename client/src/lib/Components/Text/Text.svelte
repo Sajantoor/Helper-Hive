@@ -38,6 +38,13 @@
 		font-weight: bold;
 	}
 
+	@media (max-width: 550px) {
+		.largeHeading {
+			font-size: 3.5rem;
+			font-weight: bold;
+		}
+	}
+
 	.largeText {
 		font-size: 1.5rem;
 	}
