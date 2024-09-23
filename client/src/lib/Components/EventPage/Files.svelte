@@ -13,7 +13,7 @@
 	{#each files as file}
 		<div class="inline-block mr-5 file">
 			<a href={file.url}>
-				<FileDocumentOutline class="file text-primaryYellow" size={iconSize} />
+				<FileDocumentOutline class="file mt-2 text-primaryYellow" size={iconSize} />
 				<SmallText class="text-gray-400 ml-1 mt-1">{file.name}</SmallText>
 			</a>
 		</div>

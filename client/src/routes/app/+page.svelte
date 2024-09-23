@@ -12,10 +12,10 @@
 </script>
 
 <div class="dashboard mb-8">
-	<Text class="text-2xl font-bold ml-[5%] mt-[1%] mb-[1%]">Events</Text>
+	<Text class="text-2xl font-bold ml-4 desktop:ml-[5%] mt-4 desktop:mt-[1%] mb-[1%]">Events</Text>
 
 	{#if tags && tags.length > 0}
-		<div class="tags-section mt-[2%] mb-4 ml-[5%]">
+		<div class="tags-section mb-4 ml-[5%]">
 			<div class="tag-list mt-2">
 				{#each tags as tag}
 					<div class="tag bg-tagYellow">

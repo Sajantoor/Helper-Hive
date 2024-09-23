@@ -12,7 +12,7 @@
 	export let id: string = '';
 </script>
 
-<div class="calendarEvent max-w-80 w-full h-1/4 m-5 border-white border-2">
+<div class="max-w-80 max-desktop:mx-auto w-full m-5 border-neutral-100 border-2 cursor-pointer">
 	<a on:click={() => goto(`/app/events/${id}`)}>
 		<img src={img} alt={title} class="h-36 w-full object-cover" />
 		<div class="p-2 flex justify-between items-end">
@@ -42,9 +42,3 @@
 		</div>
 	</a>
 </div>
-
-<style lang="postcss">
-	.calendarEvent {
-		border-color: #f4f4f4;
-	}
-</style>

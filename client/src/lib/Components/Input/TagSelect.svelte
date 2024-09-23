@@ -28,8 +28,8 @@
 	};
 </script>
 
-<div class="flex flex-wrap items-center {tagValues.length > 0 ? 'gap-6' : ''}">
-	<div class="tag-list flex flex-wrap gap-6">
+<div class="flex flex-wrap items-center mb-4 {tagValues.length > 0 ? 'gap-6' : ''}">
+	<div class="tag-list flex flex-wrap gap-4">
 		{#each tagValues as tagVal}
 			<div
 				class="tag mt-1 mb-1 bg-tagYellow px-4 py-2 min-w-[6rem] rounded-full inline-block whitespace-nowrap text-center relative"

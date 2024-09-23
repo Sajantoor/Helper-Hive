@@ -332,11 +332,11 @@
 
 <form on:submit|preventDefault={handleSubmit} class="space-y-6" novalidate>
 	<div
-		class="mx-auto mt-8 mb-8 w-[70vw] flex flex-col grid-cols-1 mdlg:grid mdlg:grid-cols-[44%_56%] mdlg:gap-[2rem_5rem] mdlg:justify-center"
+		class="mx-auto mt-8 mb-8 w-[90vw] desktop:w-[70vw] flex flex-col grid-cols-1 mdlg:grid mdlg:grid-cols-[44%_56%] mdlg:gap-[2rem_5rem] mdlg:justify-center"
 	>
 		<!-- Image Upload -->
 		<div
-			class="relative mb-8 mdlg:mb-0 aspect-[7/5] flex flex-col mdlg:aspect-[5/4] w-full order-1 mdlg:order-1 mdlg:col-span-1"
+			class="relative mb-5 desktop:mb-8 mdlg:mb-0 aspect-[7/5] flex flex-col mdlg:aspect-[5/4] w-[94%] desktop:w-full max-desktop:ml-auto order-1 mdlg:order-1 mdlg:col-span-1"
 		>
 			{#if !imageBase64}
 				<FileUpload
@@ -375,7 +375,10 @@
 				/>
 			</div>
 			{#each formData.files as file, index}
-				<div class="inline-block mr-3 relative">
+				<div
+					class="inline-block mr-3 mb-2 relative
+					{formData.files.length === fileLimit ? 'mt-4' : ''}"
+				>
 					<div class="flex flex-col items-center">
 						<FileDocumentOutline class="file text-primaryYellow" size={30} />
 						<SmallText class=" text-gray-400 mt-1 break-all text-center">
@@ -496,7 +499,7 @@
 		</div>
 	</div>
 
-	<div class="pt-16 {isEditing ? 'pb-1' : 'pb-10'} pb-10 w-full">
+	<div class="pt-4 pb-10 w-full">
 		{#if errorMessage}
 			<Text class="text-red-500 text-center">{errorMessage}</Text>
 		{/if}

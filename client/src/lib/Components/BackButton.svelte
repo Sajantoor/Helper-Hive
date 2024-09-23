@@ -4,5 +4,5 @@
 </script>
 
 <button class="absolute" on:click={() => goto('/app')}>
-	<ArrowLeft size={20} class="ml-10 mt-10 absolute" />
+	<ArrowLeft size={20} class="ml-3 desktop:ml-10 mt-10 absolute" />
 </button>

@@ -14,9 +14,9 @@
 
 <div class="header">
 	<div class="flex items-center">
-		<img src={logoSrc} alt="Logo" class="h-16 ml-5" />
+		<img src={logoSrc} alt="Logo" class="w-[30%] desktop:min-w-16 max-h-16 ml-5" />
 
-		<Text class="ml-5">Helper Hive</Text>
+		<Text class="font-medium mt-3 ml-2 desktop:ml-5 desktop:text-lg">Helper Hive</Text>
 	</div>
 
 	<div class="flex items-center gap-5">
@@ -27,16 +27,16 @@
 		<Text class="ml-5">Contact</Text> -->
 
 		<a href="/login">
-			<button class="ml-5 bg-transparent border border-black py-2 px-4 rounded-full">
+			<button class="ml-5 mt-3 mr-4 desktop:mr-6 bg-transparent border border-black py-2 px-4 rounded-full">
 				<Text>Login</Text>
 			</button>
 		</a>
 	</div>
 </div>
 
-<div class="join-container">
-	<LargeHeading>Start Volunteering Today!</LargeHeading>
-	<Text class="w-1/3 text-center mt-2">
+<div class="join-container mt-28 desktop:mt-32">
+	<LargeHeading class="text-center">Start Volunteering Today!</LargeHeading>
+	<Text class="w-[92%] desktop:w-2/3 xl:w-1/3 text-center mt-4 desktop:mt-2">
 		Dive into the hive of local opportunities, pick what sparks your curiosity, and join in—it's as
 		easy as gathering nectar!
 
@@ -53,21 +53,21 @@
 
 <div class="impact-container">
 	<Section class="text-center">Our Impact</Section>
-	<div class="hexagons">
-		<div class="hexagon">
-			<Section class="hex-text">
+	<div class="hexagons mdlg:justify-evenly">
+		<div class="hexagon max-mdlg:w-1/3 mdlg:h-[250px] md:mx-1 max-md:relative max-md:left-5">
+			<Text class="w-[90%] font-bold text-xl desktop:text-2xl md:text-3xl">
 				<div class="hex-content">X<br />Volunteers</div>
-			</Section>
+			</Text>
 		</div>
-		<div class="hexagon">
-			<Section class="hex-text">
-				<div class="hex-content">X<br />Organizations</div>
-			</Section>
+		<div class="hexagon max-mdlg:w-1/3 mdlg:h-[250px] md:mx-1 max-md:relative max-desktop:top-20 max-md:top-28">
+			<Text class="w-[90%] max-desktop:mb-3 font-bold text-xl desktop:text-2xl md:text-3xl">
+				<div class="hex-content hex-content2">X<br />Organizations</div>
+			</Text>
 		</div>
-		<div class="hexagon">
-			<Section class="hex-text">
+		<div class="hexagon max-mdlg:w-1/3 mdlg:h-[250px] md:mx-1 max-md:relative max-md:right-5">
+			<Text class="w-[90%] max-desktop:mb-2 font-bold text-xl desktop:text-2xl md:text-3xl">
 				<div class="hex-content">X<br />Hours Volunteered</div>
-			</Section>
+			</Text>
 		</div>
 	</div>
 </div>
@@ -139,7 +139,7 @@
 
 <div class="footer-container">
 	<!-- Container for gradient -->
-	<div class="flex justify-center pt-32">
+	<div class="flex justify-center pt-4 pb-20 desktop:pt-8 desktop:pb-16">
 		<a href="/registration/volunteer">
 			<button class="bg-black text-white py-4 px-12 rounded-lg"><Heading>JOIN NOW</Heading></button>
 		</a>
@@ -162,9 +162,9 @@
 			</a>
 		</div>
 
-		<div class="flex items-center">
-			<Text class="text-center">Helper Hive Volunteer Network</Text>
-			<img src={logoSrc} alt="Logo" class="h-16 ml-5" />
+		<div class="flex items-end desktop:items-center">
+			<Text class="text-right desktop:text-center">Helper Hive Volunteer Network</Text>
+			<img src={logoSrc} alt="Logo" class="h-16 ml-2 max-desktop:mr-1 desktop:ml-5" />
 		</div>
 	</div>
 </div>
@@ -172,13 +172,11 @@
 <style lang="postcss">
 	.header {
 		margin-top: 1rem;
-		margin-right: 4rem;
 		display: flex;
 		justify-content: space-between;
 	}
 
 	.join-container {
-		margin-top: 8rem;
 		margin-right: 1rem;
 		display: flex;
 		flex-direction: column;
@@ -194,26 +192,22 @@
 
 	.hexagons {
 		display: flex;
-		justify-content: center;
 		margin-top: 4rem;
-		gap: 4rem; /* Space between hexagons */
 	}
 
 	.hexagon {
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		height: 250px; /* adjust to control the size  */
 		aspect-ratio: 1 / cos(30deg);
 		clip-path: polygon(50% -50%, 100% 50%, 50% 150%, 0 50%);
 		background: #ffffff;
+		box-shadow: inset 0 0 2px #f8a100;
 	}
 
 	.hex-content {
 		text-align: center;
 		padding: 10px;
-		word-wrap: break-word;
-		word-break: break-word;
 	}
 
 	.faq-item {
@@ -232,5 +226,32 @@
 		padding-bottom: 2rem;
 		margin-bottom: 0;
 		background: linear-gradient(to bottom, white, #fabd22);
+	}
+
+	@media (max-width: 550px) {
+		.faq-item {
+			margin: 2rem auto;
+			width: 85%;
+		}
+
+		.hex-content2 {
+			text-align: center;
+			padding: 10px;
+			padding: 5px;
+		}
+
+		.impact-container {
+			margin-top: 8rem;
+			padding-bottom: 12rem;
+			background: linear-gradient(to bottom, white, #fabd22, white);
+		}
+
+		.footer {
+			margin: 0 auto;
+			display: flex;
+			margin-left: 5%;
+			width: 94%;
+			justify-content: space-between;
+		}
 	}
 </style>

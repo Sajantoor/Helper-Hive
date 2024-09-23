@@ -10,7 +10,7 @@
 	export let rows = 0;
 	export let errorMessage: string | null = null;
 	export let touched = false;
-	let inputClass = 'mt-1 pl-3 p-2 w-full bg-placeholderGray border-none rounded-lg';
+	let inputClass = 'mt-1 pl-3 p-2 w-full bg-placeholderGray border-none rounded-lg max-desktop:pt-3 max-desktop:pb-3';
 	let invalidClass = 'bg-tagYellow text-altTextBrown placeholder-altTextBrown';
 
 	function handleInput() {

@@ -167,6 +167,7 @@
 		<Heading>Organization Liability Waiver and Release</Heading>
 		<Text>
 			<ol class="list-decimal">
+				<br />
 				<li>
 					Acknowledgment and Assumption of Risk:
 					<br />
@@ -251,6 +252,7 @@
 	{#if type === 'liabilityVol'}
 		<Heading>Volunteer Liability Waiver and Release</Heading>
 		<ol class="list-decimal">
+			<br />
 			<li>
 				Acknowledgment and Assumption of Risk:
 				<br />
