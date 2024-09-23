@@ -1,4 +1,5 @@
 import nodemailer from 'nodemailer';
+import { generateAccountConfirmationToken, TokenData } from '../middlewares/authentication';
 
 const domain = process.env.CLIENT_URL!;
 
@@ -35,11 +36,22 @@ export async function sendPasswordResetEmail(to: string, token: string) {
     await sendMail(to, subject, text);
 }
 
-export async function sendConfirmRegistrationEmail(to: string, token: string) {
+async function sendConfirmRegistrationEmail(to: string, token: string) {
     const subject = "Confirm Registration";
     const text = `Your registration is almost complete! Click the link below to confirm your email address and join the network:\n\n${domain}/confirm-account/${token}`;
 
     await sendMail(to, subject, text);
+}
+
+export async function createConfirmRegistrationEmail(tokenData: TokenData, email: string) {
+    const token = generateAccountConfirmationToken(tokenData);
+
+    if (!token) {
+        console.error("Error generating token");
+        return;
+    }
+
+    await sendConfirmRegistrationEmail(email, token);
 }
 
 export async function sendEventConfirmationEmail(to: string, eventName: string) {

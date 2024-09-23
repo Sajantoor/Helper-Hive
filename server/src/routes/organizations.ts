@@ -3,6 +3,7 @@ import Organization from "../database/models/organization";
 import { hashPassword } from "../middlewares/authentication";
 import { z } from 'zod';
 import User from "../database/models/user";
+import { createConfirmRegistrationEmail } from "../utils/email";
 
 interface ContactPerson {
     firstName: string;
@@ -94,6 +95,11 @@ export async function registerOrganization(req: Request, res: Response) {
     try {
         const newOrganization = new Organization(organizationBody.data);
         const savedOrganization = await newOrganization.save();
+        await createConfirmRegistrationEmail({
+            userId: savedOrganization.id as string,
+            userRole: "organization",
+            accountConfirmed: savedOrganization.emailConfirmed,
+        }, savedOrganization.email);
         const organizationResponse = filterOrganizationResponse(savedOrganization);
         return res.status(201).json(organizationResponse);
     } catch (error) {

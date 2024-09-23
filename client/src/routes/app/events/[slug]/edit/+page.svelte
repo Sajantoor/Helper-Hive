@@ -3,7 +3,7 @@
 	import Text from '$lib/Components/Text/Text.svelte';
 	import type { LayoutData } from '../$types';
 	import { profileStore } from '$lib/stores/profileStore';
-	import type { EventFormData, UploadedFiles } from '$lib/Types/FormData';
+	import type { EventFormData, UploadedFiles } from '$common/types/FormData';
 
 	export let data: LayoutData;
 	let authorized = false;

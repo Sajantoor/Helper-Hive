@@ -4,9 +4,12 @@ import bcrypt from "bcrypt";
 import { UserRole } from "../utils/types";
 import { __prod__ } from "../utils/constants";
 import RefreshToken from "../database/models/refreshToken";
+import { getUser } from "../utils/user";
+import { createConfirmRegistrationEmail } from "../utils/email";
 
 const access_code_secret = process.env.ACCESS_CODE_SECRET!;
 const refresh_code_secret = process.env.REFRESH_CODE_SECRET!;
+const account_confirmation_secret = process.env.ACCOUNT_CONFIRMATION_SECRET!;
 
 export type TokenData = {
     userId: string;
@@ -23,11 +26,18 @@ const cookieOptions = {
     maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
 } as const;
 
-export function generateAccessToken(data: TokenData, validity = "15m"): string | null {
+export function generateAccessToken(data: TokenData): string | null {
+    return generateToken(data, access_code_secret, "15m");
+}
+
+export function generateAccountConfirmationToken(data: TokenData): string | null {
+    return generateToken(data, account_confirmation_secret, "7d");
+}
+
+function generateToken(data: TokenData, secret: string, validity: string): string | null {
     try {
-        return jwt.sign(data, access_code_secret, { expiresIn: validity });
+        return jwt.sign(data, secret, { expiresIn: validity });
     } catch (err) {
-        console.error(err);
         return null;
     }
 }
@@ -41,15 +51,48 @@ export function validateAccessToken(token: string) {
     }
 }
 
-async function generateAuthTokens(data: TokenData): Promise<{ refreshToken: string; accessToken: string; } | null> {
-    let refreshToken: string;
-    let accessToken: string;
+export function validateAccountConfirmationToken(token: string) {
+    const data = jwt.verify(token, account_confirmation_secret) as TokenData;
+    return data;
+}
 
+export async function resendAccountConfirmationEmail(res: Response, token: string) {
+    let data: TokenData;
     try {
-        refreshToken = jwt.sign(data, refresh_code_secret, { expiresIn: "7d" });
-        accessToken = jwt.sign(data, access_code_secret, { expiresIn: "15m" });
+        data = jwt.decode(token) as TokenData;
     } catch (err) {
-        console.error(err);
+        return res.status(400).json({ message: "Invalid token" });
+    }
+
+    if (!data) {
+        return res.status(400).json({ message: "Invalid token" });
+    }
+
+    const user = await getUser(data);
+
+    if (!user) {
+        return res.status(400).json({ message: "Invalid token" });
+    }
+
+    if (user.emailConfirmed) {
+        return res.status(400).json({ message: "Account already confirmed" });
+    }
+
+    const tokenData: TokenData = {
+        userId: data.userId,
+        userRole: data.userRole,
+        accountConfirmed: false,
+    }
+
+    await createConfirmRegistrationEmail(tokenData, user.email);
+    res.status(400).json({ message: "Token expired, check your inbox for a new confirmation email." });
+}
+
+async function generateAuthTokens(data: TokenData): Promise<{ refreshToken: string; accessToken: string; } | null> {
+    const refreshToken = generateToken(data, refresh_code_secret, "7d");
+    const accessToken = generateAccessToken(data);
+
+    if (!refreshToken || !accessToken) {
         return null;
     }
 

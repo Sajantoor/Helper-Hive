@@ -11,6 +11,7 @@ services:
             - MONGO_DB_URI=mongodb://mongo:27017/HelperHive
             - ACCESS_CODE_SECRET=${ACCESS_CODE_SECRET:?error}
             - REFRESH_CODE_SECRET=${REFRESH_CODE_SECRET:?error}
+            - ACCOUNT_CONFIRMATION_SECRET=${ACCOUNT_CONFIRMATION_SECRET:?error}
             - CLIENT_URL=${CLIENT_URL:?error}
             - DOMAIN=${DOMAIN:?error}
             - AWS_REGION=${AWS_REGION:?error}
