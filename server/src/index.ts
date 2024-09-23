@@ -6,7 +6,7 @@ import { createEvent, deleteEvent, getEvent, getEvents, updateEvent } from "./ro
 import { getOrganizations, getOrganization, registerOrganization, updateOrganization, deleteOrganization } from "./routes/organizations";
 import { getUser, registerUser, updateUser, deleteUser } from "./routes/user";
 import { authorize, authorizeOrganization, authorizeUser, renewToken } from "./middlewares/authentication";
-import { confirmAccount, forgotPassword, login, logout, profile, resetPassword } from "./routes/login";
+import { confirmAccount, forgotPassword, login, logout, profile, resetForgottenPassword, resetPassword } from "./routes/login";
 import { getUserFutureEvents, getUserPastEvents, getOrganizationEvents, registerForEvent, deregisterForEvent } from "./routes/registration";
 import { getS3SecureURL } from "./routes/s3";
 
@@ -37,7 +37,7 @@ const REGISTRATION_API = `${API_PREFIX}/registrations`;
 
 // Unauthenticated routes
 app.post(`${API_PREFIX}/login`, login);
-app.post(`${API_PREFIX}/reset-password/:id`, resetPassword);
+app.post(`${API_PREFIX}/reset-password`, resetForgottenPassword);  // reset-password does not require id in the implemenation
 app.post(`${API_PREFIX}/forgot-password`, forgotPassword);
 app.get(`${API_PREFIX}/confirm-account/:id`, confirmAccount);
 
