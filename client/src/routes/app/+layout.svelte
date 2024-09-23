@@ -11,9 +11,10 @@
 </script>
 
 <NavBar
-	isOrganization={profile?.role === 'organization'}
+	isOrganization={profile?.isOrganization}
 	name={profile?.name}
 	email={profile?.email}
 	avatar={profile?.avatar}
+	isVerified={profile?.isVerified}
 />
 <slot />

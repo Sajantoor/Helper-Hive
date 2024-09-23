@@ -97,7 +97,7 @@ export async function registerOrganization(req: Request, res: Response) {
         const savedOrganization = await newOrganization.save();
         await createConfirmRegistrationEmail({
             userId: savedOrganization.id as string,
-            userRole: "organization",
+            isOrganization: true,
             accountConfirmed: savedOrganization.emailConfirmed,
         }, savedOrganization.email);
         const organizationResponse = filterOrganizationResponse(savedOrganization);

@@ -4,12 +4,12 @@
 	import type { LayoutData } from '../$types';
 	import { profileStore } from '$lib/stores/profileStore';
 	import type { EventFormData, UploadedFiles } from '$common/types/FormData';
+	import BackButton from '$lib/Components/BackButton.svelte';
 
 	export let data: LayoutData;
 	let authorized = false;
 
 	if ($profileStore && $profileStore.id === data.organization._id) {
-		// TODO: go to error page
 		authorized = true;
 	}
 
@@ -53,5 +53,8 @@
 {#if authorized}
 	<CreateEventPage isEditing={true} {formData} />
 {:else}
-	<Text>Not authorized to edit this event...</Text>
+	<BackButton />
+	<div class="block p-20">
+		<Text class="text-center">You are not authorized to edit this event...</Text>
+	</div>
 {/if}

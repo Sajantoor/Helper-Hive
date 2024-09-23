@@ -16,7 +16,7 @@
 	const startDate = event.date.startDay;
 	const endDate = event.date.endDay;
 	const location = event.details.location;
-	let isOrganization = $profileStore?.role === 'organization';
+	let isOrganization = $profileStore?.isOrganization;
 	let isOwner = isOrganization && $profileStore?.id === event.organization._id;
 
 	let spotsAvailable = event.registration.totalSpots - event.registration.totalRegistered;
@@ -165,7 +165,7 @@
 		flex-direction: column;
 		gap: 1rem;
 	}
-	
+
 	.item {
 		display: flex;
 		align-items: center;

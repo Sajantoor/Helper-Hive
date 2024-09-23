@@ -5,7 +5,7 @@ import { TokenData } from "../middlewares/authentication";
 export async function getUser(data: TokenData) {
     let user;
 
-    if (data.userRole === "volunteer") {
+    if (!data.isOrganization) {
         user = await User.findById(data.userId);
     } else {
         user = await Organization.findById(data.userId);

@@ -1,11 +1,11 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import { UserRole } from "../utils/types";
 import { __prod__ } from "../utils/constants";
 import RefreshToken from "../database/models/refreshToken";
 import { getUser } from "../utils/user";
 import { createConfirmRegistrationEmail } from "../utils/email";
+import { isOrganization, isVolunteer } from "../utils/checkUserRole";
 
 const access_code_secret = process.env.ACCESS_CODE_SECRET!;
 const refresh_code_secret = process.env.REFRESH_CODE_SECRET!;
@@ -13,8 +13,9 @@ const account_confirmation_secret = process.env.ACCOUNT_CONFIRMATION_SECRET!;
 
 export type TokenData = {
     userId: string;
-    userRole: UserRole;
+    isOrganization: boolean;
     accountConfirmed: boolean,
+    isOrganizationVerified?: boolean;
 }
 
 const cookieOptions = {
@@ -80,7 +81,7 @@ export async function resendAccountConfirmationEmail(res: Response, token: strin
 
     const tokenData: TokenData = {
         userId: data.userId,
-        userRole: data.userRole,
+        isOrganization: data.isOrganization,
         accountConfirmed: false,
     }
 
@@ -145,7 +146,16 @@ export async function authorize(req: Request, res: Response, next: NextFunction)
 }
 
 export async function authorizeOrganization(req: Request, res: Response, next: NextFunction) {
-    if (res.locals.user.userRole !== "organization") {
+    if (!isOrganization(res)) {
+        return forbiddenError(res);
+    }
+
+    next();
+}
+
+export async function authorizeVerifiedOrganization(req: Request, res: Response, next: NextFunction) {
+    // run after authorized middleware
+    if (!res.locals.user.isOrganizationVerified) {
         return forbiddenError(res);
     }
 
@@ -153,7 +163,7 @@ export async function authorizeOrganization(req: Request, res: Response, next: N
 }
 
 export async function authorizeUser(req: Request, res: Response, next: NextFunction) {
-    if (res.locals.user.userRole !== "volunteer") {
+    if (!isVolunteer(res)) {
         return forbiddenError(res);
     }
 
@@ -185,7 +195,7 @@ export async function renewToken(req: Request, res: Response, next: NextFunction
 
     const payload: TokenData = {
         userId: data.userId,
-        userRole: data.userRole,
+        isOrganization: data.isOrganization,
         // TODO if this is false we could check if the user has confirmed their 
         // account
         accountConfirmed: data.accountConfirmed,

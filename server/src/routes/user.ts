@@ -89,7 +89,7 @@ export async function registerUser(req: Request, res: Response) {
 
     await createConfirmRegistrationEmail({
         userId: savedUser.id as string,
-        userRole: "volunteer",
+        isOrganization: false,
         accountConfirmed: savedUser.emailConfirmed,
     }, savedUser.email);
 

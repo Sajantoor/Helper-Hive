@@ -5,13 +5,16 @@
 	import logoSrc from '$lib/assets/Logo.png';
 	import { goto } from '$app/navigation';
 	import { PUBLIC_SERVER_HOST } from '$env/static/public';
+	import Close from 'svelte-material-icons/Close.svelte';
 
 	export let avatar: string = '';
 	export let isOrganization = false;
 	export let name = '';
 	export let email = '';
+	export let isVerified = true;
 
 	let isDropdownOpen = false;
+	let showWarning = true;
 
 	function toggleDropdown() {
 		isDropdownOpen = !isDropdownOpen;
@@ -59,7 +62,7 @@
 		</div>
 		<div class="nav-links flex gap-6 desktop:gap-14">
 			<a href="/app" class="text-black hover:underline"><Text>Events</Text></a>
-			{#if isOrganization}
+			{#if isOrganization && isVerified}
 				<a href="/app/events/create" class="text-black hover:underline">
 					<Text>Create Event</Text>
 				</a>
@@ -72,12 +75,12 @@
 		</button>
 
 		{#if isDropdownOpen}
-			<div class="dropdown-menu absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg z-10">
+			<div class="dropdown-menu absolute right-2 mt-2 min-w-64 bg-white rounded-lg shadow-lg z-10">
 				<div class="p-4 flex items-center">
 					<img src={avatar} alt="Profile" class="h-12 w-12 rounded-full" />
-					<div class="ml-3">
+					<div class="ml-3 mr-8">
 						<Text class="text-gray-900 font-semibold">{name}</Text>
-						<SmallText class="text-gray-600 text-sm truncate w-full">{email}</SmallText>
+						<SmallText class="text-gray-600 text-sm truncate w-full pr-4">{email}</SmallText>
 					</div>
 				</div>
 				<div class="border-t border-gray-200"></div>
@@ -102,3 +105,24 @@
 		{/if}
 	</div>
 </nav>
+{#if !isVerified && showWarning}
+	<!-- show a warning that account is not verified -->
+	<div
+		class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+		role="alert"
+	>
+		<SmallText>
+			<div class="inline">
+				<button class="float-right mr-5" on:click={() => (showWarning = false)}>
+					<Close size={20} />
+				</button>
+				<strong class="font-bold">Warning!</strong>
+			</div>
+
+			<div class="sm:inline">
+				Your account is not verified. You will not be able to create events at this time. Please
+				wait 1-5 days for the Helper Hive team to verify you.
+			</div>
+		</SmallText>
+	</div>
+{/if}

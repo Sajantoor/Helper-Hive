@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import User from "../database/models/user";
 import Organization from "../database/models/organization";
-import { UserRole } from "../utils/types";
 import { clearCookies, hashPassword, resendAccountConfirmationEmail, setAuthCookies, TokenData, validateAccountConfirmationToken } from "../middlewares/authentication";
 import bcrypt from "bcrypt";
 import { sendPasswordResetEmail } from "../utils/email";
@@ -26,11 +25,11 @@ export async function login(req: Request, res: Response) {
     email = email.toLowerCase();
 
     let user = await User.findOne({ email });
-    let userRole: UserRole = "volunteer";
+    let isOrganization = false;
 
     if (!user) {
         user = await Organization.findOne({ email });
-        userRole = "organization";
+        isOrganization = true;
     }
 
     if (!user) {
@@ -45,7 +44,7 @@ export async function login(req: Request, res: Response) {
 
     const tokenData: TokenData = {
         userId: user.id as string,
-        userRole,
+        isOrganization,
         accountConfirmed: user.emailConfirmed,
     }
 
@@ -86,7 +85,7 @@ export async function forgotPassword(req: Request, res: Response) {
         return res.status(200).json({ message: "Password reset email sent" });
     }
 
-    const token = await generatePasswordResetToken(user.id, user instanceof User ? "volunteer" : "organization");
+    const token = await generatePasswordResetToken(user.id, user instanceof Organization);
 
     if (!token) {
         return res.status(500).json({ message: "Error generating token" });
@@ -112,7 +111,7 @@ export async function resetPassword(req: Request, res: Response) {
 
     let user;
 
-    if (resetPasswordToken.role === "volunteer") {
+    if (!resetPasswordToken.isOrganization) {
         user = await User.findById(resetPasswordToken.id);
     } else {
         user = await Organization.findById(resetPasswordToken.id);
@@ -156,7 +155,7 @@ export async function confirmAccount(req: Request, res: Response) {
 
     let user;
 
-    if (data.userRole === "volunteer") {
+    if (!data.isOrganization) {
         user = await User.findById(data.userId);
     } else {
         user = await Organization.findById(data.userId);
@@ -177,7 +176,7 @@ export async function confirmAccount(req: Request, res: Response) {
     // give them a new token 
     const tokenData: TokenData = {
         userId: data.userId,
-        userRole: data.userRole,
+        isOrganization: data.isOrganization,
         accountConfirmed: true,
     }
 
@@ -189,7 +188,7 @@ export async function profile(req: Request, res: Response) {
     const user = res.locals.user;
     let response: ProfileResponse;
 
-    if (user.userRole === "volunteer") {
+    if (!user.isOrganization) {
         const profile = await User.findById(user.userId);
 
         if (!profile) {
@@ -200,10 +199,10 @@ export async function profile(req: Request, res: Response) {
             id: profile.id,
             email: profile.email,
             name: profile.firstName + " " + profile.lastName,
-            role: "volunteer",
+            isOrganization: false,
             avatar: profile.avatar
         }
-    } else if (user.userRole === "organization") {
+    } else {
         const profile = await Organization.findById(user.userId);
 
         if (!profile) {
@@ -214,17 +213,16 @@ export async function profile(req: Request, res: Response) {
             id: profile.id,
             email: profile.email,
             name: profile.name,
-            role: "organization",
+            isOrganization: true,
+            isVerified: profile.verified,
             avatar: profile.avatar
         }
-    } else {
-        return res.status(500).json({ message: "Internal server error" });
     }
 
     return res.status(200).json(response);
 }
 
-async function generatePasswordResetToken(userId: string, userRole: UserRole) {
+async function generatePasswordResetToken(userId: string, isOrganization: boolean) {
     // delete any existing tokens for this user
     try {
         await PasswordResetToken.deleteMany({ id: userId });
@@ -239,7 +237,7 @@ async function generatePasswordResetToken(userId: string, userRole: UserRole) {
         const passwordResetToken = new PasswordResetToken({
             id: userId,
             token,
-            role: userRole,
+            isOrganization,
         });
 
         await passwordResetToken.save();
