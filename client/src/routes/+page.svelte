@@ -185,8 +185,10 @@
 	}
 
 	.impact-container {
-		margin-top: 8rem;
-		padding-bottom: 16rem;
+		margin-top: 7rem;
+		padding-top: 0.5rem;
+		padding-bottom: 14rem;
+		margin-bottom: 1.5rem;
 		background: linear-gradient(to bottom, white, #fabd22, white);
 	}
 
