@@ -23,7 +23,7 @@
 	import { profileStore } from '$lib/stores/profileStore';
 	import type { OrganizationEventData } from '$common/types/eventResponse';
 	import BackButton from '../BackButton.svelte';
-	import type { EventFormData } from '$common/Types/FormData';
+	import type { EventFormData } from '$common/types/FormData';
 	import { onMount } from 'svelte';
 	import { tags } from '$lib/Utils/tags';
 
