@@ -3,7 +3,7 @@
 	import { onMount } from 'svelte';
 	import type { EventResponse } from '$common/types/eventResponse';
 	import Text from './Text/Text.svelte';
-	
+
 	import LeftArrow from 'svelte-material-icons/ChevronLeft.svelte';
 	import RightArrow from 'svelte-material-icons/ChevronRight.svelte';
 
@@ -61,10 +61,10 @@
 	<div class="header w-full">
 		<Text class="calendar-title text-2xl font-bold">Calendar</Text>
 		<div class="navigation pr-5 flex mt-2 justify-between desktop:justify-start">
-			<div class="ml-2">
+			<div class="ml-2 mr-2">
 				<Text class="text-xl destop:mr-6 font-bold">{currentKey}</Text>
 			</div>
-			
+
 			<div>
 				<button on:click={previousPage} disabled={currentIndex === 0}>
 					<LeftArrow />
@@ -73,7 +73,7 @@
 					<RightArrow />
 				</button>
 			</div>
-			
+
 			<div class="today_button ml-6 p-2 border rounded">
 				<button on:click={firstPage} disabled={currentIndex === 0}>
 					<Text>Today</Text>
