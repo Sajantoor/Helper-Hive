@@ -57,7 +57,7 @@
 
 <div class="w-full overflow-hidden">
 	{#if events.length === 0}
-		<Text class="text-center">There are no available events at this time, try again later...</Text>
+		<Text class="text-center max-desktop:w-[90%] max-desktop:mx-auto">There are no available events at this time, try again later...</Text>
 	{:else}
 		<div class="flex items-center mx-auto relative">
 			<div class="flex-none w-12 flex justify-center bg-white z-10">

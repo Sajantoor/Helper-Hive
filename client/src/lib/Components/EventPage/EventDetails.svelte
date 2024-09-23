@@ -138,7 +138,7 @@
 		{/if}
 	</div>
 
-	<div class="mt-4">
+	<div class="mt-1 desktop:mt-4">
 		<Text class="text-altTextGray">{spotsAvailable} Spots Available</Text>
 		{#if !isOrganization}
 			<button
@@ -165,6 +165,7 @@
 		flex-direction: column;
 		gap: 1rem;
 	}
+	
 	.item {
 		display: flex;
 		align-items: center;

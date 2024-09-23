@@ -35,7 +35,7 @@
 	<div class="relative inline-block w-full mb-2">
 		<div class="flex">
 			<select
-				class="h-9 pl-3 rounded-l-lg bg-placeholderGray text-placeholderGrayText cursor-pointer
+				class="h-12 desktop:h-9 pl-3 rounded-l-lg bg-placeholderGray text-placeholderGrayText cursor-pointer
 					{touched && !valid ? 'bg-tagYellow text-altTextBrown' : ''}"
 				aria-label="Country"
 				name="Country"
@@ -59,7 +59,7 @@
 				bind:value
 				bind:valid={validState}
 				required={true}
-				class="h-9 pl-3 pr-3 rounded-r-lg grow bg-placeholderGray 
+				class="h-12 desktop:h-9 pl-3 pr-3 rounded-r-lg grow bg-placeholderGray 
 				{touched && !valid && 'bg-tagYellow placeholder-altTextBrown text-altTextBrown'}"
 				on:change={handleChange}
 				on:blur={() => (touched = true)}

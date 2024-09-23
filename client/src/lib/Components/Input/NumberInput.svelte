@@ -46,7 +46,7 @@
 		<input
 			type="number"
 			bind:value
-			class="mt-1 p-2 w-1/6 bg-placeholderGray border-none rounded-lg
+			class="mt-1 p-2 w-1/6 bg-placeholderGray border-none rounded-lg max-desktop:pt-3 max-desktop:pb-3
 			{touched && !valid && 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'}"
 			on:input={handleInput}
 			on:blur={handleBlur}

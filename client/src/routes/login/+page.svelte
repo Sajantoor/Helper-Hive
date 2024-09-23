@@ -44,7 +44,7 @@
 	}
 </script>
 
-<div class="flex flex-col mdlg:flex-row justify-center items-center min-h-screen">
+<div class="flex flex-col mdlg:flex-row justify-center items-center min-h-[90vh] desktop:min-h-screen">
 	<div
 		class="container mx-auto px-4 flex flex-col mdlg:flex-row justify-center max-w-screen-lg space-y-6"
 	>

@@ -44,7 +44,7 @@
 			type="email"
 			bind:value
 			{placeholder}
-			class="mt-1 pl-3 p-2 w-full bg-placeholderGray border-none rounded-lg
+			class="mt-1 pl-3 p-2 w-full bg-placeholderGray border-none rounded-lg max-desktop:pt-3 max-desktop:pb-3
                 {touched && !valid && 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'}"
 			on:change={validateInput}
 			on:blur={handleBlur}

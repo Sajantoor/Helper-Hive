@@ -19,6 +19,7 @@
 	let hovering = false;
 
 	const handleDrop = (event: CustomEvent<any>) => {
+		hovering = false;
 		touched = true;
 		const files = event.detail;
 		if (files.fileRejections.length > 0) {
@@ -32,7 +33,7 @@
 	};
 </script>
 
-<div class="relative h-full w-full">
+<div class="relative h-full w-full {(touched && !valid) || disabled ? 'mb-4' : ''}">
 	<FileDropzone
 		accept={type === 'image'
 			? 'image/*'
@@ -55,7 +56,7 @@
 		></div>
 		<div class="flex items-center justify-between relative h-full">
 			{#if disabled}
-				<Text class="italic p-4 text-red-400">Upload disabled</Text>
+				<Text class="p-4 text-neutral-400/75">Upload disabled</Text>
 			{:else}
 				<Text
 					class="italic p-4 {touched && !valid ? 'text-altTextBrown' : 'text-placeholderGrayText'}"
@@ -65,7 +66,7 @@
 			<UploadIcon
 				class="ml-2 w-8 h-8 text-primaryYellow 
 				{touched && !valid && 'text-altTextBrown'} 
-				{disabled && 'text-red-400'}"
+				{disabled && 'text-neutral-400/75'}"
 			/>
 		</div>
 
@@ -103,7 +104,7 @@
 	{/if}
 
 	{#if (touched && !valid) || disabled}
-		<SmallText class="smallText text-altTextBrown text-right mt-1">
+		<SmallText class="smallText text-altTextBrown text-right mt-2">
 			{errorMessage}
 		</SmallText>
 	{/if}

@@ -95,7 +95,7 @@
 				type="text"
 				bind:value
 				{placeholder}
-				class="mt-1 pl-3 p-2 w-full rounded-full bg-placeholderGray border-none
+				class="mt-1 pl-4 desktop:pl-3 p-2 w-full rounded-full bg-placeholderGray border-none
 				{invalid ? 'bg-tagYellow text-altTextBrown placeholder-altTextBrown' : ''}"
 				on:input={handleSearch}
 				on:keydown={handleKeyDown}
