@@ -3,6 +3,7 @@
 	import Text from '$lib/Components/Text/Text.svelte';
 	import TextInput from '$lib/Components/Input/TextInput.svelte';
 	import PasswordInput from '$lib/Components/Input/PasswordInput.svelte';
+	import CloseCircle from 'svelte-material-icons/CloseCircle.svelte';
 	import { PUBLIC_SERVER_HOST } from '$env/static/public';
 
 	const dispatch = createEventDispatcher();
@@ -47,12 +48,12 @@
 	<div class="bg-white w-96 p-6 rounded-xl shadow-lg">
 		<div class="flex justify-between items-center mb-4">
 			<Text class="text-lg font-bold">Edit Profile</Text>
-			<button on:click={close} class="text-gray-600 hover:text-gray-900"> &times; </button>
+			<button on:click={close} class="text-gray-500/75 hover:text-gray-900 mb-2 scale-150 desktop:scale-125"><CloseCircle /></button>
 		</div>
 
 		<div class="mb-4">
 			<div class="flex items-center mb-4">
-				<div class="w-12 h-12 rounded-full bg-gray-200 mr-4">
+				<div class="w-12 h-12 rounded-full mr-4">
 					<img src={profilePic} alt="Profile Picture" class="rounded-full" />
 				</div>
 				<TextInput label="" placeholder="Name" bind:value={name} />
@@ -79,7 +80,7 @@
 
 		<button
 			on:click={saveProfile}
-			class="bg-primaryYellow text-white font-bold py-2 px-4 rounded-lg w-full hover:bg-yellow-600"
+			class="bg-primaryYellow text-black py-2 px-4 rounded-lg w-full hover:bg-yellow-600"
 		>
 			Save
 		</button>

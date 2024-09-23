@@ -4,7 +4,10 @@ export default {
 	theme: {
 		extend: {
 			screens: {
-				'mdlg': '896px', // Custom breakpoint between md and lg
+				'desktop': '550px', // "not mobile"
+				// ex: class="text-center desktop:text-left" centers on mobile only
+				// OR: class="max-desktop:text-center" does same
+				'mdlg': '896px' // Custom breakpoint between md and lg
 			},
 			colors: {
 				primaryYellow: '#FABD22',
