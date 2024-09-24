@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import User from "../database/models/user";
 import Event from "../database/models/events";
 import mongoose from "mongoose";
+import { sendEventCancellationEmail, sendEventConfirmationEmail } from "../utils/email";
 
 // GET all the events a user is currently registered for (in the future)
 export async function getUserFutureEvents(req: Request, res: Response) {
@@ -121,7 +122,7 @@ export async function registerForEvent(req: Request, res: Response) {
 
         await user.save();
         await event.save();
-
+        sendEventConfirmationEmail(user.email, event.name, event.id);
         return res.status(200).json({ message: "Registration successful" });
     } catch (error) {
         return res.status(500).json({ message: "Error registering for event", error });
@@ -168,6 +169,7 @@ export async function deregisterForEvent(req: Request, res: Response) {
 
         await user.save();
         await event.save();
+        sendEventCancellationEmail(user.email, event.name);
         return res.status(200).json({ message: "Registration removed successfully" });
     } catch (error) {
         return res.status(500).json({ message: "Error deregistering event", error });
