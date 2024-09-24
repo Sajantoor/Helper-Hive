@@ -57,7 +57,7 @@
 	}
 </script>
 
-<div class="calendar-view">
+<div class="calendar-view mx-auto max-w-[3000px]">
 	<div class="header w-full">
 		<Text class="calendar-title text-2xl font-bold">Calendar</Text>
 		<div class="navigation pr-5 flex mt-2 justify-between desktop:justify-start">
