@@ -142,7 +142,7 @@ export async function authorize(req: Request, res: Response, next: NextFunction)
         return unauthorizedError(res);
     }
 
-    if (process.env.EMAIL_SETUP && !data.accountConfirmed) {
+    if (!data.accountConfirmed) {
         return res.status(403).json({ message: "Account not confirmed" });
     }
 
