@@ -6,6 +6,7 @@ import RefreshToken from "../database/models/refreshToken";
 import { getUser } from "../utils/user";
 import { createConfirmRegistrationEmail } from "../utils/email";
 import { isOrganization, isVolunteer } from "../utils/checkUserRole";
+import Organization from "../database/models/organization";
 
 const access_code_secret = process.env.ACCESS_CODE_SECRET!;
 const refresh_code_secret = process.env.REFRESH_CODE_SECRET!;
@@ -196,9 +197,17 @@ export async function renewToken(req: Request, res: Response, next: NextFunction
     const payload: TokenData = {
         userId: data.userId,
         isOrganization: data.isOrganization,
-        // TODO if this is false we could check if the user has confirmed their 
-        // account
         accountConfirmed: data.accountConfirmed,
+        isOrganizationVerified: data.isOrganizationVerified,
+    }
+
+    if (data.isOrganization && data.isOrganizationVerified === false) {
+        const organization = await Organization.findById(data.userId);
+        if (!organization) {
+            return unauthorizedError(res);
+        }
+
+        payload.isOrganizationVerified = organization.verified;
     }
 
     const accessToken = generateAccessToken(payload);

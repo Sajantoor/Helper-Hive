@@ -46,6 +46,7 @@ export async function login(req: Request, res: Response) {
         userId: user.id as string,
         isOrganization,
         accountConfirmed: user.emailConfirmed,
+        isOrganizationVerified: user instanceof Organization ? user.verified : undefined,
     }
 
     await setAuthCookies(res, tokenData);
