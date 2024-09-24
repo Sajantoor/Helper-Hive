@@ -122,7 +122,19 @@ export async function setAuthCookies(res: Response, data: TokenData) {
     res.cookie("rid", tokens.refreshToken, cookieOptions);
 }
 
-export function clearCookies(res: Response) {
+export function clearCookies(req: Request, res: Response) {
+    const refreshToken = req.cookies.rid;
+
+    if (refreshToken) {
+        try {
+            RefreshToken.deleteOne({
+                token: refreshToken,
+            });
+        } catch (error) {
+            console.error("Error deleting refresh token", error);
+        }
+    }
+
     res.clearCookie("id", clearCookieOptions);
     res.clearCookie("rid", clearCookieOptions);
 }
