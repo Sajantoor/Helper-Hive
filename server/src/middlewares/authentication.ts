@@ -1,33 +1,49 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import { UserRole } from "../utils/types";
 import { __prod__ } from "../utils/constants";
 import RefreshToken from "../database/models/refreshToken";
+import { getUser } from "../utils/user";
+import { createConfirmRegistrationEmail } from "../utils/email";
+import { isOrganization, isVolunteer } from "../utils/checkUserRole";
+import Organization from "../database/models/organization";
 
 const access_code_secret = process.env.ACCESS_CODE_SECRET!;
 const refresh_code_secret = process.env.REFRESH_CODE_SECRET!;
+const account_confirmation_secret = process.env.ACCOUNT_CONFIRMATION_SECRET!;
 
 export type TokenData = {
     userId: string;
-    userRole: UserRole;
+    isOrganization: boolean;
     accountConfirmed: boolean,
+    isOrganizationVerified?: boolean;
 }
 
-const cookieOptions = {
+const clearCookieOptions = {
     httpOnly: true,
     secure: __prod__,
     sameSite: __prod__ ? "none" : "lax",
     path: "/",
     domain: __prod__ ? process.env.DOMAIN : "",
+} as const;
+
+const cookieOptions = {
+    ...clearCookieOptions,
     maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
 } as const;
 
-export function generateAccessToken(data: TokenData, validity = "15m"): string | null {
+export function generateAccessToken(data: TokenData): string | null {
+    return generateToken(data, access_code_secret, "15m");
+}
+
+export function generateAccountConfirmationToken(data: TokenData): string | null {
+    return generateToken(data, account_confirmation_secret, "7d");
+}
+
+function generateToken(data: TokenData, secret: string, validity: string): string | null {
     try {
-        return jwt.sign(data, access_code_secret, { expiresIn: validity });
+        return jwt.sign(data, secret, { expiresIn: validity });
     } catch (err) {
-        console.error(err);
         return null;
     }
 }
@@ -41,15 +57,48 @@ export function validateAccessToken(token: string) {
     }
 }
 
-async function generateAuthTokens(data: TokenData): Promise<{ refreshToken: string; accessToken: string; } | null> {
-    let refreshToken: string;
-    let accessToken: string;
+export function validateAccountConfirmationToken(token: string) {
+    const data = jwt.verify(token, account_confirmation_secret) as TokenData;
+    return data;
+}
 
+export async function resendAccountConfirmationEmail(res: Response, token: string) {
+    let data: TokenData;
     try {
-        refreshToken = jwt.sign(data, refresh_code_secret, { expiresIn: "7d" });
-        accessToken = jwt.sign(data, access_code_secret, { expiresIn: "15m" });
+        data = jwt.decode(token) as TokenData;
     } catch (err) {
-        console.error(err);
+        return res.status(400).json({ message: "Invalid token" });
+    }
+
+    if (!data) {
+        return res.status(400).json({ message: "Invalid token" });
+    }
+
+    const user = await getUser(data);
+
+    if (!user) {
+        return res.status(400).json({ message: "Invalid token" });
+    }
+
+    if (user.emailConfirmed) {
+        return res.status(400).json({ message: "Account already confirmed" });
+    }
+
+    const tokenData: TokenData = {
+        userId: data.userId,
+        isOrganization: data.isOrganization,
+        accountConfirmed: false,
+    }
+
+    await createConfirmRegistrationEmail(tokenData, user.email);
+    res.status(400).json({ message: "Token expired, check your inbox for a new confirmation email." });
+}
+
+async function generateAuthTokens(data: TokenData): Promise<{ refreshToken: string; accessToken: string; } | null> {
+    const refreshToken = generateToken(data, refresh_code_secret, "7d");
+    const accessToken = generateAccessToken(data);
+
+    if (!refreshToken || !accessToken) {
         return null;
     }
 
@@ -73,9 +122,21 @@ export async function setAuthCookies(res: Response, data: TokenData) {
     res.cookie("rid", tokens.refreshToken, cookieOptions);
 }
 
-export function clearCookies(res: Response) {
-    res.clearCookie("id");
-    res.clearCookie("rid");
+export function clearCookies(req: Request, res: Response) {
+    const refreshToken = req.cookies.rid;
+
+    if (refreshToken) {
+        try {
+            RefreshToken.deleteOne({
+                token: refreshToken,
+            });
+        } catch (error) {
+            console.error("Error deleting refresh token", error);
+        }
+    }
+
+    res.clearCookie("id", clearCookieOptions);
+    res.clearCookie("rid", clearCookieOptions);
 }
 
 function validateToken(req: Request, res: Response): TokenData | null {
@@ -93,7 +154,7 @@ export async function authorize(req: Request, res: Response, next: NextFunction)
         return unauthorizedError(res);
     }
 
-    if (process.env.EMAIL_SETUP && !data.accountConfirmed) {
+    if (!data.accountConfirmed) {
         return res.status(403).json({ message: "Account not confirmed" });
     }
 
@@ -102,7 +163,16 @@ export async function authorize(req: Request, res: Response, next: NextFunction)
 }
 
 export async function authorizeOrganization(req: Request, res: Response, next: NextFunction) {
-    if (res.locals.user.userRole !== "organization") {
+    if (!isOrganization(res)) {
+        return forbiddenError(res);
+    }
+
+    next();
+}
+
+export async function authorizeVerifiedOrganization(req: Request, res: Response, next: NextFunction) {
+    // run after authorized middleware
+    if (!res.locals.user.isOrganizationVerified) {
         return forbiddenError(res);
     }
 
@@ -110,7 +180,7 @@ export async function authorizeOrganization(req: Request, res: Response, next: N
 }
 
 export async function authorizeUser(req: Request, res: Response, next: NextFunction) {
-    if (res.locals.user.userRole !== "volunteer") {
+    if (!isVolunteer(res)) {
         return forbiddenError(res);
     }
 
@@ -142,10 +212,18 @@ export async function renewToken(req: Request, res: Response, next: NextFunction
 
     const payload: TokenData = {
         userId: data.userId,
-        userRole: data.userRole,
-        // TODO if this is false we could check if the user has confirmed their 
-        // account
+        isOrganization: data.isOrganization,
         accountConfirmed: data.accountConfirmed,
+        isOrganizationVerified: data.isOrganizationVerified,
+    }
+
+    if (data.isOrganization && data.isOrganizationVerified === false) {
+        const organization = await Organization.findById(data.userId);
+        if (!organization) {
+            return unauthorizedError(res);
+        }
+
+        payload.isOrganizationVerified = organization.verified;
     }
 
     const accessToken = generateAccessToken(payload);
@@ -153,7 +231,7 @@ export async function renewToken(req: Request, res: Response, next: NextFunction
         return res.status(500).json({ message: "Internal server error" });
     }
 
-    res.clearCookie("id");
+    res.clearCookie("id", clearCookieOptions);
     res.cookie("id", accessToken, cookieOptions);
     res.status(200).json({ accessToken: accessToken });
 }

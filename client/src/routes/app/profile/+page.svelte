@@ -5,7 +5,7 @@
 	import Pencil from 'svelte-material-icons/Pencil.svelte';
 	import type { EventResponse } from '$common/types/eventResponse';
 	import EventsContainer from '$lib/Components/EventsContainer.svelte';
-	import { profileStore } from '$lib/stores/profileStore.js';
+	import { profileStore } from '$lib/stores/profileStore';
 
 	export let data;
 
@@ -17,7 +17,7 @@
 
 	let upcomingEvents: EventResponse[] = data.futureEvents;
 	let pastEvents: EventResponse[] = data.pastEvents;
-	let isOrganization = $profileStore?.role === 'organization';
+	let isOrganization = $profileStore?.isOrganization;
 
 	let hours = data.pastEvents;
 
@@ -27,17 +27,13 @@
 	$: hoursToShow = showAllHours ? hours : hours.slice(0, 2);
 </script>
 
-<div class="ml-5 mr-5 desktop:ml-10 desktop:mr-10">
+<div class="ml-4 mr-4 desktop:ml-10 desktop:mr-10 mb-16">
 	<!-- Profile section -->
 	<div class="mt-2 mb-5 desktop:mr-4 desktop:p-4 flex flex-col desktop:flex-row">
 		<div class="flex flex-row w-full">
 			<!-- Profile picture  -->
 			<div class="max-desktop:mt-2 max-mdlg:w-[32.5%] min-w-36 max-w-48 p-2">
-				<img
-					src={avatarSrc}
-					alt="Profile"
-					class="aspect-[1] w-full rounded-full object-cover"
-				/>
+				<img src={avatarSrc} alt="Profile" class="aspect-[1] w-full rounded-full object-cover" />
 			</div>
 			<!-- Name & bio -->
 			<div class="flex-1 p-2 desktop:pl-4">
@@ -48,7 +44,9 @@
 			</div>
 		</div>
 
-		<div class="flex flex-row-reverse max-desktop:mt-2 justify-between desktop:flex-col desktop:w-1/4">
+		<div
+			class="flex flex-row-reverse max-desktop:mt-2 justify-between desktop:flex-col desktop:w-1/4"
+		>
 			<!-- Edit profile -->
 			<div class="pl-2 pt-2 pb-2 desktop:pt-4 desktop:ml-auto">
 				<!--{#if isCurrentUser}
@@ -65,7 +63,7 @@
 						<Heading class="desktop:text-right">
 							Completed Hours:
 							<a class="text-primaryYellow">{completedHours}</a>
-							</Heading>
+						</Heading>
 					</div>
 				{/if}
 			</div>
@@ -75,12 +73,12 @@
 	<div class="sectionMarker"></div>
 
 	<!-- Upcoming Events Section -->
-	<div class="mt-2 p-8">
+	<div class="mt-2">
 		<Heading class="mt-4">Your Upcoming Events</Heading>
 		{#if isOrganization}
 			<Text class="mt-4">
-				Please ensure that all important pre-shift information is posted on the event page before the
-				scheduled shift to help volunteers arrive fully prepared.
+				Please ensure that all important pre-shift information is posted on the event page before
+				the scheduled shift to help volunteers arrive fully prepared.
 			</Text>
 		{:else}
 			<Text class="mt-4">
@@ -144,7 +142,7 @@
 	</div> -->
 
 	<!-- Past Events Section -->
-	<div class="mt-2 p-8">
+	<div class="mt-2">
 		<Heading>Your Past Events</Heading>
 		<div class="mt-4">
 			<EventsContainer events={pastEvents} />

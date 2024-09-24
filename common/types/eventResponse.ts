@@ -10,7 +10,7 @@ export type EventResponse = {
     details: {
         description: string;
         preShiftInfo: string;
-        location: string;
+        location: LocationData;
         tags: string[];
         photo: string;
         files: {
@@ -31,4 +31,20 @@ export interface OrganizationEventData {
     name: string;
     avatar: string
     instagram?: string;
+}
+
+export interface LocationData {
+    formattedAddress: string;
+    geoLocation: {
+        lat: number;
+        lng: number;
+    }
+    addressComponents: [
+        {
+            long_name: string;
+            short_name: string;
+            types: string[];
+        }
+    ]
+    name: string;
 }

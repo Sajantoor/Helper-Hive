@@ -5,7 +5,7 @@ import db, { connectDB } from "./database/db";
 import { createEvent, deleteEvent, getEvent, getEvents, updateEvent } from "./routes/events";
 import { getOrganizations, getOrganization, registerOrganization, updateOrganization, deleteOrganization } from "./routes/organizations";
 import { getUser, registerUser, updateUser, deleteUser } from "./routes/user";
-import { authorize, authorizeOrganization, authorizeUser, renewToken } from "./middlewares/authentication";
+import { authorize, authorizeOrganization, authorizeUser, authorizeVerifiedOrganization, renewToken } from "./middlewares/authentication";
 import { confirmAccount, forgotPassword, login, logout, profile, resetPassword } from "./routes/login";
 import { getUserFutureEvents, getUserPastEvents, getOrganizationEvents, registerForEvent, deregisterForEvent } from "./routes/registration";
 import { getS3SecureURL } from "./routes/s3";
@@ -52,9 +52,9 @@ app.get(`${API_PREFIX}/upload/:name`, getS3SecureURL);
 
 app.get(`${EVENTS_API}`, getEvents);
 app.get(`${EVENTS_API}/:id`, authorize, getEvent);
-app.post(`${EVENTS_API}`, authorize, authorizeOrganization, createEvent);
-app.patch(`${EVENTS_API}/:id`, authorize, authorizeOrganization, updateEvent);
-app.delete(`${EVENTS_API}/:id`, authorize, authorizeOrganization, deleteEvent);
+app.post(`${EVENTS_API}`, authorize, authorizeOrganization, authorizeVerifiedOrganization, createEvent);
+app.patch(`${EVENTS_API}/:id`, authorize, authorizeOrganization, authorizeVerifiedOrganization, updateEvent);
+app.delete(`${EVENTS_API}/:id`, authorize, authorizeOrganization, authorizeVerifiedOrganization, deleteEvent);
 
 app.get(`${ORGANIZATIONS_API}`, authorize, getOrganizations);
 app.get(`${ORGANIZATIONS_API}`, authorize, getOrganization);

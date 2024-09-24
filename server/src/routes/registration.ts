@@ -2,12 +2,13 @@ import { Request, Response } from "express";
 import User from "../database/models/user";
 import Event from "../database/models/events";
 import mongoose from "mongoose";
+import { sendEventCancellationEmail, sendEventConfirmationEmail } from "../utils/email";
 
 // GET all the events a user is currently registered for (in the future)
 export async function getUserFutureEvents(req: Request, res: Response) {
     const user = res.locals.user;
     const userId = user.userId;
-    const userRole = user.userRole;
+    const isOrganization = user.isOrganization;
 
     if (!userId) {
         return res.status(400).json({ message: "Invalid user id" });
@@ -17,12 +18,12 @@ export async function getUserFutureEvents(req: Request, res: Response) {
     let events;
 
     try {
-        if (userRole === "volunteer") {
+        if (!isOrganization) {
             events = await Event.find({
                 'date.endDay': { $gte: currentDate },
                 "registration.registeredVolunteers": userId,
             }).sort({ 'date.endTime': 1 });
-        } else if (userRole === "organization") {
+        } else if (isOrganization) {
             events = await Event.find({
                 'date.endDay': { $gte: currentDate },
                 organization: userId
@@ -39,7 +40,7 @@ export async function getUserFutureEvents(req: Request, res: Response) {
 export async function getUserPastEvents(req: Request, res: Response) {
     const user = res.locals.user;
     const userId = user.userId;
-    const userRole = user.userRole;
+    const isOrganization = user.isOrganization;
 
     if (!userId) {
         return res.status(400).json({ message: "Invalid user id" });
@@ -49,12 +50,12 @@ export async function getUserPastEvents(req: Request, res: Response) {
     let events;
 
     try {
-        if (userRole === "volunteer") {
+        if (!isOrganization) {
             events = await Event.find({
                 'date.endDay': { $lt: currentDate },
                 "registration.registeredVolunteers": userId,
             }).sort({ 'date.endTime': -1 });
-        } else if (userRole === "organization") {
+        } else if (isOrganization) {
             events = await Event.find({
                 'date.endDay': { $lt: currentDate },
                 organization: userId
@@ -121,7 +122,7 @@ export async function registerForEvent(req: Request, res: Response) {
 
         await user.save();
         await event.save();
-
+        sendEventConfirmationEmail(user.email, event.name, event.id);
         return res.status(200).json({ message: "Registration successful" });
     } catch (error) {
         return res.status(500).json({ message: "Error registering for event", error });
@@ -168,6 +169,7 @@ export async function deregisterForEvent(req: Request, res: Response) {
 
         await user.save();
         await event.save();
+        sendEventCancellationEmail(user.email, event.name);
         return res.status(200).json({ message: "Registration removed successfully" });
     } catch (error) {
         return res.status(500).json({ message: "Error deregistering event", error });

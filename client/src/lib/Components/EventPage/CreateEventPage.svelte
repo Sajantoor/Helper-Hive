@@ -23,7 +23,7 @@
 	import { profileStore } from '$lib/stores/profileStore';
 	import type { OrganizationEventData } from '$common/types/eventResponse';
 	import BackButton from '../BackButton.svelte';
-	import type { EventFormData } from '$common/Types/FormData';
+	import type { EventFormData } from '$common/types/FormData';
 	import { onMount } from 'svelte';
 	import { tags } from '$lib/Utils/tags';
 
@@ -406,7 +406,7 @@
 				<HostInfo organization={organizationInfo} />
 			</div>
 			<div class="w-full max-w-1/2">
-				<Location bind:location={formData.location} />
+				<Location location={formData.location?.formattedAddress || ''} />
 			</div>
 		</div>
 

@@ -23,7 +23,7 @@
 				title={event.name}
 				date={event.date.startDay}
 				organization={event.organization.name}
-				location={event.details.location}
+				location={event.details.location.formattedAddress}
 				organizationAvatar={event.organization.avatar}
 			/>
 		{/each}
@@ -38,7 +38,7 @@
 
 <style>
 	.container {
-		width: 90%;
+		width: 100%;
 		margin: 0 auto;
 		display: flex;
 		flex-wrap: nowrap;
