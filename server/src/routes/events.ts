@@ -16,7 +16,19 @@ const eventBodySchema = z.object({
         description: z.string(),
         preShiftInfo: z.string(),
         tags: z.array(z.string()).optional().default([]),
-        location: z.string(),
+        location: z.object({
+            formattedAddress: z.string(),
+            geoLocation: z.object({
+                lat: z.number(),
+                lng: z.number(),
+            }),
+            addressComponents: z.array(z.object({
+                long_name: z.string(),
+                short_name: z.string(),
+                types: z.array(z.string()),
+            })),
+            name: z.string(),
+        }),
         photo: z.string(),
         files: z.array(z.object({
             url: z.string(),

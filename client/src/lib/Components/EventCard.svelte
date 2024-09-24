@@ -29,7 +29,7 @@
 			<Text class="font-semibold mb-2 mt-1">{title}</Text>
 			<div class="flex gap-2 mb-3">
 				<MapMarkerOutline size={iconSize} />
-				<SmallText>{location}</SmallText>
+				<SmallText class="truncate">{location}</SmallText>
 			</div>
 			<div class="flex gap-2 mb-3">
 				<CalendarMonth size={iconSize} />

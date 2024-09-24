@@ -93,7 +93,7 @@
 						id={element._id}
 						img={element.details.photo}
 						title={element.name}
-						location={element.details.location}
+						location={element.details.location.formattedAddress}
 						date={element.date.startDay}
 						startTime={element.date.startTime}
 						endTime={element.date.endTime}

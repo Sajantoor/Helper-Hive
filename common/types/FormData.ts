@@ -1,3 +1,5 @@
+import { LocationData } from "./eventResponse";
+
 export interface EventFormData {
     name: string | undefined;
     description: string | undefined;
@@ -8,7 +10,7 @@ export interface EventFormData {
     endTime: string | undefined;
     tagValues: string[];
     shiftOpenings: number | undefined;
-    location: string | undefined;
+    location: LocationData | undefined;
     image: File | undefined;
     imageUrl?: string;
     files: File[];

@@ -406,7 +406,7 @@
 				<HostInfo organization={organizationInfo} />
 			</div>
 			<div class="w-full max-w-1/2">
-				<Location bind:location={formData.location} />
+				<Location location={formData.location?.formattedAddress || ''} />
 			</div>
 		</div>
 

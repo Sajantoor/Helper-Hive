@@ -32,8 +32,8 @@
 	let locationTitle: string, locationDescription: string;
 
 	if (location) {
-		locationTitle = location.split(':')[0].trim();
-		locationDescription = location.split(':')[1].trim();
+		locationTitle = location.name;
+		locationDescription = location.formattedAddress;
 	}
 
 	function formatDate(date: Date) {

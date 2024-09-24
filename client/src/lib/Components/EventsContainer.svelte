@@ -23,7 +23,7 @@
 				title={event.name}
 				date={event.date.startDay}
 				organization={event.organization.name}
-				location={event.details.location}
+				location={event.details.location.formattedAddress}
 				organizationAvatar={event.organization.avatar}
 			/>
 		{/each}
