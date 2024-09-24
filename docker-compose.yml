@@ -1,9 +1,4 @@
 services:
-    mongo:
-        image: mongo
-        ports:
-            - "27017:27017"
-
     helper-hive-server:
         image: helper-hive-server
         environment:
@@ -23,5 +18,3 @@ services:
             - SMTP_PASS=${SMTP_PASS:?error}
         ports:
             - "4000:4000"
-        depends_on:
-            - mongo
