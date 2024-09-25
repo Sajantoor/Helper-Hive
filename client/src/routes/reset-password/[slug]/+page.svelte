@@ -25,6 +25,7 @@
 
 		if (res.ok) {
 			goto('/login');
+			return;
 		}
 
 		const data = await res.json();

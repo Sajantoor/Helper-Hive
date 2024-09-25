@@ -145,7 +145,7 @@
 				class={`w-full ${spotsAvailable > 0 && !registered ? 'bg-primaryYellow text-black' : 'bg-placeholderGray text-placeholderGrayText cursor-default'} py-2 px-4 mt-2 rounded-lg mx-auto text`}
 				on:click={handleRegister}
 			>
-				<Text>Register</Text>
+				<Text>{!registered ? 'Register' : 'Unregister'}</Text>
 			</button>
 		{/if}
 		{#if isOwner}
