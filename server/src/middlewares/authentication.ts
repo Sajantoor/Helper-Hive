@@ -122,12 +122,12 @@ export async function setAuthCookies(res: Response, data: TokenData) {
     res.cookie("rid", tokens.refreshToken, cookieOptions);
 }
 
-export function clearCookies(req: Request, res: Response) {
+export async function clearCookies(req: Request, res: Response) {
     const refreshToken = req.cookies.rid;
 
     if (refreshToken) {
         try {
-            RefreshToken.deleteOne({
+            await RefreshToken.deleteOne({
                 token: refreshToken,
             });
         } catch (error) {
@@ -233,7 +233,7 @@ export async function renewToken(req: Request, res: Response, next: NextFunction
 
     res.clearCookie("id", clearCookieOptions);
     res.cookie("id", accessToken, cookieOptions);
-    res.status(200).json({ accessToken: accessToken });
+    return res.status(200).json({ accessToken: accessToken });
 }
 
 function unauthorizedError(res: Response): void {

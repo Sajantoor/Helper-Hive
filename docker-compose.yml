@@ -1,6 +1,7 @@
 services:
     helper-hive-server:
         image: helper-hive-server
+        restart: always
         environment:
             - NODE_ENV=production
             - MONGO_DB_URI=${MONGO_DB_URI:?error}

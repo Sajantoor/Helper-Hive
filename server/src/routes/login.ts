@@ -5,7 +5,6 @@ import { clearCookies, hashPassword, resendAccountConfirmationEmail, setAuthCook
 import bcrypt from "bcrypt";
 import { sendPasswordResetEmail } from "../utils/email";
 import { ProfileResponse } from "../../../common/types/ProfileResponse";
-import RefreshToken from "../database/models/refreshToken";
 import PasswordResetToken from "../database/models/passwordResetToken";
 import crypto from "crypto";
 import { TokenExpiredError } from "jsonwebtoken";
@@ -54,7 +53,7 @@ export async function login(req: Request, res: Response) {
 }
 
 export async function logout(req: Request, res: Response) {
-    clearCookies(req, res);
+    await clearCookies(req, res);
     res.status(200).json({ message: "Logout successful" });
 }
 
@@ -171,7 +170,7 @@ export async function confirmAccount(req: Request, res: Response) {
         accountConfirmed: true,
     }
 
-    clearCookies(req, res);
+    await clearCookies(req, res);
     await setAuthCookies(res, tokenData);
     return res.status(200).json({ message: "Account confirmed" });
 }
