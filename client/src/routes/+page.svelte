@@ -27,7 +27,9 @@
 		<Text class="ml-5">Contact</Text> -->
 
 		<a href="/login">
-			<button class="ml-5 mt-3 mr-4 desktop:mr-6 bg-transparent border border-black py-2 px-4 rounded-full">
+			<button
+				class="ml-5 mt-3 mr-4 desktop:mr-6 bg-transparent border border-black py-2 px-4 rounded-full"
+			>
 				<Text>Login</Text>
 			</button>
 		</a>
@@ -39,10 +41,6 @@
 	<Text class="w-[92%] desktop:w-2/3 xl:w-1/3 text-center mt-4 desktop:mt-2">
 		Dive into the hive of local opportunities, pick what sparks your curiosity, and join in—it's as
 		easy as gathering nectar!
-
-		<br /> <br />
-		Thank you for your interest in Helper Hive! We are currently not launched yet. Please check back
-		later.
 	</Text>
 	<a href="/registration/volunteer">
 		<button class="bg-primaryYellow text-black py-2 px-4 mt-8 rounded-lg">
@@ -51,7 +49,7 @@
 	</a>
 </div>
 
-<div class="impact-container">
+<!-- <div class="impact-container">
 	<Section class="text-center">Our Impact</Section>
 	<div class="hexagons mdlg:justify-evenly">
 		<div class="hexagon max-mdlg:w-1/3 mdlg:h-[250px] md:mx-1 max-md:relative max-md:left-5">
@@ -59,7 +57,9 @@
 				<div class="hex-content">X<br />Volunteers</div>
 			</Text>
 		</div>
-		<div class="hexagon max-mdlg:w-1/3 mdlg:h-[250px] md:mx-1 max-md:relative max-desktop:top-20 max-md:top-28">
+		<div
+			class="hexagon max-mdlg:w-1/3 mdlg:h-[250px] md:mx-1 max-md:relative max-desktop:top-20 max-md:top-28"
+		>
 			<Text class="w-[90%] max-desktop:mb-3 font-bold text-xl desktop:text-2xl md:text-3xl">
 				<div class="hex-content hex-content2">X<br />Organizations</div>
 			</Text>
@@ -70,9 +70,9 @@
 			</Text>
 		</div>
 	</div>
-</div>
-
-<div class="mb-8">
+</div> -->
+<!-- TODO: Remove margin top when adding back impact container -->
+<div class="mb-8 mt-32">
 	<Section class="text-center mb-8">Upcoming Events</Section>
 	<EventScroller events={events.slice(0, 6)} />
 </div>
