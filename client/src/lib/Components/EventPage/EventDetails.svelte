@@ -4,6 +4,7 @@
 
 	import CalendarMonth from 'svelte-material-icons/CalendarMonthOutline.svelte';
 	import MapMarkerOutline from 'svelte-material-icons/MapMarkerOutline.svelte';
+	import Checkmark from 'svelte-material-icons/CheckBold.svelte';
 	import { PUBLIC_SERVER_HOST } from '$env/static/public';
 	import type { EventResponse } from '$common/types/eventResponse';
 	import { profileStore } from '$lib/stores/profileStore';
@@ -21,7 +22,7 @@
 
 	let spotsAvailable = event.registration.totalSpots - event.registration.totalRegistered;
 	let registered = event.registration.isRegistered || false;
-	let clickedRegister = false; // Make button green for 1.5 sec (untested)
+	let clickedRegister = false; // Make button green for 1.5 sec
 
 	export let hours: string = getTime(event.date.startTime, event.date.endTime);
 
@@ -85,16 +86,13 @@
 			return;
 		}
 		
-		registered = true; //remove this line
-		
 		spotsAvailable--;
-		/* UNTESTED:
 		clickedRegister = true;
 		
 		setTimeout(() => {
 			clickedRegister = false;
 			registered = true;
-		}, 1500);*/
+		}, 1500);
 	}
 
 	async function deregisterForEvent() {
@@ -153,18 +151,14 @@
 		<Text class="text-altTextGray">{spotsAvailable} {spotsAvailable == 1 ? 'Spot Available' : 'Spots Available'}</Text>
 		{#if !isOrganization}
 			<button
-				class={`w-full ${spotsAvailable > 0 && !registered ? 'bg-primaryYellow text-black' : 'bg-placeholderGray text-placeholderGrayText cursor-default'} py-2 px-4 mt-2 rounded-lg mx-auto text`}
-				on:click={handleRegister}
-			>
-				<Text>{!registered ? 'Register' : 'Unregister'}</Text>
-			</button>
-			<!-- UNTESTED:
-			<button
-				class={`w-full ${clickedRegister ? 'bg-green-500 text-white' : spotsAvailable > 0 && !registered ? 'bg-primaryYellow text-black' : 'bg-placeholderGray text-placeholderGrayText cursor-default'} py-2 px-4 mt-2 rounded-lg mx-auto text`}
+				class={`w-full ${clickedRegister ? 'bg-green-400 text-emerald-900 cursor-default flex items-center justify-center' : spotsAvailable > 0 && !registered ? 'bg-primaryYellow text-black' : 'bg-placeholderGray text-placeholderGrayText cursor-default'} py-2 px-4 mt-2 rounded-lg mx-auto`}
 				on:click={handleRegister}
 			>
 				<Text>{clickedRegister ? 'Registered!' : !registered ? 'Register' : 'Unregister'}</Text>
-			</button>-->
+				{#if clickedRegister}
+					<Checkmark class="text-emerald-900 ml-1"/>
+				{/if}
+			</button>
 		{/if}
 		{#if isOwner}
 			<button
