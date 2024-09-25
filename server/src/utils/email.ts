@@ -1,5 +1,6 @@
 import nodemailer from 'nodemailer';
 import { generateAccountConfirmationToken, TokenData } from '../middlewares/authentication';
+import { __prod__ } from './constants';
 
 const domain = process.env.CLIENT_URL!;
 
@@ -22,8 +23,12 @@ export async function sendMail(to: string, subject: string, text: string) {
     };
 
     try {
-        const info = await transporter.sendMail(mailOptions);
-        console.log("Email sent: %s", info.messageId);
+        if (!__prod__) {
+            console.log(mailOptions);
+        } else {
+            const info = await transporter.sendMail(mailOptions);
+            console.log("Email sent: %s", info.messageId);
+        }
     } catch (error) {
         console.error(error);
     }
@@ -38,7 +43,7 @@ export async function sendPasswordResetEmail(to: string, token: string) {
 
 async function sendConfirmRegistrationEmail(to: string, token: string) {
     const subject = "Confirm Registration";
-    const text = `Your registration is almost complete! Click the link below to confirm your email address and join the network:\n\n${domain}/confirm-account/${token}`;
+    const text = `Your registration is almost complete! Click the link below to confirm your email address and join the network:\n${domain}/confirm-account/${token}`;
 
     await sendMail(to, subject, text);
 }
