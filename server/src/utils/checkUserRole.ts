@@ -1,11 +1,11 @@
 import { Response } from "express";
 
 export function isVolunteer(res: Response) {
-    return res.locals.user.userRole === "volunteer";
+    return !res.locals.user.isOrganization;
 }
 
 export function isOrganization(res: Response) {
-    return res.locals.user.userRole === "organization";
+    return res.locals.user.isOrganization;
 }
 
 export function isUser(res: Response, userId: string) {

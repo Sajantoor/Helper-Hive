@@ -2,33 +2,30 @@
 	import { onMount } from 'svelte';
 	import SmallText from '../Text/SmallText.svelte';
 	import { PUBLIC_GOOGLE_MAPS_API_KEY } from '$env/static/public';
+	import type { LocationData } from '$common/types/eventResponse';
 
 	export let label = '';
 	export let placeholder = '';
-	export let value = '';
+	export let value: LocationData | undefined;
+	let valueInputted = value?.formattedAddress;
 	export let valid = true;
 	export let touched = false;
 	let element: HTMLInputElement;
 
 	const handlePlaceChanged = (place: any) => {
 		touched = true;
-		let address = '';
 
-		if (place.name) {
-			address = place.name + ': ';
-		}
+		let locationData: LocationData = {
+			formattedAddress: place.formatted_address,
+			geoLocation: {
+				lat: place.geometry.location.lat(),
+				lng: place.geometry.location.lng()
+			},
+			addressComponents: place.address_components,
+			name: place.name
+		};
 
-		if (place.formatted_address) {
-			address += place.formatted_address;
-		} else if (place.address_components) {
-			place.address_components.forEach((component: any) => {
-				address += component.long_name + ', ';
-			});
-			// remove the last comma
-			address = address.slice(0, -2);
-		}
-
-		value = address;
+		value = locationData;
 		valid = true;
 	};
 
@@ -48,17 +45,14 @@
 			});
 
 			if (value) {
-				handleBlur();
+				valid = true;
+				onInput();
 			}
 		};
 	});
 
 	const onInput = () => {
 		touched = true;
-	};
-
-	const handleBlur = () => {
-		valid = value.length > 0;
 	};
 </script>
 
@@ -70,9 +64,10 @@
 		<input
 			type="text"
 			on:input={onInput}
-			on:blur={handleBlur}
+			on:blur={onInput}
 			bind:this={element}
-			bind:value
+			bind:value={valueInputted}
+			on:keydown={(e) => e.key === 'Enter' && e.preventDefault()}
 			{placeholder}
 			class="mt-1 pl-3 p-2 w-full bg-placeholderGray border-none rounded-lg placeholder:italic max-desktop:pt-3 max-desktop:pb-3
 			{touched && !valid && 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'}"

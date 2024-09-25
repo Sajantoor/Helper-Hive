@@ -60,7 +60,9 @@
 
 <div class="w-full mx-auto max-w-[3000px] overflow-hidden">
 	{#if events.length === 0}
-		<Text class="text-center max-desktop:w-[90%] max-desktop:mx-auto">There are no available events at this time, try again later...</Text>
+		<Text class="text-center max-desktop:w-[90%] max-desktop:mx-auto">
+			There are no available events at this time, try again later...
+		</Text>
 	{:else}
 		<div use:swipeable on:swipedleft={nextSlide} on:swipedright={prevSlide} class="flex items-center mx-auto relative">
 			<div class="flex-none w-12 flex justify-center bg-white z-10">
@@ -85,7 +87,7 @@
 							title={event.name}
 							date={event.date.startDay}
 							organization={event.organization.name}
-							location={event.details.location}
+							location={event.details.location.formattedAddress}
 							organizationAvatar={event.organization.avatar}
 						/>
 					{/each}

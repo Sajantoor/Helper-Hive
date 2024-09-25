@@ -1,17 +1,18 @@
 import { Schema, Types, model } from 'mongoose';
+import { LocationData } from '../../../../common/types/eventResponse';
 
 export interface IEvents {
     name: string;
     date: {
         startDay: Date;
-        endDay?: Date;
+        endDay: Date;
         startTime: Date;
         endTime: Date;
     };
     details: {
         description: string;
         preShiftInfo: string;
-        location: string;
+        location: LocationData;
         photo: string;
         files?: string[];
         tags?: string[];
@@ -30,7 +31,7 @@ const eventsSchema = new Schema<IEvents>({
     date: {
         type: new Schema({
             startDay: { type: Date, required: true },
-            endDay: { type: Date, required: false },
+            endDay: { type: Date, required: true },
             startTime: { type: Date, required: true },
             endTime: { type: Date, required: true }
         }),
@@ -40,7 +41,19 @@ const eventsSchema = new Schema<IEvents>({
         type: new Schema({
             description: { type: String, required: true },
             preShiftInfo: { type: String, required: true },
-            location: { type: String, required: true },
+            location: new Schema({
+                formattedAddress: { type: String, required: true },
+                geoLocation: new Schema({
+                    lat: { type: Number, required: true },
+                    lng: { type: Number, required: true }
+                }),
+                addressComponents: [{
+                    long_name: { type: String, required: true },
+                    short_name: { type: String, required: true },
+                    types: [{ type: String, required: true }]
+                }],
+                name: { type: String, required: true }
+            }),
             photo: { type: String, required: true },
             files: [{
                 url: { type: String, required: false },

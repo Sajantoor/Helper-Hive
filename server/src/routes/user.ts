@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import User from "../database/models/user";
-import { generateAccessToken, hashPassword } from "../middlewares/authentication";
-import { sendConfirmRegistrationEmail } from "../utils/email";
+import { hashPassword } from "../middlewares/authentication";
+import { createConfirmRegistrationEmail } from "../utils/email";
 import z from "zod";
 import Organization from "../database/models/organization";
 
@@ -87,17 +87,12 @@ export async function registerUser(req: Request, res: Response) {
         return res.status(500).json({ message: "Error creating user", error });
     }
 
-    const token = generateAccessToken({
+    await createConfirmRegistrationEmail({
         userId: savedUser.id as string,
-        userRole: "volunteer",
+        isOrganization: false,
         accountConfirmed: savedUser.emailConfirmed,
-    }, "24h");
+    }, savedUser.email);
 
-    if (!token) {
-        return res.status(500).json({ message: "Error generating token" });
-    }
-
-    sendConfirmRegistrationEmail(savedUser.email, token);
     return res.status(201).json(userResponse);
 }
 

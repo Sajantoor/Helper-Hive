@@ -4,7 +4,7 @@ import { fetchProfile } from "$lib/Utils/fetch";
 
 export const load: LayoutServerLoad = async ({ cookies, url }) => {
     // check if it's not the app route to avoid loops
-    if (url.pathname.startsWith("/app")) {
+    if (url.pathname.startsWith("/app") || url.pathname.startsWith("/confirm-account")) {
         return;
     }
 

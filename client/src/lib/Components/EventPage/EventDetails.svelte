@@ -16,7 +16,7 @@
 	const startDate = event.date.startDay;
 	const endDate = event.date.endDay;
 	const location = event.details.location;
-	let isOrganization = $profileStore?.role === 'organization';
+	let isOrganization = $profileStore?.isOrganization;
 	let isOwner = isOrganization && $profileStore?.id === event.organization._id;
 
 	let spotsAvailable = event.registration.totalSpots - event.registration.totalRegistered;
@@ -32,8 +32,8 @@
 	let locationTitle: string, locationDescription: string;
 
 	if (location) {
-		locationTitle = location.split(':')[0].trim();
-		locationDescription = location.split(':')[1].trim();
+		locationTitle = location.name;
+		locationDescription = location.formattedAddress;
 	}
 
 	function formatDate(date: Date) {
@@ -145,7 +145,7 @@
 				class={`w-full ${spotsAvailable > 0 && !registered ? 'bg-primaryYellow text-black' : 'bg-placeholderGray text-placeholderGrayText cursor-default'} py-2 px-4 mt-2 rounded-lg mx-auto text`}
 				on:click={handleRegister}
 			>
-				<Text>Register</Text>
+				<Text>{!registered ? 'Register' : 'Unregister'}</Text>
 			</button>
 		{/if}
 		{#if isOwner}
@@ -165,7 +165,7 @@
 		flex-direction: column;
 		gap: 1rem;
 	}
-	
+
 	.item {
 		display: flex;
 		align-items: center;

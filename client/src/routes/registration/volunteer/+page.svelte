@@ -7,6 +7,7 @@
 	import PhoneInput from '$lib/Components/Input/PhoneInput.svelte';
 	import TextInput from '$lib/Components/Input/TextInput.svelte';
 	import FileUpload from '$lib/Components/Input/Upload.svelte';
+	import EmailInput from '$lib/Components/Input/EmailInput.svelte';
 	import CloseCircle from 'svelte-material-icons/CloseCircle.svelte';
 	import Circle from 'svelte-material-icons/Circle.svelte';
 
@@ -187,9 +188,8 @@
 					/>
 				</div>
 
-				<TextInput
+				<EmailInput
 					label="Email Address"
-					placeholder="Email Address"
 					bind:value={formData.email}
 					bind:valid={isValid.email}
 					{touched}

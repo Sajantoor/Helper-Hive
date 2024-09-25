@@ -1,7 +1,6 @@
 <script lang="ts">
 	import EventScroller from '$lib/Components/EventScroller.svelte';
 	import CalendarView from '$lib/Components/CalendarView.svelte';
-	import Searchbar from '$lib/Components/Searchbar.svelte';
 	import Text from '$lib/Components/Text/Text.svelte';
 	import Heading from '$lib/Components/Text/Heading.svelte';
 	import logoSrc from '$lib/assets/Logo.png';
@@ -14,7 +13,7 @@
 </script>
 
 <div class="dashboard mb-8">
-	<Text class="text-2xl font-bold ml-4 desktop:ml-[5%] mt-4 desktop:mt-[1%] mb-[1%]">Events</Text>
+	<!-- <Text class="text-2xl font-bold ml-4 desktop:ml-[5%] mt-4 desktop:mt-[1%] mb-[1%]">Events</Text> -->
 
 	{#if tags && tags.length > 0}
 		<div class="tags-section mb-4 ml-[5%]">
@@ -30,7 +29,7 @@
 	<Text class="text-2xl font-bold ml-[5%] mt-[1%] mb-[1%]">Upcoming Events</Text>
 
 	<!-- limit to 12 events -->
-	<EventScroller events={events.slice(0, 12)} />	
+	<EventScroller events={events.slice(0, 12)} />
 	<CalendarView {events} />
 </div>
 

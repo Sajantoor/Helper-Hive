@@ -31,6 +31,9 @@
 
 			{#if $page.error.message === 'Account not confirmed'}
 				<Text class="text-center">Please check your email to confirm your account.</Text>
+				<Text class="text-center">
+					If you don't see the email in your inbox, please check your spam or junk folder.
+				</Text>
 			{/if}
 		{/if}
 	</div>
