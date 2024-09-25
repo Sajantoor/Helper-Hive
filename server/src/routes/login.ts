@@ -168,6 +168,7 @@ export async function confirmAccount(req: Request, res: Response) {
         userId: data.userId,
         isOrganization: data.isOrganization,
         accountConfirmed: true,
+        isOrganizationVerified: user instanceof Organization ? user.verified : undefined,
     }
 
     await clearCookies(req, res);
