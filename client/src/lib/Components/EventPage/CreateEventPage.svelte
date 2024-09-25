@@ -149,6 +149,7 @@
 	}
 
 	function getDateFromTimes(date: Date, time: string): Date {
+		time = time.toUpperCase();
 		let [hours, minutes] = time.split(':').map((str) => parseInt(str, 10));
 		if (hours === 12) hours = 0;
 		if (time.includes('PM')) hours += 12;

@@ -5,7 +5,7 @@ export interface IEvents {
     name: string;
     date: {
         startDay: Date;
-        endDay?: Date;
+        endDay: Date;
         startTime: Date;
         endTime: Date;
     };
@@ -31,7 +31,7 @@ const eventsSchema = new Schema<IEvents>({
     date: {
         type: new Schema({
             startDay: { type: Date, required: true },
-            endDay: { type: Date, required: false },
+            endDay: { type: Date, required: true },
             startTime: { type: Date, required: true },
             endTime: { type: Date, required: true }
         }),

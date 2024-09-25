@@ -20,12 +20,12 @@ export async function getUserFutureEvents(req: Request, res: Response) {
     try {
         if (!isOrganization) {
             events = await Event.find({
-                'date.endDay': { $gte: currentDate },
+                'date.endTime': { $gte: currentDate },
                 "registration.registeredVolunteers": userId,
             }).sort({ 'date.endTime': 1 });
         } else if (isOrganization) {
             events = await Event.find({
-                'date.endDay': { $gte: currentDate },
+                'date.endTime': { $gte: currentDate },
                 organization: userId
             }).sort({ 'date.endTime': 1 });
         }
@@ -52,12 +52,12 @@ export async function getUserPastEvents(req: Request, res: Response) {
     try {
         if (!isOrganization) {
             events = await Event.find({
-                'date.endDay': { $lt: currentDate },
+                'date.endTime': { $lt: currentDate },
                 "registration.registeredVolunteers": userId,
             }).sort({ 'date.endTime': -1 });
         } else if (isOrganization) {
             events = await Event.find({
-                'date.endDay': { $lt: currentDate },
+                'date.endTime': { $lt: currentDate },
                 organization: userId
             }).sort({ 'date.endTime': -1 });
         }

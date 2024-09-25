@@ -45,17 +45,14 @@
 			});
 
 			if (value) {
-				handleBlur();
+				valid = true;
+				onInput();
 			}
 		};
 	});
 
 	const onInput = () => {
 		touched = true;
-	};
-
-	const handleBlur = () => {
-		valid = valueInputted === value?.formattedAddress;
 	};
 </script>
 
@@ -67,9 +64,10 @@
 		<input
 			type="text"
 			on:input={onInput}
-			on:blur={handleBlur}
+			on:blur={onInput}
 			bind:this={element}
 			bind:value={valueInputted}
+			on:keydown={(e) => e.key === 'Enter' && e.preventDefault()}
 			{placeholder}
 			class="mt-1 pl-3 p-2 w-full bg-placeholderGray border-none rounded-lg placeholder:italic max-desktop:pt-3 max-desktop:pb-3
 			{touched && !valid && 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'}"
