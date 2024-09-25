@@ -155,7 +155,23 @@ export async function updateEvent(req: Request, res: Response) {
         return res.status(403).json(errorResponse);
     }
 
+    if (eventBody.data.registration?.totalSpots && eventBody.data.registration.totalSpots < event.registration.registeredVolunteers.length) {
+        const errorResponse: ErrorResponse = {
+            message: `Cannot reduce total spots below the number of registered volunteers (${event.registration.registeredVolunteers.length})`,
+        };
+        return res.status(400).json(errorResponse);
+    }
+
+    // maintain the registration data for the event and update the total spots
+    const totalSpots = eventBody.data.registration?.totalSpots;
+    eventBody.data.registration = event.registration;
+
+    if (totalSpots) {
+        eventBody.data.registration.totalSpots = totalSpots;
+    }
+
     let updatedEvent;
+
     try {
         // return the updated event, new option is set to true
         updatedEvent = await Events.findByIdAndUpdate(eventId, eventBody.data, { new: true });
