@@ -217,7 +217,7 @@ export async function renewToken(req: Request, res: Response, next: NextFunction
         isOrganizationVerified: data.isOrganizationVerified,
     }
 
-    if (data.isOrganization && data.isOrganizationVerified === false) {
+    if (data.isOrganization && !data.isOrganizationVerified) {
         const organization = await Organization.findById(data.userId);
         if (!organization) {
             return unauthorizedError(res);
