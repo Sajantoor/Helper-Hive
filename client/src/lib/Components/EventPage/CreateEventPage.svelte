@@ -95,6 +95,8 @@
 	let startTimeError = 'Invalid start time';
 	let endTimeError = 'Invalid end time';
 	let errorMessage = '';
+	let tomorrow = new Date();
+	tomorrow.setDate(tomorrow.getDate() + 1);
 
 	$: if (formData || isValid) {
 		handleValidityChange();
@@ -427,7 +429,7 @@
 					placeholder="Select start date..."
 					bind:value={formData.startDate}
 					bind:valid={isValid.startDate}
-					minDate="today"
+					minDate={tomorrow}
 					errorMessage={startDateError}
 					{touched}
 				/>
@@ -435,7 +437,7 @@
 					placeholder="Select end date..."
 					bind:value={formData.endDate}
 					bind:valid={isValid.endDate}
-					minDate="today"
+					minDate={tomorrow}
 					errorMessage={endDateError}
 					{touched}
 				/>

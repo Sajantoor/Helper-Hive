@@ -7,14 +7,18 @@
 	export let title = '';
 	export let type: 'terms' | 'liabilityOrg' | 'liabilityVol' = 'terms';
 
+	const stopClick = () => {
+		event.stopPropagation();
+	};
+
 	const closePopup = () => {
 		const popup = document.getElementById(id);
 		popup?.classList.add('hidden');
 	};
 </script>
 
-<div {id} class="fixed inset-0 flex items-center justify-center bg-dimBlack bg-opacity-50 hidden">
-	<div class="bg-darkGray p-4 rounded-3xl desktop:rounded-2xl w-[95%] desktop:w-4/5 h-5/6 desktop:h-[90%] overflow-hidden relative">
+<div {id} on:click|preventDefault={closePopup} class="fixed inset-0 flex items-center justify-center bg-dimBlack bg-opacity-50 hidden">
+	<div on:click|preventDefault={stopClick} class="bg-darkGray p-4 rounded-3xl desktop:rounded-2xl w-[95%] desktop:w-4/5 h-5/6 desktop:h-[90%] overflow-hidden relative">
 		<div
 			class="bg-darkGray rounded-t-3xl desktop:rounded-t-2xl rounded-b-none flex justify-between items-center sticky top-0 z-10"
 		>

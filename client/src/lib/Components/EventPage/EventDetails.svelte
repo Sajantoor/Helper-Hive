@@ -21,6 +21,7 @@
 
 	let spotsAvailable = event.registration.totalSpots - event.registration.totalRegistered;
 	let registered = event.registration.isRegistered || false;
+	let clickedRegister = false; // Make button green for 1.5 sec (untested)
 
 	export let hours: string = getTime(event.date.startTime, event.date.endTime);
 
@@ -61,10 +62,12 @@
 	}
 
 	function handleRegister() {
-		if (registered) {
-			deregisterForEvent();
-		} else {
-			registerForEvent();
+		if (!clickedRegister){
+			if (registered) {
+				deregisterForEvent();
+			} else {
+				registerForEvent();
+			}
 		}
 	}
 
@@ -81,9 +84,17 @@
 			console.error('Failed to register for event');
 			return;
 		}
-
-		registered = true;
+		
+		registered = true; //remove this line
+		
 		spotsAvailable--;
+		/* UNTESTED:
+		clickedRegister = true;
+		
+		setTimeout(() => {
+			clickedRegister = false;
+			registered = true;
+		}, 1500);*/
 	}
 
 	async function deregisterForEvent() {
@@ -139,7 +150,7 @@
 	</div>
 
 	<div class="mt-1 desktop:mt-4">
-		<Text class="text-altTextGray">{spotsAvailable} Spots Available</Text>
+		<Text class="text-altTextGray">{spotsAvailable} {spotsAvailable == 1 ? 'Spot Available' : 'Spots Available'}</Text>
 		{#if !isOrganization}
 			<button
 				class={`w-full ${spotsAvailable > 0 && !registered ? 'bg-primaryYellow text-black' : 'bg-placeholderGray text-placeholderGrayText cursor-default'} py-2 px-4 mt-2 rounded-lg mx-auto text`}
@@ -147,6 +158,13 @@
 			>
 				<Text>{!registered ? 'Register' : 'Unregister'}</Text>
 			</button>
+			<!-- UNTESTED:
+			<button
+				class={`w-full ${clickedRegister ? 'bg-green-500 text-white' : spotsAvailable > 0 && !registered ? 'bg-primaryYellow text-black' : 'bg-placeholderGray text-placeholderGrayText cursor-default'} py-2 px-4 mt-2 rounded-lg mx-auto text`}
+				on:click={handleRegister}
+			>
+				<Text>{clickedRegister ? 'Registered!' : !registered ? 'Register' : 'Unregister'}</Text>
+			</button>-->
 		{/if}
 		{#if isOwner}
 			<button
