@@ -91,7 +91,8 @@
 	</FileDropzone>
 
 	<div
-		class="content-center pointer-events-none transition-all bg-red-100 border-dashed border-2 border-red-500 absolute inset-0 rounded-3xl {fileError ? 'opacity-100 transition-none' : 'opacity-0'}"
+		class="content-center pointer-events-none transition-all bg-red-100 border-dashed border-2 border-red-500 absolute inset-0 rounded-3xl
+		{fileError ? 'opacity-100 transition-none' : 'opacity-0'}"
 	>
 		<FileErrorIcon class="mb-2 text-red-500 w-full h-8" />
 		<SmallText
