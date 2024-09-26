@@ -22,7 +22,7 @@
 
 	let spotsAvailable = event.registration.totalSpots - event.registration.totalRegistered;
 	let registered = event.registration.isRegistered || false;
-	let clickedRegister = false; // Make button green for 1.5 sec
+	let clickedRegister = false; // Make button green for 1.25sec
 
 	export let hours: string = getTime(event.date.startTime, event.date.endTime);
 
@@ -92,7 +92,7 @@
 		setTimeout(() => {
 			clickedRegister = false;
 			registered = true;
-		}, 1500);
+		}, 1200);
 	}
 
 	async function deregisterForEvent() {
@@ -151,7 +151,11 @@
 		<Text class="text-altTextGray">{spotsAvailable} {spotsAvailable == 1 ? 'Spot Available' : 'Spots Available'}</Text>
 		{#if !isOrganization}
 			<button
-				class={`w-full ${clickedRegister ? 'bg-green-400 text-emerald-900 cursor-default flex items-center justify-center' : spotsAvailable > 0 && !registered ? 'bg-primaryYellow text-black' : 'bg-placeholderGray text-placeholderGrayText cursor-default'} py-2 px-4 mt-2 rounded-lg mx-auto`}
+				class={`w-full ${clickedRegister ?
+					'bg-green-400 text-emerald-900 border border-green-500/25 shadow-sm cursor-default scale-[1.03] flex items-center justify-center' :
+					spotsAvailable > 0 && !registered ? 'bg-primaryYellow text-black hoverx:scale-[1.025]' :
+					'bg-placeholderGray text-placeholderGrayText cursor-default transition-scale'}
+					transition-all ease-out py-2 px-4 mt-2 rounded-lg mx-auto`}
 				on:click={handleRegister}
 			>
 				<Text>{clickedRegister ? 'Registered!' : !registered ? 'Register' : 'Unregister'}</Text>
