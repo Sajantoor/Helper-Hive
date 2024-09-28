@@ -17,6 +17,7 @@
 
 	// update the validation state when the input is changed
 	function handleChange() {
+		touched = true;
 		valid = validState;
 	}
 
@@ -62,7 +63,7 @@
 				class="h-12 desktop:h-9 pl-3 pr-3 rounded-r-lg grow bg-placeholderGray 
 				{touched && !valid && 'bg-tagYellow placeholder-altTextBrown text-altTextBrown'}"
 				on:change={handleChange}
-				on:blur={() => (touched = true)}
+				on:blur={handleChange}
 				options={{ autoPlaceholder: false }}
 				{placeholder}
 			/>

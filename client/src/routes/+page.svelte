@@ -14,7 +14,7 @@
 
 <div class="header">
 	<div class="flex items-center">
-		<img src={logoSrc} alt="Logo" class="w-[30%] desktop:min-w-16 max-h-16 ml-5" />
+		<img src={logoSrc} alt="Logo" class="max-w-[30%] desktop:min-w-16 max-h-16 ml-5" />
 
 		<Text class="font-medium mt-3 ml-2 desktop:ml-5 desktop:text-lg">Helper Hive</Text>
 	</div>
