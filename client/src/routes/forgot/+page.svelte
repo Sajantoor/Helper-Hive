@@ -3,6 +3,7 @@
 	import LeftArrow from 'svelte-material-icons/ChevronLeft.svelte';
 	import { PUBLIC_SERVER_HOST } from '$env/static/public';
 	import EmailInput from '$lib/Components/Input/EmailInput.svelte';
+	import BackButton from '$lib/Components/BackButton.svelte';
 
 	let email = '';
 	let isFormValid = false;
@@ -33,6 +34,10 @@
 		submitted = false;
 	};
 </script>
+
+{#if !submitted}
+	<BackButton />
+{/if}
 
 <div class="flex flex-col md:flex-row justify-center items-center  min-h-[90vh] desktop:min-h-screen">
 	<div

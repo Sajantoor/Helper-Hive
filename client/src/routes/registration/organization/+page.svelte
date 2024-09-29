@@ -121,12 +121,12 @@
 </script>
 
 <div class="flex flex-col lg:flex-row justify-center items-center min-h-screen">
-	<div class="container mx-auto desktop:px-4 flex flex-col lg:flex-row lg:ml-2">
+	<div class="lg:w-full lg:justify-between desktop:px-4 flex flex-col lg:flex-row">
 		<!-- Left section -->
 		<div
 			class="flex flex-col justify-start lg:items-start items-center w-full lg:w-3/10 lg:max-w-[30%] lg:text-left text-center"
 		>
-			<Text class="section lg:w-1/2 mb-4 whitespace-normal pt-10">Organization Registration</Text>
+			<Text class="section lg:w-1/2 mb-4 lg:ml-2 whitespace-normal pt-10">Organization Registration</Text>
 			<SmallText>
 				Wrong Place?
 				<a href="/registration/volunteer" class="text-blue-500 underline">Click here</a>
@@ -135,7 +135,7 @@
 		</div>
 
 		<!-- Middle section -->
-		<div class="w-full lg:w-4/10 bg-white p-8 rounded-lg">
+		<div class="w-full lg:min-w-[550px] bg-white pt-8 pb-8 pl-8 pr-8 lg:pl-9 lg:pr-7 mx-auto">
 			<Text class="section mb-2 text-center">Join us today!</Text>
 			<Text class="heading mb-6 text-center">Sign Up Now to Become a Member</Text>
 
@@ -304,7 +304,7 @@
 		</div>
 
 		<!-- Right section (empty) -->
-		<div class="w-full lg:w-3/10 lg:max-w-[30%]"></div>
+		<div class="w-full ml-auto lg:w-3/10 lg:max-w-[30%]"></div>
 	</div>
 </div>
 

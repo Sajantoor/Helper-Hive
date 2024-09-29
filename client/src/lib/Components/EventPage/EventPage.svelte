@@ -12,7 +12,7 @@
 
 <div class="event-page w-[90vw] desktop:w-[70vw]">
 	<img
-		class="eventImg rounded-3xl w-[94%] desktop:w-full max-desktop:ml-auto"
+		class="eventImg rounded-3xl w-[94%] min-h-[200px] max-h-[400px] mdlg:max-h-[500px] desktop:w-full max-desktop:ml-auto"
 		src={eventData.details.photo}
 		alt={eventData.name}
 	/>
@@ -66,7 +66,6 @@
 
 	.eventImg {
 		object-fit: cover;
-		height: 100%;
 	}
 
 	@media (max-width: 896px) {

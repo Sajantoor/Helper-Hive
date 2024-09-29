@@ -6,6 +6,9 @@
 	import ArrowLeft from 'svelte-material-icons/ArrowLeft.svelte';
 	import ArrowRight from 'svelte-material-icons/ArrowRight.svelte';
 	import Text from './Text/Text.svelte';
+	
+	import { swipeable } from '@react2svelte/swipeable';
+	import type { SwipeEventData } from '@react2svelte/swipeable';
 
 	export let events: EventResponse[];
 	let currentSlide = 0;
@@ -55,13 +58,13 @@
 	}
 </script>
 
-<div class="w-full overflow-hidden">
+<div class="w-full mx-auto max-w-[3000px] overflow-hidden">
 	{#if events.length === 0}
 		<Text class="text-center max-desktop:w-[90%] max-desktop:mx-auto">
 			There are no available events at this time, try again later...
 		</Text>
 	{:else}
-		<div class="flex items-center mx-auto relative">
+		<div use:swipeable on:swipedleft={nextSlide} on:swipedright={prevSlide} class="flex items-center mx-auto relative">
 			<div class="flex-none w-12 flex justify-center bg-white z-10">
 				{#if currentSlide > 0}
 					<button

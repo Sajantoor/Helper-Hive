@@ -2,6 +2,8 @@
 	import EventScroller from '$lib/Components/EventScroller.svelte';
 	import CalendarView from '$lib/Components/CalendarView.svelte';
 	import Text from '$lib/Components/Text/Text.svelte';
+	import Heading from '$lib/Components/Text/Heading.svelte';
+	import logoSrc from '$lib/assets/Logo.png';
 
 	export let data;
 
@@ -31,6 +33,35 @@
 	<CalendarView {events} />
 </div>
 
+<!-- Experimenting with gradient footer, in case we even wanna do one here in the future
+<div class="footer-container">
+	<!-- Container for gradient -- >
+	<div class="flex justify-center pt-4 pb-20 desktop:pt-8 desktop:pb-16"></div>
+	<div class="footer">
+		<div>
+			<Heading class="mb-4">Got Questions?</Heading>
+
+			<a href="mailto:helperhivevolunteer@gmail.com">
+				<Text class="text-orange-800">helperhivevolunteer@gmail.com</Text>
+			</a>
+
+			<a href="https://instagram.com/helper.hive">
+				<Text class="text-orange-800">@helper.hive</Text>
+			</a>
+			<a href="https://github.com/Sajantoor/Helper-Hive/issues">
+				<!-- make the it a blue color -- >
+
+				<Text class="text-orange-800">Report a Bug</Text>
+			</a>
+		</div>
+
+		<div class="flex items-end desktop:items-center">
+			<Text class="text-right desktop:text-center">Helper Hive Volunteer Network</Text>
+			<img src={logoSrc} alt="Logo" class="h-16 ml-2 max-desktop:mr-1 desktop:ml-5" />
+		</div>
+	</div>
+</div>-->
+
 <style lang="postcss">
 	.dashboard {
 		display: flex;
@@ -51,5 +82,28 @@
 		display: inline-block;
 		white-space: nowrap;
 		text-align: center;
+	}
+	
+	.footer {
+		margin: 0 auto;
+		display: flex;
+		width: 90%;
+		justify-content: space-between;
+	}
+
+	.footer-container {
+		padding-bottom: 2rem;
+		margin-bottom: 0;
+		background: linear-gradient(to bottom, white 12%, #FAC336 44%, #FAC336 44%);
+	}
+
+	@media (max-width: 550px) {
+		.footer {
+			margin: 0 auto;
+			display: flex;
+			margin-left: 5%;
+			width: 94%;
+			justify-content: space-between;
+		}
 	}
 </style>
