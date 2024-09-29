@@ -1,6 +1,6 @@
 <script lang="ts">
-	import BackButton from '$lib/Components/BackButton.svelte';
-	import Section from '$lib/Components/Text/Section.svelte';
+	import BackButton from '$lib/components/BackButton.svelte';
+	import Section from '$lib/components/text/Section.svelte';
 </script>
 
 <BackButton />

@@ -1,5 +1,5 @@
 import { PUBLIC_SERVER_HOST } from "$env/static/public";
-import { handleErrors } from "$lib/Utils/handleErrors";
+import { handleErrors } from "$lib/utils/handleErrors";
 import { splitCookiesString, parseString } from "set-cookie-parser";
 
 export async function load({ params, cookies }) {

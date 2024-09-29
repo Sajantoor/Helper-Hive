@@ -3,8 +3,8 @@
 	import FileDropzone from 'svelte-file-dropzone';
 	import UploadIcon from 'svelte-material-icons/TrayArrowUp.svelte';
 	import FileErrorIcon from 'svelte-material-icons/FileDocumentRemoveOutline.svelte';
-	import Text from '$lib/Components/Text/Text.svelte';
-	import SmallText from '../Text/SmallText.svelte';
+	import Text from '$lib/components/text/Text.svelte';
+	import SmallText from '$lib/components/text/SmallText.svelte';
 
 	export let type: 'image' | 'file' = 'file';
 	export let placeholder = 'Click or drag and drop to upload a file...';

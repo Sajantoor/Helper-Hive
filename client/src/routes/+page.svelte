@@ -1,11 +1,11 @@
 <script lang="ts">
-	import Section from '$lib/Components/Text/Section.svelte';
-	import LargeHeading from '$lib/Components/Text/LargeHeading.svelte';
-	import LargeText from '$lib/Components/Text/LargeText.svelte';
-	import Heading from '$lib/Components/Text/Heading.svelte';
-	import Text from '$lib/Components/Text/Text.svelte';
+	import Section from '$lib/components/text/Section.svelte';
+	import LargeHeading from '$lib/components/text/LargeHeading.svelte';
+	import LargeText from '$lib/components/text/LargeText.svelte';
+	import Heading from '$lib/components/text/Heading.svelte';
+	import Text from '$lib/components/text/Text.svelte';
 	import logoSrc from '$lib/assets/Logo.png';
-	import EventScroller from '$lib/Components/EventScroller.svelte';
+	import EventScroller from '$lib/components/EventScroller.svelte';
 
 	export let data;
 

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Instagram from 'svelte-material-icons/Instagram.svelte';
-	import Text from '../Text/Text.svelte';
-	import Heading from '../Text/Heading.svelte';
+	import Text from '../text/Text.svelte';
+	import Heading from '../text/Heading.svelte';
 	import type { OrganizationEventData } from '$common/types/eventResponse';
 
 	let iconSize = 40;

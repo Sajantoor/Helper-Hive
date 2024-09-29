@@ -2,7 +2,7 @@
 	import Flatpickr, { type HookProps } from 'svelte-flatpickr';
 	import flatpickr from 'flatpickr';
 	import 'flatpickr/dist/flatpickr.css';
-	import SmallText from '../Text/SmallText.svelte';
+	import SmallText from '../text/SmallText.svelte';
 
 	export let label = '';
 	export let placeholder = '';
