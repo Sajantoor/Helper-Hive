@@ -36,9 +36,9 @@
 	let registerStyle = (spotsAvailable > 0 && !registered)
 		? "bg-primaryYellow text-black"
 		: "bg-placeholderGray text-placeholderGrayText cursor-default transition-scale";
-	let registerText = (spotsAvailable > 0 && !registered)
-		? "Register"
-		: "Unregister";
+	let registerText = registered
+		? "Unregister"
+		: "Register";
 
 	if (location) {
 		locationTitle = location.name;
@@ -89,7 +89,9 @@
 			registerText = "Register";
 		} else {
 			registerStyle = "bg-placeholderGray text-placeholderGrayText cursor-default transition-scale";
-			registerText = "Unregister";
+			if (registered){
+				registerText = "Unregister";
+			}
 		}
 	}
 
