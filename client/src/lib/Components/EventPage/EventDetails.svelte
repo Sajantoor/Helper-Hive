@@ -32,6 +32,13 @@
 		: `${formatDate(startDate)} - ${formatDate(endDate)}`;
 
 	let locationTitle: string, locationDescription: string;
+	
+	let registerStyle = (spotsAvailable > 0 && !registered)
+		? "bg-primaryYellow text-black"
+		: "bg-placeholderGray text-placeholderGrayText cursor-default transition-scale";
+	let registerText = (spotsAvailable > 0 && !registered)
+		? "Register"
+		: "Unregister";
 
 	if (location) {
 		locationTitle = location.name;
@@ -63,12 +70,26 @@
 	}
 
 	function handleRegister() {
-		if (!clickedRegister){
-			if (registered) {
-				deregisterForEvent();
-			} else {
-				registerForEvent();
-			}
+		if (clickedRegister){
+			return;
+		}
+		if (registered) {
+			deregisterForEvent();
+		} else {
+			registerForEvent();
+		}
+	}
+	
+	function updateRegisterButton(){
+		if (clickedRegister){
+			registerStyle = "bg-green-400 text-emerald-900 border border-green-500/25 shadow-sm cursor-default scale-[1.03] flex items-center justify-center";
+			registerText = "Registered!";
+		} else if (spotsAvailable > 0 && !registered) {
+			registerStyle = "bg-primaryYellow text-black";
+			registerText = "Register";
+		} else {
+			registerStyle = "bg-placeholderGray text-placeholderGrayText cursor-default transition-scale";
+			registerText = "Unregister";
 		}
 	}
 
@@ -88,10 +109,12 @@
 		
 		spotsAvailable--;
 		clickedRegister = true;
+		updateRegisterButton();
 		
 		setTimeout(() => {
 			clickedRegister = false;
 			registered = true;
+			updateRegisterButton();
 		}, 1200);
 	}
 
@@ -112,6 +135,7 @@
 		// deregister for the event
 		registered = false;
 		spotsAvailable++;
+		updateRegisterButton();
 	}
 </script>
 
@@ -151,14 +175,10 @@
 		<Text class="text-altTextGray">{spotsAvailable} {spotsAvailable == 1 ? 'Spot Available' : 'Spots Available'}</Text>
 		{#if !isOrganization}
 			<button
-				class={`w-full ${
-					clickedRegister ?	'bg-green-400 text-emerald-900 border border-green-500/25 shadow-sm cursor-default scale-[1.03] flex items-center justify-center' :
-					spotsAvailable > 0 && !registered ? 'bg-primaryYellow text-black hoverx:scale-[1.025]' :
-					'bg-placeholderGray text-placeholderGrayText cursor-default transition-scale'
-				} transition-all ease-out py-2 px-4 mt-2 rounded-lg mx-auto`}
+				class={`w-full ${registerStyle} transition-all ease-out py-2 px-4 mt-2 rounded-lg mx-auto`}
 				on:click={handleRegister}
 			>
-				<Text>{clickedRegister ? 'Registered!' : !registered ? 'Register' : 'Unregister'}</Text>
+				<Text>{registerText}</Text>
 				{#if clickedRegister}
 					<Checkmark class="text-emerald-900 ml-1"/>
 				{/if}
