@@ -1,7 +1,7 @@
 <script lang="ts">
-	import EventScroller from '$lib/Components/EventScroller.svelte';
-	import CalendarView from '$lib/Components/CalendarView.svelte';
-	import Text from '$lib/Components/Text/Text.svelte';
+	import EventScroller from '$lib/components/EventScroller.svelte';
+	import CalendarView from '$lib/components/CalendarView.svelte';
+	import Text from '$lib/components/text/Text.svelte';
 
 	export let data;
 

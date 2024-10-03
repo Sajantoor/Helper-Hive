@@ -5,7 +5,7 @@ const passwordResetTokenSchema = new Schema({
     token: { type: String, required: true, unique: true },
     id: { type: String, required: true },
     isOrganization: { type: Boolean, required: true },
-    expireAt: { type: Date, default: new Date(), expires: expiryTime }
+    createdAt: { type: Date, expires: expiryTime }
 });
 
 const PasswordResetToken = model("passwordResetToken", passwordResetTokenSchema);

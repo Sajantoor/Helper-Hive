@@ -1,5 +1,5 @@
 <script lang="ts">
-	import SmallText from '$lib/Components/Text/SmallText.svelte';
+	import SmallText from '$lib/components/text/SmallText.svelte';
 	import { createEventDispatcher } from 'svelte';
 
 	const dispatch = createEventDispatcher<{ input: { value: string } }>();

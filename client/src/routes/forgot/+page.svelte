@@ -1,8 +1,8 @@
 <script lang="ts">
-	import Text from '$lib/Components/Text/Text.svelte';
+	import Text from '$lib/components/text/Text.svelte';
 	import LeftArrow from 'svelte-material-icons/ChevronLeft.svelte';
 	import { PUBLIC_SERVER_HOST } from '$env/static/public';
-	import EmailInput from '$lib/Components/Input/EmailInput.svelte';
+	import EmailInput from '$lib/components/input/EmailInput.svelte';
 
 	let email = '';
 	let isFormValid = false;

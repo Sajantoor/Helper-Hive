@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { TelInput, normalizedCountries } from 'svelte-tel-input';
 	import type { CountryCode } from 'svelte-tel-input/types';
-	import SmallText from '../Text/SmallText.svelte';
+	import SmallText from '../text/SmallText.svelte';
 
 	export let label = '';
 	export let placeholder = 'Enter phone number...';

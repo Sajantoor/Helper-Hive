@@ -1,7 +1,7 @@
 <script lang="ts">
-	import EventCard from '$lib/Components/EventCard.svelte';
+	import EventCard from '$lib/components/EventCard.svelte';
 	import type { EventResponse } from '$common/types/eventResponse';
-	import Text from './Text/Text.svelte';
+	import Text from './text/Text.svelte';
 
 	export let events: EventResponse[] = [];
 

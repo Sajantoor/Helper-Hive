@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Text from '$lib/Components/Text/Text.svelte';
-	import TCContents from '$lib/Components/TCContents.svelte';
+	import Text from '$lib/components/text/Text.svelte';
+	import TCContents from '$lib/components/TCContents.svelte';
 	import CloseCircle from 'svelte-material-icons/CloseCircle.svelte';
 
 	export let id = '';
@@ -14,7 +14,9 @@
 </script>
 
 <div {id} class="fixed inset-0 flex items-center justify-center bg-dimBlack bg-opacity-50 hidden">
-	<div class="bg-darkGray p-4 rounded-3xl desktop:rounded-2xl w-[95%] desktop:w-4/5 h-5/6 desktop:h-[90%] overflow-hidden relative">
+	<div
+		class="bg-darkGray p-4 rounded-3xl desktop:rounded-2xl w-[95%] desktop:w-4/5 h-5/6 desktop:h-[90%] overflow-hidden relative"
+	>
 		<div
 			class="bg-darkGray rounded-t-3xl desktop:rounded-t-2xl rounded-b-none flex justify-between items-center sticky top-0 z-10"
 		>
@@ -25,7 +27,9 @@
 				/>
 			</div>
 		</div>
-		<div class="absolute inset-0 top-[4rem] bg-white p-4 rounded-b-3xl desktop:rounded-b-2xl rounded-t-lg mb-2 mr-2 ml-2">
+		<div
+			class="absolute inset-0 top-[4rem] bg-white p-4 rounded-b-3xl desktop:rounded-b-2xl rounded-t-lg mb-2 mr-2 ml-2"
+		>
 			<div
 				class="popup-body overflow-y-auto h-full pb-3 desktop:pl-2 pr-4 scrollbar-custom text-placeholderGrayText"
 			>
