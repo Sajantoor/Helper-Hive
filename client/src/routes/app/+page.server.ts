@@ -1,6 +1,6 @@
 import type { EventResponse } from '$common/types/eventResponse.js';
 import { PUBLIC_SERVER_HOST } from '$env/static/public';
-import { handleErrors } from '$lib/Utils/handleErrors.js';
+import { handleErrors } from '$lib/utils/handleErrors.js';
 
 export async function load({ cookies }) {
     const response = await fetch(`${PUBLIC_SERVER_HOST}/api/events`, {

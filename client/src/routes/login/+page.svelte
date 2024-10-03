@@ -1,10 +1,10 @@
 <script lang="ts">
-	import Text from '$lib/Components/Text/Text.svelte';
-	import PasswordInput from '$lib/Components/Input/PasswordInput.svelte';
+	import Text from '$lib/components/text/Text.svelte';
+	import PasswordInput from '$lib/components/input/PasswordInput.svelte';
 	import { goto } from '$app/navigation';
 	import { PUBLIC_SERVER_HOST } from '$env/static/public';
-	import EmailInput from '$lib/Components/Input/EmailInput.svelte';
-	import SmallText from '$lib/Components/Text/SmallText.svelte';
+	import EmailInput from '$lib/components/input/EmailInput.svelte';
+	import SmallText from '$lib/components/text/SmallText.svelte';
 
 	let email = '';
 	let password = '';
@@ -44,7 +44,9 @@
 	}
 </script>
 
-<div class="flex flex-col mdlg:flex-row justify-center items-center min-h-[90vh] desktop:min-h-screen">
+<div
+	class="flex flex-col mdlg:flex-row justify-center items-center min-h-[90vh] desktop:min-h-screen"
+>
 	<div
 		class="container mx-auto px-4 flex flex-col mdlg:flex-row justify-center max-w-screen-lg space-y-6"
 	>

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import CreateEventPage from '$lib/Components/EventPage/CreateEventPage.svelte';
+	import CreateEventPage from '$lib/components/eventPage/CreateEventPage.svelte';
 </script>
 
 <CreateEventPage />

@@ -2,10 +2,10 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { PUBLIC_SERVER_HOST } from '$env/static/public';
-	import BackButton from '$lib/Components/BackButton.svelte';
-	import PasswordInput from '$lib/Components/Input/PasswordInput.svelte';
-	import Section from '$lib/Components/Text/Section.svelte';
-	import Text from '$lib/Components/Text/Text.svelte';
+	import BackButton from '$lib/components/BackButton.svelte';
+	import PasswordInput from '$lib/components/input/PasswordInput.svelte';
+	import Section from '$lib/components/text/Section.svelte';
+	import Text from '$lib/components/text/Text.svelte';
 
 	let password = '';
 	let confirmValue = '';

@@ -1,11 +1,11 @@
 <script lang="ts">
-	import EventCard from '$lib/Components/EventCard.svelte';
+	import EventCard from '$lib/components/EventCard.svelte';
 	import type { EventResponse } from '$common/types/eventResponse';
 	import { onMount, onDestroy } from 'svelte';
 
 	import ArrowLeft from 'svelte-material-icons/ArrowLeft.svelte';
 	import ArrowRight from 'svelte-material-icons/ArrowRight.svelte';
-	import Text from './Text/Text.svelte';
+	import Text from './text/Text.svelte';
 
 	export let events: EventResponse[];
 	let currentSlide = 0;

@@ -1,7 +1,7 @@
 <script lang="ts">
-	import Heading from './Text/Heading.svelte';
-	import Text from './Text/Text.svelte';
-	import SmallText from './Text/SmallText.svelte';
+	import Heading from './text/Heading.svelte';
+	import Text from './text/Text.svelte';
+	import SmallText from './text/SmallText.svelte';
 
 	export let type: 'terms' | 'liabilityOrg' | 'liabilityVol' = 'terms';
 </script>

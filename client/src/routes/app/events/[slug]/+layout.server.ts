@@ -1,7 +1,7 @@
 import type { EventResponse } from '$common/types/eventResponse.js';
 import { PUBLIC_SERVER_HOST } from '$env/static/public';
 import type { LayoutServerLoad } from './$types';
-import { handleErrors } from '$lib/Utils/handleErrors.js';
+import { handleErrors } from '$lib/utils/handleErrors.js';
 
 export const load: LayoutServerLoad = async ({ cookies, params }) => {
     const slug = params.slug;

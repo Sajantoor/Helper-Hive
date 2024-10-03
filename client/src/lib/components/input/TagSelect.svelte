@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Text from '$lib/Components/Text/Text.svelte';
-	import DropDown from '$lib/Components/Input/DropDownInput.svelte';
+	import Text from '$lib/components/text/Text.svelte';
+	import DropDown from '$lib/components/input/DropDownInput.svelte';
 	import CloseCircle from 'svelte-material-icons/CloseCircle.svelte';
 	import ArrowLeft from 'svelte-material-icons/ArrowLeft.svelte';
 	import Plus from 'svelte-material-icons/Plus.svelte';
