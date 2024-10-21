@@ -43,6 +43,9 @@
 			font-size: 3.5rem;
 			font-weight: bold;
 		}
+		.smallText {
+			font-size: 0.95rem;
+		}
 	}
 
 	.largeText {

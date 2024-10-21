@@ -313,7 +313,7 @@
 
 				<button
 					type="submit"
-					class={`w-full ${isFormValid ? 'bg-primaryYellow text-black' : 'bg-tagYellow text-altTextBrown'} py-2 px-4 rounded-lg mx-auto text`}
+					class={`w-full ${isFormValid ? 'bg-primaryYellow text-black' : 'bg-tagYellow text-altTextBrown'} desktop:py-2 py-2.5 px-4 rounded-lg mx-auto text`}
 					style="margin-top: 2.5rem;"
 				>
 					<Text>Sign Up</Text>

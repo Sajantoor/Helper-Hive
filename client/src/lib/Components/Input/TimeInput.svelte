@@ -28,7 +28,7 @@
 			format="H:i P"
 			displayFormat="H:i P"
 			manualInput={false}
-			inputClasses="mt-1 pl-3 p-2 w-full bg-placeholderGray border-none rounded-lg placeholder:italic max-desktop:pt-3 max-desktop:pb-3
+			inputClasses="mt-1 pl-3 p-2 w-full bg-placeholderGray border-none rounded-lg placeholder:italic max-desktop:text-[1.08rem] max-desktop:py-2.5
 			{touched && !valid && 'bg-tagYellow text-altTextBrown placeholder-altTextBrown'}"
 		/>
 	</div>

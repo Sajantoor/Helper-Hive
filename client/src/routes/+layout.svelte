@@ -3,7 +3,7 @@
 </script>
 
 <svelte:head>
-	<meta name="viewport" content="width=device-width, initial-scale=0.8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=0.875"/>
 </svelte:head>
 
 <slot />
