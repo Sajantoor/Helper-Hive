@@ -29,17 +29,40 @@ const clearCookieOptions = {
 
 const cookieOptions = {
     ...clearCookieOptions,
+    // Clear cookies cannot have maxAge property
     maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
 } as const;
 
+
+/**
+ * Generates an access token for the given data.
+ *
+ * @param {TokenData} data - The data to be encoded in the token.
+ * @returns {string | null} The generated access token, or null if token generation fails.
+ */
 export function generateAccessToken(data: TokenData): string | null {
     return generateToken(data, access_code_secret, "15m");
 }
 
+
+/**
+ * Generates an account confirmation token.
+ *
+ * @param data - The data to be included in the token.
+ * @returns A string representing the generated token, or null if the token could not be generated.
+ */
 export function generateAccountConfirmationToken(data: TokenData): string | null {
     return generateToken(data, account_confirmation_secret, "7d");
 }
 
+/**
+ * Generates a token with the given data and secret.
+ *
+ * @param data - The data to be included in the token.
+ * @param secret - The secret to be used to sign the token.
+ * @param validity - The validity period of the token.
+ * @returns A string representing the generated token, or null if the token could not be generated.
+ */
 function generateToken(data: TokenData, secret: string, validity: string): string | null {
     try {
         return jwt.sign(data, secret, { expiresIn: validity });
@@ -48,7 +71,13 @@ function generateToken(data: TokenData, secret: string, validity: string): strin
     }
 }
 
-export function validateAccessToken(token: string) {
+/**
+ * Validates the given access token.
+ *
+ * @param token - The token to be validated.
+ * @returns The decoded token data if the token is valid, or null if the token is invalid.
+ */
+export function validateAccessToken(token: string): TokenData | null {
     try {
         const data = jwt.verify(token, access_code_secret) as TokenData;
         return data;
@@ -57,11 +86,32 @@ export function validateAccessToken(token: string) {
     }
 }
 
-export function validateAccountConfirmationToken(token: string) {
+/**
+ * Validates the given account confirmation token.
+ *
+ * @param token - The token to be validated.
+ * @returns The decoded token data if the token is valid, or throws an error if the token is invalid.
+ */
+export function validateAccountConfirmationToken(token: string): TokenData {
     const data = jwt.verify(token, account_confirmation_secret) as TokenData;
     return data;
 }
 
+/**
+ * Resends the account confirmation email to the user if the provided token is valid and the account is not already confirmed.
+ * 
+ * @param res - The response object to send the HTTP response.
+ * @param token - The token string used to decode user information.
+ * 
+ * @returns A JSON response with a status code and message indicating the result of the operation.
+ * 
+ * @throws Will return a 400 status code with an appropriate message if:
+ * - The token is invalid.
+ * - The user does not exist.
+ * - The account is already confirmed.
+ * 
+ * @async
+ */
 export async function resendAccountConfirmationEmail(res: Response, token: string) {
     let data: TokenData;
     try {
@@ -94,6 +144,12 @@ export async function resendAccountConfirmationEmail(res: Response, token: strin
     res.status(400).json({ message: "Token expired, check your inbox for a new confirmation email." });
 }
 
+/**
+ * Generates a pair of refresh and access tokens for the given data.
+ *
+ * @param data - The data to be encoded in the tokens.
+ * @returns An object containing the refresh and access tokens, or null if token generation fails.
+ */
 async function generateAuthTokens(data: TokenData): Promise<{ refreshToken: string; accessToken: string; } | null> {
     const refreshToken = generateToken(data, refresh_code_secret, "7d");
     const accessToken = generateAccessToken(data);
@@ -112,6 +168,12 @@ async function generateAuthTokens(data: TokenData): Promise<{ refreshToken: stri
     return { refreshToken, accessToken };
 }
 
+/**
+ * Sets the authentication cookies in the response object.
+ *
+ * @param res - The response object to set the cookies in.
+ * @param data - The token data to be encoded in the cookies.
+ */
 export async function setAuthCookies(res: Response, data: TokenData) {
     const tokens = await generateAuthTokens(data);
     if (!tokens) {
@@ -122,6 +184,13 @@ export async function setAuthCookies(res: Response, data: TokenData) {
     res.cookie("rid", tokens.refreshToken, cookieOptions);
 }
 
+/**
+ * Clears the authentication cookies in the response object. Deletes an existing 
+ * refresh token from the database if it exists.
+ *
+ * @param req - The request object to get the refresh token from.
+ * @param res - The response object to clear the cookies in.
+ */
 export async function clearCookies(req: Request, res: Response) {
     const refreshToken = req.cookies.rid;
 
@@ -148,6 +217,20 @@ function validateToken(req: Request, res: Response): TokenData | null {
     return validateAccessToken(accessToken);
 }
 
+
+/**
+ * Middleware function to authorize a user based on the provided token.
+ * 
+ * This function validates the token from the request, checks if the account is confirmed,
+ * and attaches the user data to the response locals if the authorization is successful.
+ * 
+ * @param req - The HTTP request object.
+ * @param res - The HTTP response object.
+ * @param next - The next middleware function in the stack.
+ * 
+ * @returns If the token is invalid or the account is not confirmed, it sends an appropriate
+ *          response and does not call the next middleware. Otherwise, it calls the next middleware.
+ */
 export async function authorize(req: Request, res: Response, next: NextFunction) {
     const data = validateToken(req, res);
     if (!data) {
@@ -162,6 +245,18 @@ export async function authorize(req: Request, res: Response, next: NextFunction)
     next();
 }
 
+/**
+ * Middleware to authorize an organization.
+ * 
+ * This function checks if the request is made by an organization. If not, it responds with a forbidden error.
+ * If the request is authorized, it calls the next middleware in the stack.
+ * 
+ * @param req - The request object.
+ * @param res - The response object.
+ * @param next - The next middleware function.
+ * 
+ * @returns A forbidden error response if the request is not authorized.
+ */
 export async function authorizeOrganization(req: Request, res: Response, next: NextFunction) {
     if (!isOrganization(res)) {
         return forbiddenError(res);
@@ -170,6 +265,20 @@ export async function authorizeOrganization(req: Request, res: Response, next: N
     next();
 }
 
+/**
+ * Middleware to authorize requests from verified organizations.
+ * 
+ * This middleware should be used after the authorized middleware. It checks if the user
+ * associated with the request has a verified organization status. If the organization is
+ * not verified, it responds with a forbidden error. Otherwise, it passes control to the
+ * next middleware in the stack.
+ * 
+ * @param req - The request object.
+ * @param res - The response object.
+ * @param next - The next middleware function.
+ * 
+ * @returns A forbidden error response if the organization is not verified, otherwise calls the next middleware.
+ */
 export async function authorizeVerifiedOrganization(req: Request, res: Response, next: NextFunction) {
     // run after authorized middleware
     if (!res.locals.user.isOrganizationVerified) {
@@ -179,6 +288,19 @@ export async function authorizeVerifiedOrganization(req: Request, res: Response,
     next();
 }
 
+/**
+ * Middleware function to authorize a user.
+ * 
+ * This function checks if the user is a volunteer.
+ * If the user is not a volunteer, it sends a forbidden error response using the `forbiddenError` function.
+ * Otherwise, it calls the `next` middleware function.
+ * 
+ * @param req - The request object.
+ * @param res - The response object.
+ * @param next - The next middleware function.
+ * 
+ * @returns A promise that resolves to void.
+ */
 export async function authorizeUser(req: Request, res: Response, next: NextFunction) {
     if (!isVolunteer(res)) {
         return forbiddenError(res);
@@ -187,6 +309,22 @@ export async function authorizeUser(req: Request, res: Response, next: NextFunct
     next();
 }
 
+/**
+ * Middleware function to renew the access token using a refresh token.
+ * 
+ * This function extracts the refresh token from the request cookies, verifies it,
+ * and generates a new access token if the refresh token is valid. It also handles
+ * organization verification if the user is an organization.
+ * 
+ * @param req - The request object containing the refresh token in cookies.
+ * @param res - The response object used to send back the new access token or error messages.
+ * @param next - The next middleware function in the stack.
+ * 
+ * @returns A response with the new access token or an error message.
+ * 
+ * @throws UnauthorizedError - If the refresh token is missing, invalid, or not found in the database.
+ * @throws InternalServerError - If there is an error generating the new access token.
+ */
 export async function renewToken(req: Request, res: Response, next: NextFunction) {
     const refreshToken = req.cookies.rid;
     if (!refreshToken) {

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import SmallText from '../Text/SmallText.svelte';
+	import SmallText from '../text/SmallText.svelte';
 	import { PUBLIC_GOOGLE_MAPS_API_KEY } from '$env/static/public';
 	import type { LocationData } from '$common/types/eventResponse';
 

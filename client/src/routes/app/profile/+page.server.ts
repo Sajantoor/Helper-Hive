@@ -1,7 +1,7 @@
 import { PUBLIC_SERVER_HOST } from '$env/static/public';
 import type { EventResponse } from '$common/types/eventResponse';
 import type { ProfileResponse } from '$common/types/ProfileResponse';
-import { handleErrors } from '$lib/Utils/handleErrors';
+import { handleErrors } from '$lib/utils/handleErrors';
 
 export async function load({ cookies }) {
     const fetchOptions: RequestInit = {

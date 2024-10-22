@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { TelInput, normalizedCountries } from 'svelte-tel-input';
 	import type { CountryCode } from 'svelte-tel-input/types';
-	import SmallText from '../Text/SmallText.svelte';
+	import SmallText from '../text/SmallText.svelte';
 
 	export let label = '';
 	export let placeholder = 'Enter phone number...';
@@ -17,6 +17,7 @@
 
 	// update the validation state when the input is changed
 	function handleChange() {
+		touched = true;
 		valid = validState;
 	}
 
@@ -62,7 +63,7 @@
 				class="h-12 desktop:h-9 px-2 rounded-r-lg grow bg-placeholderGray max-desktop:text-[1.08rem]
 				{touched && !valid && 'bg-tagYellow placeholder-altTextBrown text-altTextBrown'}"
 				on:change={handleChange}
-				on:blur={() => (touched = true)}
+				on:blur={handleChange}
 				options={{ autoPlaceholder: false }}
 				{placeholder}
 			/>

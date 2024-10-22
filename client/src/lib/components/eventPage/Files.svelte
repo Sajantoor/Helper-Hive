@@ -1,6 +1,6 @@
 <script lang="ts">
 	import FileDocumentOutline from 'svelte-material-icons/FileDocumentOutline.svelte';
-	import SmallText from '../Text/SmallText.svelte';
+	import SmallText from '../text/SmallText.svelte';
 	let iconSize = 40;
 
 	export let files: {

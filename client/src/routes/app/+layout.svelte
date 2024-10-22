@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { LayoutData } from './$types';
-	import NavBar from '$lib/Components/NavBar.svelte';
+	import NavBar from '$lib/components/NavBar.svelte';
 	import { profileStore } from '$lib/stores/profileStore';
 	export let data: LayoutData;
 	let profile = data.profile;

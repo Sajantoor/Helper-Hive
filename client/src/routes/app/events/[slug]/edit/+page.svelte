@@ -1,10 +1,10 @@
 <script lang="ts">
-	import CreateEventPage from '$lib/Components/EventPage/CreateEventPage.svelte';
-	import Text from '$lib/Components/Text/Text.svelte';
+	import CreateEventPage from '$lib/components/eventPage/CreateEventPage.svelte';
+	import Text from '$lib/components/text/Text.svelte';
 	import type { LayoutData } from '../$types';
 	import { profileStore } from '$lib/stores/profileStore';
 	import type { EventFormData, UploadedFiles } from '$common/types/FormData';
-	import BackButton from '$lib/Components/BackButton.svelte';
+	import BackButton from '$lib/components/BackButton.svelte';
 
 	export let data: LayoutData;
 	let authorized = false;

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Heading from '../Text/Heading.svelte';
-	import Text from '../Text/Text.svelte';
+	import Heading from '../text/Heading.svelte';
+	import Text from '../text/Text.svelte';
 
 	export let location = '';
 

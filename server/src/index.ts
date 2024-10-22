@@ -6,7 +6,7 @@ import { createEvent, deleteEvent, getEvent, getEvents, updateEvent } from "./ro
 import { getOrganizations, getOrganization, registerOrganization, updateOrganization, deleteOrganization } from "./routes/organizations";
 import { getUser, registerUser, updateUser, deleteUser } from "./routes/user";
 import { authorize, authorizeOrganization, authorizeUser, authorizeVerifiedOrganization, renewToken } from "./middlewares/authentication";
-import { confirmAccount, forgotPassword, login, logout, profile, resetPassword } from "./routes/login";
+import { confirmAccount, forgotPassword, login, logout, profile, resetPassword } from "./routes/authentication";
 import { getUserFutureEvents, getUserPastEvents, getOrganizationEvents, registerForEvent, deregisterForEvent } from "./routes/registration";
 import { getS3SecureURL } from "./routes/s3";
 

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Section from '../Text/Section.svelte';
-	import Text from '../Text/Text.svelte';
+	import Section from '../text/Section.svelte';
+	import Text from '../text/Text.svelte';
 
 	import CalendarMonth from 'svelte-material-icons/CalendarMonthOutline.svelte';
 	import MapMarkerOutline from 'svelte-material-icons/MapMarkerOutline.svelte';

@@ -1,21 +1,21 @@
 <script lang="ts">
-	import Text from '$lib/Components/Text/Text.svelte';
-	import Popup from '$lib/Components/TCPopup.svelte';
+	import Text from '$lib/components/text/Text.svelte';
+	import Popup from '$lib/components/TCPopup.svelte';
 
-	import DateInput from '$lib/Components/Input/DateInput.svelte';
-	import PasswordInput from '$lib/Components/Input/PasswordInput.svelte';
-	import PhoneInput from '$lib/Components/Input/PhoneInput.svelte';
-	import TextInput from '$lib/Components/Input/TextInput.svelte';
-	import FileUpload from '$lib/Components/Input/Upload.svelte';
-	import EmailInput from '$lib/Components/Input/EmailInput.svelte';
+	import DateInput from '$lib/components/input/DateInput.svelte';
+	import PasswordInput from '$lib/components/input/PasswordInput.svelte';
+	import PhoneInput from '$lib/components/input/PhoneInput.svelte';
+	import TextInput from '$lib/components/input/TextInput.svelte';
+	import FileUpload from '$lib/components/input/Upload.svelte';
+	import EmailInput from '$lib/components/input/EmailInput.svelte';
 	import CloseCircle from 'svelte-material-icons/CloseCircle.svelte';
 	import Circle from 'svelte-material-icons/Circle.svelte';
 
 	import { goto } from '$app/navigation';
 	import { PUBLIC_SERVER_HOST } from '$env/static/public';
-	import SmallText from '$lib/Components/Text/SmallText.svelte';
-	import { generateAndUploadRandomAvatar } from '$lib/Utils/generateRandomAvatar';
-	import { createBase64Image, uploadFile } from '$lib/Utils/uploadFiles';
+	import SmallText from '$lib/components/text/SmallText.svelte';
+	import { generateAndUploadRandomAvatar } from '$lib/utils/generateRandomAvatar';
+	import { createBase64Image, uploadFile } from '$lib/utils/uploadFiles';
 
 	let formData: {
 		firstName: string;

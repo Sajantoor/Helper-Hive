@@ -1,6 +1,6 @@
 <script lang="ts">
 	import SveltyPicker from 'svelty-picker';
-	import SmallText from '../Text/SmallText.svelte';
+	import SmallText from '../text/SmallText.svelte';
 
 	export let label = '';
 	export let placeholder = '';

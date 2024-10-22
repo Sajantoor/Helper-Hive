@@ -1,7 +1,7 @@
 <script lang="ts">
 	import EyeOutline from 'svelte-material-icons/EyeOutline.svelte';
 	import EyeOffOutline from 'svelte-material-icons/EyeOffOutline.svelte';
-	import SmallText from '../Text/SmallText.svelte';
+	import SmallText from '../text/SmallText.svelte';
 
 	export let type: 'new' | 'confirm' | 'default' = 'default';
 	export let matchPassword: string | null = null;

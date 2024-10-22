@@ -1,4 +1,4 @@
-import { LocationData } from "./eventResponse";
+import type { LocationData } from "./eventResponse";
 
 export interface EventFormData {
     name: string | undefined;

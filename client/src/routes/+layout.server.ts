@@ -1,6 +1,6 @@
 import { redirect } from "@sveltejs/kit";
 import type { LayoutServerLoad } from "./$types";
-import { fetchProfile } from "$lib/Utils/fetch";
+import { fetchProfile } from "$lib/utils/fetch";
 
 export const load: LayoutServerLoad = async ({ cookies, url }) => {
     // check if it's not the app route to avoid loops

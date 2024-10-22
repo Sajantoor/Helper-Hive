@@ -1,10 +1,10 @@
 <script lang="ts">
-	import Section from '$lib/Components/Text/Section.svelte';
-	import Heading from '$lib/Components/Text/Heading.svelte';
-	import Text from '$lib/Components/Text/Text.svelte';
+	import Section from '$lib/components/text/Section.svelte';
+	import Heading from '$lib/components/text/Heading.svelte';
+	import Text from '$lib/components/text/Text.svelte';
 	import Pencil from 'svelte-material-icons/Pencil.svelte';
 	import type { EventResponse } from '$common/types/eventResponse';
-	import EventsContainer from '$lib/Components/EventsContainer.svelte';
+	import EventsContainer from '$lib/components/EventsContainer.svelte';
 	import { profileStore } from '$lib/stores/profileStore';
 
 	export let data;

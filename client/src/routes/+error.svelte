@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import BackButton from '$lib/Components/BackButton.svelte';
-	import Section from '$lib/Components/Text/Section.svelte';
-	import Text from '$lib/Components/Text/Text.svelte';
+	import BackButton from '$lib/components/BackButton.svelte';
+	import Section from '$lib/components/text/Section.svelte';
+	import Text from '$lib/components/text/Text.svelte';
 
 	if ($page.error?.code === 401) {
 		if (typeof window !== 'undefined') {

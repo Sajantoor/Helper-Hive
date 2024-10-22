@@ -1,5 +1,5 @@
 <script lang="ts">
-	import SmallText from '../Text/SmallText.svelte';
+	import SmallText from '../text/SmallText.svelte';
 
 	export let label: string = '';
 	export let value: string = '';

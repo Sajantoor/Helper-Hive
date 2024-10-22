@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import SmallText from './Text/SmallText.svelte';
-	import Text from './Text/Text.svelte';
+	import SmallText from './text/SmallText.svelte';
+	import Text from './text/Text.svelte';
 
 	export let img: string = '';
 	export let title: string = '';

@@ -1,13 +1,13 @@
 <script lang="ts">
-	import Text from '$lib/Components/Text/Text.svelte';
-	import FileUpload from '$lib/Components/Input/Upload.svelte';
-	import DateInput from '$lib/Components/Input/DateInput.svelte';
-	import LocationInput from '$lib/Components/Input/LocationInput.svelte';
-	import NumberInput from '$lib/Components/Input/NumberInput.svelte';
-	import TagSelect from '$lib/Components/Input/TagSelect.svelte';
-	import TextInput from '$lib/Components/Input/TextInput.svelte';
-	import TimeInput from '$lib/Components/Input/TimeInput.svelte';
-	import Location from '$lib/Components/EventPage/Location.svelte';
+	import Text from '$lib/components/text/Text.svelte';
+	import FileUpload from '$lib/components/input/Upload.svelte';
+	import DateInput from '$lib/components/input/DateInput.svelte';
+	import LocationInput from '$lib/components/input/LocationInput.svelte';
+	import NumberInput from '$lib/components/input/NumberInput.svelte';
+	import TagSelect from '$lib/components/input/TagSelect.svelte';
+	import TextInput from '$lib/components/input/TextInput.svelte';
+	import TimeInput from '$lib/components/input/TimeInput.svelte';
+	import Location from '$lib/components/eventPage/Location.svelte';
 
 	import FileDocumentOutline from 'svelte-material-icons/FileDocumentOutline.svelte';
 	import CloseCircle from 'svelte-material-icons/CloseCircle.svelte';
@@ -17,15 +17,15 @@
 	import ClockOutline from 'svelte-material-icons/ClockTimeFourOutline.svelte';
 	import { PUBLIC_SERVER_HOST } from '$env/static/public';
 	import { goto, invalidateAll } from '$app/navigation';
-	import SmallText from '$lib/Components/Text/SmallText.svelte';
-	import { createBase64Image, uploadFile } from '$lib/Utils/uploadFiles';
+	import SmallText from '$lib/components/text/SmallText.svelte';
+	import { createBase64Image, uploadFile } from '$lib/utils/uploadFiles';
 	import HostInfo from './HostInfo.svelte';
 	import { profileStore } from '$lib/stores/profileStore';
 	import type { OrganizationEventData } from '$common/types/eventResponse';
 	import BackButton from '../BackButton.svelte';
 	import type { EventFormData } from '$common/types/FormData';
 	import { onMount } from 'svelte';
-	import { tags } from '$lib/Utils/tags';
+	import { tags } from '$lib/utils/tags';
 
 	let organizationInfo: OrganizationEventData;
 

@@ -1,8 +1,8 @@
 <script lang="ts">
-	import CalendarElement from '$lib/Components/CalendarEvent.svelte';
+	import CalendarElement from '$lib/components/CalendarEvent.svelte';
 	import { onMount } from 'svelte';
 	import type { EventResponse } from '$common/types/eventResponse';
-	import Text from './Text/Text.svelte';
+	import Text from './text/Text.svelte';
 
 	import LeftArrow from 'svelte-material-icons/ChevronLeft.svelte';
 	import RightArrow from 'svelte-material-icons/ChevronRight.svelte';
