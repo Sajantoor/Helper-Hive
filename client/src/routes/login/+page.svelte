@@ -48,7 +48,7 @@
 	class="flex flex-col mdlg:flex-row justify-center items-center min-h-[90vh] desktop:min-h-screen"
 >
 	<div
-		class="container mx-auto px-4 flex flex-col mdlg:flex-row justify-center max-w-screen-lg space-y-6"
+		class="container mx-auto desktop:px-4 flex flex-col mdlg:flex-row justify-center max-w-screen-lg space-y-6"
 	>
 		<!-- Middle section -->
 		<div class="w-full mdlg:w-3/5 mdlg:max-w-[60%] bg-white p-8 rounded-lg space-y-6 relative">
@@ -64,13 +64,13 @@
 					bind:valid={passwordValid}
 				/>
 
-				<SmallText class="text-left mt-3">
+				<SmallText class="text-left">
 					<a href="/forgot" class="text-blue-500 underline">Forgot password?</a>
 				</SmallText>
 
 				<button
 					type="submit"
-					class={`w-full py-2 px-4 rounded-lg mx-auto ${isFormValid ? 'bg-primaryYellow text-black' : 'bg-tagYellow text-altTextBrown'}`}
+					class={`w-full desktop:py-2 py-2.5 px-4 rounded-lg mx-auto ${isFormValid ? 'bg-primaryYellow text-black' : 'bg-tagYellow text-altTextBrown'}`}
 				>
 					<Text>Login</Text>
 				</button>

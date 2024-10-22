@@ -26,7 +26,7 @@
 			fileError = true;
 			setTimeout(() => {
 				fileError = false;
-			}, 1500);
+			}, 1550);
 		}
 
 		dispatch('file', { files: files.acceptedFiles });
@@ -90,18 +90,17 @@
 		{/if}
 	</FileDropzone>
 
-	{#if fileError}
-		<div
-			class="content-center bg-red-100 border-dashed border-2 border-red-500 absolute inset-0 rounded-3xl"
+	<div
+		class="content-center pointer-events-none transition-all bg-red-100 border-dashed border-2 border-red-500 absolute inset-0 rounded-3xl
+		{fileError ? 'opacity-100 transition-none' : 'opacity-0'}"
+	>
+		<FileErrorIcon class="mb-2 text-red-500 w-full h-8" />
+		<SmallText
+			class="smallText text-red-500 text-center {touched && !valid && 'text-altTextBrown'}"
 		>
-			<FileErrorIcon class="mb-2 text-red-500 w-full h-8" />
-			<SmallText
-				class="smallText text-red-500 text-center {touched && !valid && 'text-altTextBrown'}"
-			>
-				Sorry! You can't upload that file here...
-			</SmallText>
-		</div>
-	{/if}
+			Sorry! You can't upload that file here...
+		</SmallText>
+	</div>
 
 	{#if (touched && !valid) || disabled}
 		<SmallText class="smallText text-altTextBrown text-right mt-2">

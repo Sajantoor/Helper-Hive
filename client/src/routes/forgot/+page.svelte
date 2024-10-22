@@ -3,6 +3,7 @@
 	import LeftArrow from 'svelte-material-icons/ChevronLeft.svelte';
 	import { PUBLIC_SERVER_HOST } from '$env/static/public';
 	import EmailInput from '$lib/components/input/EmailInput.svelte';
+	import BackButton from '$lib/components/BackButton.svelte';
 
 	let email = '';
 	let isFormValid = false;
@@ -34,9 +35,13 @@
 	};
 </script>
 
+{#if !submitted}
+	<BackButton />
+{/if}
+
 <div class="flex flex-col md:flex-row justify-center items-center  min-h-[90vh] desktop:min-h-screen">
 	<div
-		class="container mx-auto px-4 flex flex-col md:flex-row justify-center max-w-screen-lg space-y-6"
+		class="container mx-auto desktop:px-4 flex flex-col md:flex-row justify-center max-w-screen-lg space-y-6"
 	>
 		<!-- Middle section -->
 		<div class="w-full md:w-3/5 md:max-w-[60%] bg-white p-8 rounded-lg space-y-6 relative">
@@ -52,7 +57,7 @@
 
 					<button
 						type="submit"
-						class={`w-full ${isFormValid ? 'bg-primaryYellow text-black' : 'bg-tagYellow text-altTextBrown'} py-2 px-4 rounded-lg mx-auto text`}
+						class={`w-full ${isFormValid ? 'bg-primaryYellow text-black' : 'bg-tagYellow text-altTextBrown'} desktop:py-2 py-2.5 px-4 rounded-lg mx-auto text`}
 					>
 						<Text>Submit</Text>
 					</button>

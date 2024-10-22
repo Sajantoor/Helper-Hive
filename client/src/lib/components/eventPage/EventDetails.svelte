@@ -4,6 +4,7 @@
 
 	import CalendarMonth from 'svelte-material-icons/CalendarMonthOutline.svelte';
 	import MapMarkerOutline from 'svelte-material-icons/MapMarkerOutline.svelte';
+	import Checkmark from 'svelte-material-icons/CheckBold.svelte';
 	import { PUBLIC_SERVER_HOST } from '$env/static/public';
 	import type { EventResponse } from '$common/types/eventResponse';
 	import { profileStore } from '$lib/stores/profileStore';
@@ -21,6 +22,7 @@
 
 	let spotsAvailable = event.registration.totalSpots - event.registration.totalRegistered;
 	let registered = event.registration.isRegistered || false;
+	let clickedRegister = false; // Make button green for 1.25sec
 
 	export let hours: string = getTime(event.date.startTime, event.date.endTime);
 
@@ -30,6 +32,13 @@
 		: `${formatDate(startDate)} - ${formatDate(endDate)}`;
 
 	let locationTitle: string, locationDescription: string;
+	
+	let registerStyle = (spotsAvailable > 0 && !registered)
+		? "bg-primaryYellow text-black"
+		: "bg-placeholderGray text-placeholderGrayText cursor-default transition-scale";
+	let registerText = registered
+		? "Unregister"
+		: "Register";
 
 	if (location) {
 		locationTitle = location.name;
@@ -61,10 +70,28 @@
 	}
 
 	function handleRegister() {
+		if (clickedRegister){
+			return;
+		}
 		if (registered) {
 			deregisterForEvent();
 		} else {
 			registerForEvent();
+		}
+	}
+	
+	function updateRegisterButton(){
+		if (clickedRegister){
+			registerStyle = "bg-green-400 text-emerald-900 border border-green-500/25 shadow-sm cursor-default scale-[1.03] flex items-center justify-center";
+			registerText = "Registered!";
+		} else if (spotsAvailable > 0 && !registered) {
+			registerStyle = "bg-primaryYellow text-black";
+			registerText = "Register";
+		} else {
+			registerStyle = "bg-placeholderGray text-placeholderGrayText cursor-default transition-scale";
+			if (registered){
+				registerText = "Unregister";
+			}
 		}
 	}
 
@@ -81,9 +108,16 @@
 			console.error('Failed to register for event');
 			return;
 		}
-
-		registered = true;
+		
 		spotsAvailable--;
+		clickedRegister = true;
+		updateRegisterButton();
+		
+		setTimeout(() => {
+			clickedRegister = false;
+			registered = true;
+			updateRegisterButton();
+		}, 1200);
 	}
 
 	async function deregisterForEvent() {
@@ -103,6 +137,7 @@
 		// deregister for the event
 		registered = false;
 		spotsAvailable++;
+		updateRegisterButton();
 	}
 </script>
 
@@ -139,13 +174,16 @@
 	</div>
 
 	<div class="mt-1 desktop:mt-4">
-		<Text class="text-altTextGray">{spotsAvailable} Spots Available</Text>
+		<Text class="text-altTextGray">{spotsAvailable} {spotsAvailable == 1 ? 'Spot Available' : 'Spots Available'}</Text>
 		{#if !isOrganization}
 			<button
-				class={`w-full ${spotsAvailable > 0 && !registered ? 'bg-primaryYellow text-black' : 'bg-placeholderGray text-placeholderGrayText cursor-default'} py-2 px-4 mt-2 rounded-lg mx-auto text`}
+				class={`w-full ${registerStyle} transition-all ease-out py-2 px-4 mt-2 rounded-lg mx-auto`}
 				on:click={handleRegister}
 			>
-				<Text>{!registered ? 'Register' : 'Unregister'}</Text>
+				<Text>{registerText}</Text>
+				{#if clickedRegister}
+					<Checkmark class="text-emerald-900 ml-1"/>
+				{/if}
 			</button>
 		{/if}
 		{#if isOwner}

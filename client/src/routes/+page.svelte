@@ -90,7 +90,7 @@
 </div>
 
 <div>
-	<Section class="text-center">Frequently Asked Questions</Section>
+	<Section class="text-center px-2">Frequently Asked Questions</Section>
 	<div class="faq-item">
 		<LargeText class="font-bold">What is Helper Hive?</LargeText>
 		<Text>
@@ -163,8 +163,8 @@
 		</div>
 
 		<div class="flex items-end desktop:items-center">
-			<Text class="text-right desktop:text-center">Helper Hive Volunteer Network</Text>
-			<img src={logoSrc} alt="Logo" class="h-16 ml-2 max-desktop:mr-1 desktop:ml-5" />
+			<Text class="text-center ml-2">Helper Hive Volunteer Network</Text>
+			<img src={logoSrc} alt="Logo" class="h-16 max-desktop:mr-1 desktop:ml-5" />
 		</div>
 	</div>
 </div>

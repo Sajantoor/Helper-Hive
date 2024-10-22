@@ -13,15 +13,15 @@
 	};
 </script>
 
-<div {id} class="fixed inset-0 flex items-center justify-center bg-dimBlack bg-opacity-50 hidden">
-	<div
+<div {id} on:click|preventDefault={closePopup} class="fixed inset-0 flex items-center justify-center bg-dimBlack bg-opacity-50 hidden">
+	<div on:click|preventDefault={()=>event.stopPropagation()}
 		class="bg-darkGray p-4 rounded-3xl desktop:rounded-2xl w-[95%] desktop:w-4/5 h-5/6 desktop:h-[90%] overflow-hidden relative"
 	>
 		<div
-			class="bg-darkGray rounded-t-3xl desktop:rounded-t-2xl rounded-b-none flex justify-between items-center sticky top-0 z-10"
+			class="rounded-t-3xl desktop:rounded-t-2xl rounded-b-none flex justify-between items-center sticky top-0 z-10"
 		>
-			<Text class="heading text-white text-center w-full ml-10">{title}</Text>
-			<div class="pl-4" on:click|preventDefault={closePopup}>
+			<Text class="heading text-white text-nowrap text-center w-full ml-5 desktop:ml-10">{title}</Text>
+			<div class="desktop:pl-2" on:click|preventDefault={closePopup}>
 				<CloseCircle
 					class="cursor-pointer text-xl mr-1 mt-1 text-tagYellow hover:text-primaryYellow active:text-altTextBrown"
 				/>

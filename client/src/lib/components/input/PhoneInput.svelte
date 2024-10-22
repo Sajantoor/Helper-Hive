@@ -60,7 +60,7 @@
 				bind:value
 				bind:valid={validState}
 				required={true}
-				class="h-12 desktop:h-9 pl-3 pr-3 rounded-r-lg grow bg-placeholderGray 
+				class="h-12 desktop:h-9 px-2 rounded-r-lg grow bg-placeholderGray max-desktop:text-[1.08rem]
 				{touched && !valid && 'bg-tagYellow placeholder-altTextBrown text-altTextBrown'}"
 				on:change={handleChange}
 				on:blur={handleChange}
